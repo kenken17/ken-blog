@@ -5,8 +5,8 @@ tasks:
   - "Implement the logo on the website."
   - "Test the logo display on different devices and screen sizes."
 task_board:
-  todo:
+  todo: []
+  done:
     - "Design the logo placement on the website."
     - "Implement the logo on the website."
     - "Test the logo display on different devices and screen sizes."
-  done: []
