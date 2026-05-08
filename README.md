@@ -10,8 +10,8 @@ A minimal, typographic blog built with Astro and Tailwind CSS.
 
 ## Tech Stack
 
-- **Framework:** Astro 5.x
-- **Styling:** Tailwind CSS
+- **Framework:** Astro 6.x
+- **Styling:** Tailwind CSS (via PostCSS)
 - **Language:** TypeScript
 - **Testing:** Vitest + Playwright
 - **Deployment:** Cloudflare Pages
