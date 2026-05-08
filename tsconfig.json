@@ -1,0 +1,17 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}
