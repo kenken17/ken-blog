@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0A0A0A;
+    color: #E5E5E5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background-color: #14B8A6;
+    color: #0A0A0A;
+  }
+}
+
+@layer components {
+  .prose-dark {
+    @apply prose prose-invert;
+    @apply prose-headings:text-foreground prose-p:text-foreground-secondary;
+    @apply prose-a:text-accent hover:prose-a:text-accent-hover;
+    @apply prose-strong:text-foreground;
+    @apply prose-code:text-accent prose-pre:bg-background-elevated;
+  }
+}

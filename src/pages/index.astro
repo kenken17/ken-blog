@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Ken's Blog">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="text-center animate-fade-in">
+      <h1 class="text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight">
+        Ken's <span class="text-accent">Blog</span>
+      </h1>
+      <p class="text-xl text-foreground-secondary max-w-2xl mx-auto leading-relaxed">
+        A place for thoughts on software engineering, design, and technology.
+      </p>
+      <div class="mt-10 flex gap-4 justify-center">
+        <a
+          href="/blog"
+          class="px-6 py-3 bg-accent text-foreground-inverse font-medium rounded-lg hover:bg-accent-hover transition-colors duration-200"
+        >
+          Read Posts
+        </a>
+        <a
+          href="/about"
+          class="px-6 py-3 border border-foreground-muted text-foreground-secondary font-medium rounded-lg hover:border-foreground hover:text-foreground transition-colors duration-200"
+        >
+          About
+        </a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
