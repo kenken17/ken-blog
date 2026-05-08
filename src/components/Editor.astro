@@ -46,6 +46,17 @@
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
           </svg>
         </button>
+        <button
+          data-command="image"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-sans text-sm hover:bg-background-hover rounded transition-all duration-200"
+          title="Image"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div id="save-indicator" class="text-foreground-muted text-xs uppercase tracking-wider font-sans opacity-0 transition-opacity duration-300">
@@ -71,6 +82,31 @@
         </button>
         <button
           id="link-cancel-btn"
+          class="px-3 py-1 text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Image input (hidden by default) -->
+    <div id="image-input-wrapper" class="hidden max-w-3xl mx-auto px-6 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="text-foreground-muted text-xs font-sans">Image URL</span>
+        <input
+          id="image-url-input"
+          type="url"
+          placeholder="https://... or paste image"
+          class="flex-1 bg-transparent border-b border-foreground-muted focus:border-foreground text-foreground-secondary text-sm font-sans py-1 px-1 outline-none transition-colors duration-200"
+        />
+        <button
+          id="image-apply-btn"
+          class="px-3 py-1 bg-foreground text-foreground-inverse text-xs uppercase tracking-wider font-sans font-medium hover:bg-foreground-secondary transition-colors duration-200"
+        >
+          Insert
+        </button>
+        <button
+          id="image-cancel-btn"
           class="px-3 py-1 text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
         >
           Cancel
@@ -228,6 +264,13 @@
     font-style: italic;
   }
 
+  #content-input img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem 0;
+  }
+
   /* Toolbar active state */
   .toolbar-btn.active {
     color: #09090B;
@@ -274,6 +317,10 @@
   const linkUrlInput = document.getElementById('link-url-input') as HTMLInputElement;
   const linkApplyBtn = document.getElementById('link-apply-btn')!;
   const linkCancelBtn = document.getElementById('link-cancel-btn')!;
+  const imageInputWrapper = document.getElementById('image-input-wrapper')!;
+  const imageUrlInput = document.getElementById('image-url-input') as HTMLInputElement;
+  const imageApplyBtn = document.getElementById('image-apply-btn')!;
+  const imageCancelBtn = document.getElementById('image-cancel-btn')!;
   const exportModal = document.getElementById('export-modal')!;
   const exportOutput = document.getElementById('export-output') as HTMLTextAreaElement;
   const exportBtn = document.getElementById('export-btn')!;
@@ -533,6 +580,35 @@
     hideLinkInput();
   }
 
+  // ─── Image Handling ──────────────────────────────────────────────
+  function showImageInput(): void {
+    saveCurrentSelection();
+    imageInputWrapper.classList.remove('hidden');
+    imageUrlInput.value = '';
+    imageUrlInput.focus();
+  }
+
+  function hideImageInput(): void {
+    imageInputWrapper.classList.add('hidden');
+    imageUrlInput.value = '';
+  }
+
+  function applyImage(): void {
+    const url = imageUrlInput.value.trim();
+    if (!url) return;
+
+    restoreSelection();
+    contentInput.focus();
+
+    getEditorDoc().execCommand('insertHTML', false, `<p><img src="${url}" alt="" style="max-width:100%;display:block;margin:1.5rem 0;" /></p>`);
+    hideImageInput();
+  }
+
+  function insertBase64Image(base64: string): void {
+    contentInput.focus();
+    getEditorDoc().execCommand('insertHTML', false, `<p><img src="${base64}" alt="" style="max-width:100%;display:block;margin:1.5rem 0;" /></p>`);
+  }
+
   // ─── HTML → Markdown ─────────────────────────────────────────────
   function htmlToMarkdown(html: string): string {
     const temp = document.createElement('div');
@@ -561,6 +637,11 @@
         case 'a': {
           const href = el.getAttribute('href') || '';
           return `[${children}](${href})`;
+        }
+        case 'img': {
+          const src = el.getAttribute('src') || '';
+          const alt = el.getAttribute('alt') || '';
+          return `\n\n![${alt}](${src})\n\n`;
         }
         case 'blockquote': return `> ${text.replace(/\n/g, '\n> ')}\n\n`;
         case 'br': return '\n';
@@ -645,6 +726,9 @@
         case 'link':
           showLinkInput();
           break;
+        case 'image':
+          showImageInput();
+          break;
       }
     });
   });
@@ -659,6 +743,39 @@
     }
     if (e.key === 'Escape') {
       hideLinkInput();
+    }
+  });
+
+  // Image input
+  imageApplyBtn.addEventListener('click', applyImage);
+  imageCancelBtn.addEventListener('click', hideImageInput);
+  imageUrlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyImage();
+    }
+    if (e.key === 'Escape') {
+      hideImageInput();
+    }
+  });
+
+  // Paste images from clipboard
+  contentInput.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (!file) continue;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          if (base64) insertBase64Image(base64);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   });
 
