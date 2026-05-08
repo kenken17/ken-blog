@@ -17,3 +17,4 @@ pnpm-debug.log*
 test-results/
 .opencode/
 package-lock.json
+.sisyphus/
