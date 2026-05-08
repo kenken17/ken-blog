@@ -1,11 +1,17 @@
 # Ken's Blog
 
-A static blog built with Astro, Tailwind CSS, and TypeScript.
+A minimal, typographic blog built with Astro and Tailwind CSS.
+
+## Design
+
+- **Style:** Swiss Modernism 2.0
+- **Typography:** Barlow Condensed (display) + Space Grotesk (body)
+- **Palette:** Warm white background, near-black text, blue accent
 
 ## Tech Stack
 
-- **Framework:** Astro 5.x
-- **Styling:** Tailwind CSS
+- **Framework:** Astro 6.x
+- **Styling:** Tailwind CSS (via PostCSS)
 - **Language:** TypeScript
 - **Testing:** Vitest + Playwright
 - **Deployment:** Cloudflare Pages
@@ -24,17 +30,3 @@ npm run dev
 - `npm run preview` — Preview production build
 - `npm test` — Run unit tests
 - `npm run test:e2e` — Run E2E tests
-
-## Project Structure
-
-```
-src/
-  components/    # Reusable UI components
-  layouts/       # Page layouts
-  pages/         # Routes
-  content/       # Blog posts (markdown)
-  styles/        # Global CSS
-  utils/         # Helper functions
-public/          # Static assets
-e2e/             # Playwright E2E tests
-```
