@@ -65,4 +65,74 @@ const { Content } = await render(post);
       </footer>
     </article>
   </main>
+
+  <!-- Lightbox Overlay -->
+  <div
+    id="lightbox"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-foreground/90 backdrop-blur-sm cursor-zoom-out"
+  >
+    <button
+      id="lightbox-close"
+      class="absolute top-6 right-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200"
+      aria-label="Close"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <img
+      id="lightbox-img"
+      src=""
+      alt=""
+      class="max-w-[90vw] max-h-[90vh] object-contain"
+    />
+  </div>
+
+  <script>
+    const lightbox = document.getElementById('lightbox')!;
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    const lightboxClose = document.getElementById('lightbox-close')!;
+
+    function openLightbox(src: string, alt: string): void {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(): void {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+
+    // Make all images in prose clickable
+    document.querySelectorAll('.prose-light img').forEach((img) => {
+      const image = img as HTMLImageElement;
+      image.style.cursor = 'zoom-in';
+      image.addEventListener('click', () => {
+        openLightbox(image.src, image.alt);
+      });
+    });
+
+    // Close on backdrop click
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target === lightboxImg) {
+        closeLightbox();
+      }
+    });
+
+    // Close button
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+        closeLightbox();
+      }
+    });
+  </script>
 </BaseLayout>

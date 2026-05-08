@@ -9,5 +9,7 @@ If you have yet to try [Avante.nvim](https://github.com/yetone/avante.nvim), you
 
 Found out the free tier is only available for model _Gemini 2.5 Flash / Lite_.
 
+![](/images/2026-05-08_01.jpg)
+
 Wonder 20 RPD is enough to test out anything at all… _maybe not_.
 
