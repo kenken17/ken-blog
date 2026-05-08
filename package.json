@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name=ken-blog",
     "astro": "astro",
     "test": "vitest",
     "test:e2e": "playwright test",
