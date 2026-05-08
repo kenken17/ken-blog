@@ -3,8 +3,10 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
+const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const posts = allPosts.slice(0, 5);
 ---
 
 <BaseLayout title="Ken's Blog">
@@ -28,14 +30,14 @@ const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean
     <!-- Posts List -->
     <section id="posts" class="max-w-3xl mx-auto px-6 py-24">
       <div class="mb-16 animate-fade-in">
-        <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">
+        <a href="/blog" class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium inline-block transition-colors duration-200">
           Archive
-        </p>
+        </a>
         <h2 class="font-display text-display-sm md:text-display-md text-foreground">
           RECENT POSTS
         </h2>
         <p class="text-foreground-secondary mt-4 text-lg">
-          {posts.length} post{posts.length !== 1 ? 's' : ''}
+          {allPosts.length} post{allPosts.length !== 1 ? 's' : ''}
         </p>
       </div>
 
