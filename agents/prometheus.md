@@ -23,17 +23,17 @@ Write artifacts:
 - /artifacts/stories/\*.md
 - /artifacts/tasks/\*.yaml
 
-## HARD SAFETY RULE
+HARD SYSTEM BOUNDARY RULE:
 
-You are NOT allowed to modify:
+You are STRICTLY FORBIDDEN from modifying:
 
 - features/registry.yaml
-- features/\*.yaml
-- runtime/\*.yaml
+- features/\*
+- runtime/\*
+- any configuration files
 
-These are HUMAN-OWNED CONFIG FILES.
+You may ONLY:
 
-You may only:
-
-- READ them for context
-- WRITE to state.yaml and artifacts/
+- READ feature definitions
+- WRITE to state.yaml
+- WRITE to /artifacts/\*
