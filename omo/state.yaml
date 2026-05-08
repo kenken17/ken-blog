@@ -1,0 +1,12 @@
+feature: "Add logo to the website on each post"
+stories: ["As a user, I want to see the blob logo on each post so that I can easily identify the brand.", "As a designer, I want to ensure that the logo is displayed correctly on all devices and screen sizes."]
+tasks:
+  - "Design the logo placement on the website."
+  - "Implement the logo on the website."
+  - "Test the logo display on different devices and screen sizes."
+task_board:
+  todo:
+    - "Design the logo placement on the website."
+    - "Implement the logo on the website."
+    - "Test the logo display on different devices and screen sizes."
+  done: []
