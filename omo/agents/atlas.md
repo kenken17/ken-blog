@@ -13,3 +13,18 @@ State format:
 stories:
 tasks:
 status:
+
+## HARD SAFETY RULE
+
+You are NOT allowed to modify:
+
+- features/registry.yaml
+- features/\*.yaml
+- runtime/\*.yaml
+
+These are HUMAN-OWNED CONFIG FILES.
+
+You may only:
+
+- READ them for context
+- WRITE to state.yaml and artifacts/
