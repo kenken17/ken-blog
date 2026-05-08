@@ -3,28 +3,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Ken's Blog">
-  <main class="min-h-screen flex items-center justify-center px-4">
-    <div class="text-center animate-fade-in">
-      <h1 class="text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight">
-        Ken's <span class="text-accent">Blog</span>
-      </h1>
-      <p class="text-xl text-foreground-secondary max-w-2xl mx-auto leading-relaxed">
-        A place for thoughts on software engineering, design, and technology.
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 py-20">
+    <div class="max-w-5xl w-full text-center animate-fade-in">
+      <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-6 font-sans font-medium">
+        Software Engineer & Designer
       </p>
-      <div class="mt-10 flex gap-4 justify-center">
+      <h1 class="font-display text-display-md md:text-display-lg lg:text-display-xl text-foreground mb-8">
+        KEN'S<br />
+        <span class="text-accent">BLOG</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-foreground-secondary max-w-2xl mx-auto leading-relaxed font-sans font-light">
+        A place for thoughts on engineering, design, and technology.
+      </p>
+      <div class="mt-14 flex flex-col sm:flex-row gap-4 justify-center items-center">
         <a
           href="/blog"
-          class="px-6 py-3 bg-accent text-foreground-inverse font-medium rounded-lg hover:bg-accent-hover transition-colors duration-200"
+          class="px-8 py-4 bg-accent text-foreground-inverse font-sans font-medium text-sm uppercase tracking-wider hover:bg-accent-hover transition-colors duration-300"
         >
           Read Posts
         </a>
         <a
           href="/about"
-          class="px-6 py-3 border border-foreground-muted text-foreground-secondary font-medium rounded-lg hover:border-foreground hover:text-foreground transition-colors duration-200"
+          class="px-8 py-4 border border-foreground-muted text-foreground-secondary font-sans font-medium text-sm uppercase tracking-wider hover:border-foreground hover:text-foreground transition-colors duration-300"
         >
           About
         </a>
       </div>
     </div>
+
+    <footer class="absolute bottom-8 text-foreground-muted text-xs uppercase tracking-[0.2em] font-sans">
+      Built with Astro & Tailwind
+    </footer>
   </main>
 </BaseLayout>

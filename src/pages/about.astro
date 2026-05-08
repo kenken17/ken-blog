@@ -3,16 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="About | Ken's Blog">
-  <main class="max-w-3xl mx-auto px-4 py-20">
+  <main class="max-w-3xl mx-auto px-6 py-24">
     <article class="animate-fade-in">
-      <h1 class="text-4xl font-bold text-foreground mb-8">About</h1>
-      <div class="prose-dark">
-        <p>
+      <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">
+        Information
+      </p>
+      <h1 class="font-display text-display-sm md:text-display-md text-foreground mb-12">
+        ABOUT
+      </h1>
+      <div class="prose-light">
+        <p class="text-lg leading-relaxed text-foreground-secondary">
           Welcome to my blog. I write about software engineering, design, and technology.
           This site is built with Astro, Tailwind CSS, and deployed to Cloudflare Pages.
         </p>
-        <p>
-          The design philosophy is simple: <strong>dark, minimal, and readable</strong>.
+        <p class="text-lg leading-relaxed text-foreground-secondary">
+          The design philosophy is simple: <strong>minimal, typographic, and precise</strong>.
           No tracking, no clutter — just content.
         </p>
       </div>
