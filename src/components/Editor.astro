@@ -438,24 +438,37 @@
     draftsDropdown.classList.add('hidden');
   }
 
-  // ─── Formatting Commands ────────────────────────────────────────
+  // ─── ContentEditable API Wrapper ────────────────────────────────
+  // These DOM APIs are marked deprecated in TypeScript DOM types but
+  // remain the cross-browser standard for rich text editing.
+  interface EditorDocument {
+    execCommand(commandId: string, showUI?: boolean, value?: string): boolean;
+    queryCommandState(commandId: string): boolean;
+    queryCommandValue(commandId: string): string;
+  }
+
+  function getEditorDoc(): EditorDocument {
+    return document as EditorDocument;
+  }
+
   function execCommand(command: string, value?: string): void {
     contentInput.focus();
-    document.execCommand(command, false, value);
+    getEditorDoc().execCommand(command, false, value);
     updateToolbarState();
   }
 
   function updateToolbarState(): void {
     const buttons = document.querySelectorAll('.toolbar-btn');
+    const editor = getEditorDoc();
     buttons.forEach(btn => {
       const cmd = btn.getAttribute('data-command');
       if (!cmd) return;
 
       let active = false;
-      if (cmd === 'bold') active = document.queryCommandState('bold');
-      else if (cmd === 'italic') active = document.queryCommandState('italic');
-      else if (cmd === 'h2') active = document.queryCommandValue('formatBlock') === 'h2';
-      else if (cmd === 'quote') active = document.queryCommandValue('formatBlock') === 'blockquote';
+      if (cmd === 'bold') active = editor.queryCommandState('bold');
+      else if (cmd === 'italic') active = editor.queryCommandState('italic');
+      else if (cmd === 'h2') active = editor.queryCommandValue('formatBlock') === 'h2';
+      else if (cmd === 'quote') active = editor.queryCommandValue('formatBlock') === 'blockquote';
 
       btn.classList.toggle('active', active);
     });
@@ -512,9 +525,9 @@
     // If no text selected, insert the URL as text
     const sel = window.getSelection();
     if (sel && sel.isCollapsed) {
-      document.execCommand('insertHTML', false, `<a href="${url}">${url}</a>`);
+      getEditorDoc().execCommand('insertHTML', false, `<a href="${url}">${url}</a>`);
     } else {
-      document.execCommand('createLink', false, url);
+      getEditorDoc().execCommand('createLink', false, url);
     }
 
     hideLinkInput();
@@ -601,8 +614,10 @@
         copyExportBtn.textContent = 'Copy to Clipboard';
       }, 2000);
     } catch {
-      exportOutput.select();
-      document.execCommand('copy');
+      copyExportBtn.textContent = 'Failed to copy';
+      setTimeout(() => {
+        copyExportBtn.textContent = 'Copy to Clipboard';
+      }, 2000);
     }
   }
 
