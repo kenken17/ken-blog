@@ -206,9 +206,16 @@
         ></textarea>
       </div>
       <div class="px-6 py-4 border-t border-background-elevated flex justify-end gap-3">
+        <span id="save-status" class="self-center text-foreground-muted text-xs font-sans mr-auto opacity-0 transition-opacity duration-300"></span>
+        <button
+          id="save-to-posts-btn"
+          class="px-4 py-2 bg-foreground text-foreground-inverse font-sans text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-300"
+        >
+          Save to Posts
+        </button>
         <a
           id="download-export-btn"
-          class="px-4 py-2 bg-foreground text-foreground-inverse font-sans text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-300 cursor-pointer"
+          class="px-4 py-2 border border-foreground-muted text-foreground-secondary font-sans text-xs uppercase tracking-wider font-medium hover:border-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
         >
           Download .md
         </a>
@@ -325,6 +332,8 @@
   const exportOutput = document.getElementById('export-output') as HTMLTextAreaElement;
   const exportBtn = document.getElementById('export-btn')!;
   const exportModalClose = document.getElementById('export-modal-close')!;
+  const saveToPostsBtn = document.getElementById('save-to-posts-btn')!;
+  const saveStatus = document.getElementById('save-status')!;
   const exportModalOverlay = document.getElementById('export-modal-overlay')!;
   const copyExportBtn = document.getElementById('copy-export-btn')!;
   const saveDraftBtn = document.getElementById('save-draft-btn')!;
@@ -702,6 +711,50 @@
     }
   }
 
+  async function saveToPosts(): Promise<void> {
+    const title = titleInput.textContent?.trim() || 'Untitled';
+    const content = exportOutput.value;
+    const date = new Date().toISOString().split('T')[0];
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'untitled';
+    const filename = `${date}-${slug}.md`;
+
+    saveToPostsBtn.textContent = 'Saving...';
+    saveToPostsBtn.setAttribute('disabled', 'true');
+    saveStatus.style.opacity = '0';
+
+    try {
+      const response = await fetch('/api/save-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, content }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        saveStatus.textContent = `Saved to src/content/posts/${result.filename}`;
+        saveStatus.classList.remove('text-red-500');
+        saveStatus.classList.add('text-green-600');
+        saveToPostsBtn.textContent = 'Saved!';
+        setTimeout(() => {
+          saveToPostsBtn.textContent = 'Save to Posts';
+          saveToPostsBtn.removeAttribute('disabled');
+        }, 2000);
+      } else {
+        throw new Error(result.error || 'Failed to save');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save';
+      saveStatus.textContent = message;
+      saveStatus.classList.remove('text-green-600');
+      saveStatus.classList.add('text-red-500');
+      saveToPostsBtn.textContent = 'Save to Posts';
+      saveToPostsBtn.removeAttribute('disabled');
+    }
+
+    saveStatus.style.opacity = '1';
+  }
+
   // ─── Event Listeners ────────────────────────────────────────────
 
   // Toolbar buttons
@@ -807,6 +860,7 @@
   exportModalClose.addEventListener('click', closeExportModal);
   exportModalOverlay.addEventListener('click', closeExportModal);
   copyExportBtn.addEventListener('click', copyToClipboard);
+  saveToPostsBtn.addEventListener('click', saveToPosts);
 
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
