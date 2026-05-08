@@ -1,6 +1,6 @@
 ---
 title: "Trying Gemini free tier on Avante.nvim"
-pubDate: 2026-05-08
+pubDate: 2026-02-22
 description: ""
 tags: ["ai", "vim"]
 ---
