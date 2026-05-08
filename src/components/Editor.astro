@@ -1,0 +1,714 @@
+---
+// Editor.astro — Medium-inspired blog post editor
+// Swiss Modernism 2.0 aesthetic, vanilla JS, localStorage persistence
+---
+
+<div id="editor-root" class="animate-fade-in">
+  <!-- Toolbar -->
+  <div id="editor-toolbar" class="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-background-elevated transition-all duration-300">
+    <div class="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-1">
+        <button
+          data-command="h2"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-display text-sm uppercase tracking-wider hover:bg-background-hover rounded transition-all duration-200"
+          title="Heading"
+        >
+          H2
+        </button>
+        <button
+          data-command="bold"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-sans text-sm font-semibold hover:bg-background-hover rounded transition-all duration-200"
+          title="Bold"
+        >
+          B
+        </button>
+        <button
+          data-command="italic"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-sans text-sm italic hover:bg-background-hover rounded transition-all duration-200"
+          title="Italic"
+        >
+          I
+        </button>
+        <button
+          data-command="quote"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-display text-sm hover:bg-background-hover rounded transition-all duration-200"
+          title="Quote"
+        >
+          &#8220;
+        </button>
+        <button
+          data-command="link"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-sans text-sm hover:bg-background-hover rounded transition-all duration-200"
+          title="Link"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div id="save-indicator" class="text-foreground-muted text-xs uppercase tracking-wider font-sans opacity-0 transition-opacity duration-300">
+        Saved
+      </div>
+    </div>
+
+    <!-- Link input (hidden by default) -->
+    <div id="link-input-wrapper" class="hidden max-w-3xl mx-auto px-6 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="text-foreground-muted text-xs font-sans">URL</span>
+        <input
+          id="link-url-input"
+          type="url"
+          placeholder="https://..."
+          class="flex-1 bg-transparent border-b border-foreground-muted focus:border-foreground text-foreground-secondary text-sm font-sans py-1 px-1 outline-none transition-colors duration-200"
+        />
+        <button
+          id="link-apply-btn"
+          class="px-3 py-1 bg-foreground text-foreground-inverse text-xs uppercase tracking-wider font-sans font-medium hover:bg-foreground-secondary transition-colors duration-200"
+        >
+          Apply
+        </button>
+        <button
+          id="link-cancel-btn"
+          class="px-3 py-1 text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor body -->
+  <div class="max-w-3xl mx-auto px-6 pt-12 pb-32">
+    <!-- Title -->
+    <div id="editor-title" class="mb-8">
+      <div
+        id="title-input"
+        contenteditable="true"
+        data-placeholder="Title"
+        class="font-display text-4xl md:text-5xl text-foreground outline-none leading-tight tracking-tight empty:before:content-[attr(data-placeholder)] empty:before:text-foreground-muted empty:before:opacity-40"
+        spellcheck="false"
+      ></div>
+    </div>
+
+    <!-- Content -->
+    <div id="editor-content" class="relative">
+      <div
+        id="content-input"
+        contenteditable="true"
+        data-placeholder="Tell your story..."
+        class="font-sans text-lg md:text-xl text-foreground-secondary leading-relaxed outline-none min-h-[60vh] empty:before:content-[attr(data-placeholder)] empty:before:text-foreground-muted empty:before:opacity-40"
+        spellcheck="true"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div id="editor-bottom-bar" class="fixed bottom-0 left-0 right-0 z-30 bg-background-surface border-t border-background-elevated">
+    <div class="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button
+          id="save-draft-btn"
+          class="px-4 py-2 bg-foreground text-foreground-inverse font-sans text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-300"
+        >
+          Save Draft
+        </button>
+        <button
+          id="new-post-btn"
+          class="px-4 py-2 border border-foreground-muted text-foreground-secondary font-sans text-xs uppercase tracking-wider font-medium hover:border-foreground hover:text-foreground transition-colors duration-300"
+        >
+          New Post
+        </button>
+
+        <!-- Drafts dropdown -->
+        <div class="relative">
+          <button
+            id="drafts-toggle-btn"
+            class="px-4 py-2 text-foreground-muted font-sans text-xs uppercase tracking-wider font-medium hover:text-foreground transition-colors duration-300"
+          >
+            Drafts (<span id="drafts-count">0</span>)
+          </button>
+          <div
+            id="drafts-dropdown"
+            class="hidden absolute bottom-full left-0 mb-2 w-80 bg-background-surface border border-background-elevated shadow-lg max-h-64 overflow-y-auto"
+          >
+            <div id="drafts-list" class="py-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button
+          id="export-btn"
+          class="px-4 py-2 text-foreground-muted font-sans text-xs uppercase tracking-wider font-medium hover:text-foreground transition-colors duration-300"
+        >
+          Export Markdown
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export modal -->
+  <div id="export-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-foreground/20 backdrop-blur-sm" id="export-modal-overlay"></div>
+    <div class="relative bg-background-surface w-full max-w-2xl mx-4 shadow-2xl animate-fade-in">
+      <div class="px-6 py-4 border-b border-background-elevated flex items-center justify-between">
+        <h3 class="font-display text-lg uppercase tracking-wider text-foreground">Export Markdown</h3>
+        <button id="export-modal-close" class="text-foreground-muted hover:text-foreground transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-4">
+        <textarea
+          id="export-output"
+          readonly
+          class="w-full h-64 bg-background-elevated text-foreground-secondary font-mono text-sm p-4 outline-none resize-none border border-background-hover focus:border-foreground-muted transition-colors duration-200"
+        ></textarea>
+      </div>
+      <div class="px-6 py-4 border-t border-background-elevated flex justify-end gap-3">
+        <a
+          id="download-export-btn"
+          class="px-4 py-2 bg-foreground text-foreground-inverse font-sans text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-300 cursor-pointer"
+        >
+          Download .md
+        </a>
+        <button
+          id="copy-export-btn"
+          class="px-4 py-2 border border-foreground-muted text-foreground-secondary font-sans text-xs uppercase tracking-wider font-medium hover:border-foreground hover:text-foreground transition-colors duration-300"
+        >
+          Copy to Clipboard
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Scoped styles for contenteditable behavior */
+  #content-input h2 {
+    font-family: 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #09090B;
+    margin: 2rem 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  #content-input blockquote {
+    border-left: 3px solid #09090B;
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    color: #3F3F46;
+    font-style: italic;
+  }
+
+  #content-input a {
+    color: #09090B;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease;
+  }
+
+  #content-input a:hover {
+    color: #3F3F46;
+  }
+
+  #content-input strong {
+    color: #09090B;
+    font-weight: 600;
+  }
+
+  #content-input em {
+    font-style: italic;
+  }
+
+  /* Toolbar active state */
+  .toolbar-btn.active {
+    color: #09090B;
+    background-color: #E4E4E7;
+  }
+
+  /* Draft item hover */
+  .draft-item {
+    transition: background-color 0.15s ease;
+  }
+
+  .draft-item:hover {
+    background-color: #F4F4F5;
+  }
+
+  /* Focus styles */
+  #title-input:focus,
+  #content-input:focus {
+    outline: none;
+  }
+
+  /* Smooth placeholder transitions */
+  [contenteditable]:empty:before {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // ─── State ───────────────────────────────────────────────────────
+  const STORAGE_KEY = 'ken-blog-drafts';
+  let currentDraftId: string | null = null;
+  let savedSelection: { startNode: Node; startOffset: number; endNode: Node; endOffset: number } | null = null;
+
+  // ─── DOM References ──────────────────────────────────────────────
+  const titleInput = document.getElementById('title-input')!;
+  const contentInput = document.getElementById('content-input')!;
+  const saveIndicator = document.getElementById('save-indicator')!;
+  const draftsCount = document.getElementById('drafts-count')!;
+  const draftsDropdown = document.getElementById('drafts-dropdown')!;
+  const draftsList = document.getElementById('drafts-list')!;
+  const draftsToggleBtn = document.getElementById('drafts-toggle-btn')!;
+  const linkInputWrapper = document.getElementById('link-input-wrapper')!;
+  const linkUrlInput = document.getElementById('link-url-input') as HTMLInputElement;
+  const linkApplyBtn = document.getElementById('link-apply-btn')!;
+  const linkCancelBtn = document.getElementById('link-cancel-btn')!;
+  const exportModal = document.getElementById('export-modal')!;
+  const exportOutput = document.getElementById('export-output') as HTMLTextAreaElement;
+  const exportBtn = document.getElementById('export-btn')!;
+  const exportModalClose = document.getElementById('export-modal-close')!;
+  const exportModalOverlay = document.getElementById('export-modal-overlay')!;
+  const copyExportBtn = document.getElementById('copy-export-btn')!;
+  const saveDraftBtn = document.getElementById('save-draft-btn')!;
+  const newPostBtn = document.getElementById('new-post-btn')!;
+
+  // ─── Draft Storage ──────────────────────────────────────────────
+  interface Draft {
+    id: string;
+    title: string;
+    content: string;
+    updatedAt: string;
+  }
+
+  function loadDrafts(): Draft[] {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveDrafts(drafts: Draft[]): void {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
+  }
+
+  // ─── Save / Load ────────────────────────────────────────────────
+  function saveDraft(): void {
+    const title = titleInput.textContent?.trim() || '';
+    const content = contentInput.innerHTML;
+
+    if (!title && !content.replace(/<[^>]*>/g, '').trim()) {
+      return; // Don't save empty drafts
+    }
+
+    const drafts = loadDrafts();
+    const now = new Date().toISOString();
+
+    if (currentDraftId) {
+      const idx = drafts.findIndex(d => d.id === currentDraftId);
+      if (idx >= 0) {
+        drafts[idx] = { ...drafts[idx], title, content, updatedAt: now };
+      } else {
+        drafts.push({ id: currentDraftId, title, content, updatedAt: now });
+      }
+    } else {
+      const newDraft: Draft = {
+        id: Date.now().toString(),
+        title,
+        content,
+        updatedAt: now,
+      };
+      currentDraftId = newDraft.id;
+      drafts.push(newDraft);
+    }
+
+    saveDrafts(drafts);
+    updateDraftsCount();
+    flashSaved();
+  }
+
+  function loadDraft(id: string): void {
+    const drafts = loadDrafts();
+    const draft = drafts.find(d => d.id === id);
+    if (!draft) return;
+
+    currentDraftId = draft.id;
+    titleInput.textContent = draft.title;
+    contentInput.innerHTML = draft.content;
+    closeDraftsDropdown();
+  }
+
+  function deleteDraft(id: string): void {
+    let drafts = loadDrafts();
+    drafts = drafts.filter(d => d.id !== id);
+    saveDrafts(drafts);
+
+    if (currentDraftId === id) {
+      currentDraftId = null;
+    }
+
+    updateDraftsCount();
+    renderDraftsList();
+  }
+
+  function newPost(): void {
+    currentDraftId = null;
+    titleInput.textContent = '';
+    contentInput.innerHTML = '';
+    titleInput.focus();
+  }
+
+  // ─── UI Updates ──────────────────────────────────────────────────
+  function updateDraftsCount(): void {
+    draftsCount.textContent = loadDrafts().length.toString();
+  }
+
+  function flashSaved(): void {
+    saveIndicator.style.opacity = '1';
+    setTimeout(() => {
+      saveIndicator.style.opacity = '0';
+    }, 2000);
+  }
+
+  function renderDraftsList(): void {
+    const drafts = loadDrafts().sort((a, b) =>
+      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+
+    if (drafts.length === 0) {
+      draftsList.innerHTML = `
+        <div class="px-4 py-3 text-foreground-muted text-xs font-sans uppercase tracking-wider">
+          No drafts yet
+        </div>
+      `;
+      return;
+    }
+
+    draftsList.innerHTML = drafts.map(draft => {
+      const date = new Date(draft.updatedAt);
+      const timeStr = date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      const isActive = draft.id === currentDraftId;
+      const displayTitle = draft.title || 'Untitled';
+
+      return `
+        <div class="draft-item flex items-center justify-between px-4 py-3 cursor-pointer ${isActive ? 'bg-background-elevated' : ''}" data-draft-id="${draft.id}">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-sans text-foreground truncate">${displayTitle}</div>
+            <div class="text-xs font-sans text-foreground-muted mt-0.5">${timeStr}</div>
+          </div>
+          <button class="draft-delete-btn ml-3 text-foreground-muted hover:text-foreground transition-colors duration-200 flex-shrink-0" data-delete-id="${draft.id}" title="Delete draft">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleDraftsDropdown(): void {
+    const isHidden = draftsDropdown.classList.contains('hidden');
+    if (isHidden) {
+      renderDraftsList();
+      draftsDropdown.classList.remove('hidden');
+    } else {
+      closeDraftsDropdown();
+    }
+  }
+
+  function closeDraftsDropdown(): void {
+    draftsDropdown.classList.add('hidden');
+  }
+
+  // ─── Formatting Commands ────────────────────────────────────────
+  function execCommand(command: string, value?: string): void {
+    contentInput.focus();
+    document.execCommand(command, false, value);
+    updateToolbarState();
+  }
+
+  function updateToolbarState(): void {
+    const buttons = document.querySelectorAll('.toolbar-btn');
+    buttons.forEach(btn => {
+      const cmd = btn.getAttribute('data-command');
+      if (!cmd) return;
+
+      let active = false;
+      if (cmd === 'bold') active = document.queryCommandState('bold');
+      else if (cmd === 'italic') active = document.queryCommandState('italic');
+      else if (cmd === 'h2') active = document.queryCommandValue('formatBlock') === 'h2';
+      else if (cmd === 'quote') active = document.queryCommandValue('formatBlock') === 'blockquote';
+
+      btn.classList.toggle('active', active);
+    });
+  }
+
+  // ─── Link Handling ───────────────────────────────────────────────
+  function saveCurrentSelection(): void {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      savedSelection = {
+        startNode: range.startContainer,
+        startOffset: range.startOffset,
+        endNode: range.endContainer,
+        endOffset: range.endOffset,
+      };
+    }
+  }
+
+  function restoreSelection(): void {
+    if (!savedSelection) return;
+    const sel = window.getSelection();
+    if (!sel) return;
+    try {
+      const range = document.createRange();
+      range.setStart(savedSelection.startNode, savedSelection.startOffset);
+      range.setEnd(savedSelection.endNode, savedSelection.endOffset);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch {
+      // Selection may be invalid if DOM changed
+    }
+  }
+
+  function showLinkInput(): void {
+    saveCurrentSelection();
+    linkInputWrapper.classList.remove('hidden');
+    linkUrlInput.value = '';
+    linkUrlInput.focus();
+  }
+
+  function hideLinkInput(): void {
+    linkInputWrapper.classList.add('hidden');
+    linkUrlInput.value = '';
+  }
+
+  function applyLink(): void {
+    const url = linkUrlInput.value.trim();
+    if (!url) return;
+
+    restoreSelection();
+    contentInput.focus();
+
+    // If no text selected, insert the URL as text
+    const sel = window.getSelection();
+    if (sel && sel.isCollapsed) {
+      document.execCommand('insertHTML', false, `<a href="${url}">${url}</a>`);
+    } else {
+      document.execCommand('createLink', false, url);
+    }
+
+    hideLinkInput();
+  }
+
+  // ─── HTML → Markdown ─────────────────────────────────────────────
+  function htmlToMarkdown(html: string): string {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    function processNode(node: Node): string {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent || '';
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
+      const children = Array.from(el.childNodes).map(processNode).join('');
+      const text = el.textContent?.trim() || '';
+
+      switch (tag) {
+        case 'h1': return `# ${text}\n\n`;
+        case 'h2': return `## ${text}\n\n`;
+        case 'h3': return `### ${text}\n\n`;
+        case 'h4': return `#### ${text}\n\n`;
+        case 'p': return `${children}\n\n`;
+        case 'strong': case 'b': return `**${children}**`;
+        case 'em': case 'i': return `*${children}*`;
+        case 'a': {
+          const href = el.getAttribute('href') || '';
+          return `[${children}](${href})`;
+        }
+        case 'blockquote': return `> ${text.replace(/\n/g, '\n> ')}\n\n`;
+        case 'br': return '\n';
+        case 'ul': return `${children}\n`;
+        case 'ol': return `${children}\n`;
+        case 'li': return `- ${children}\n`;
+        case 'code': return `\`${text}\``;
+        case 'pre': return `\`\`\`\n${text}\n\`\`\`\n\n`;
+        case 'div': return `${children}\n`;
+        case 'span': return children;
+        default: return children;
+      }
+    }
+
+    let md = Array.from(temp.childNodes).map(processNode).join('');
+    // Clean up excessive newlines
+    md = md.replace(/\n{3,}/g, '\n\n').trim();
+    return md;
+  }
+
+  function exportMarkdown(): void {
+    const title = titleInput.textContent?.trim() || 'Untitled';
+    const content = contentInput.innerHTML;
+    const markdown = htmlToMarkdown(content);
+    const date = new Date().toISOString().split('T')[0];
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'untitled';
+
+    const output = `---\ntitle: "${title}"\npubDate: ${date}\ndescription: ""\ndraft: true\ntags: []\n---\n\n${markdown}`;
+
+    exportOutput.value = output;
+    exportModal.classList.remove('hidden');
+
+    // Also update download button filename
+    const downloadBtn = document.getElementById('download-export-btn') as HTMLAnchorElement;
+    if (downloadBtn) {
+      const blob = new Blob([output], { type: 'text/markdown' });
+      downloadBtn.href = URL.createObjectURL(blob);
+      downloadBtn.download = `${slug}.md`;
+    }
+  }
+
+  function closeExportModal(): void {
+    exportModal.classList.add('hidden');
+  }
+
+  async function copyToClipboard(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(exportOutput.value);
+      copyExportBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyExportBtn.textContent = 'Copy to Clipboard';
+      }, 2000);
+    } catch {
+      exportOutput.select();
+      document.execCommand('copy');
+    }
+  }
+
+  // ─── Event Listeners ────────────────────────────────────────────
+
+  // Toolbar buttons
+  document.querySelectorAll('.toolbar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const command = btn.getAttribute('data-command');
+      if (!command) return;
+
+      switch (command) {
+        case 'bold':
+          execCommand('bold');
+          break;
+        case 'italic':
+          execCommand('italic');
+          break;
+        case 'h2':
+          execCommand('formatBlock', 'h2');
+          break;
+        case 'quote':
+          execCommand('formatBlock', 'blockquote');
+          break;
+        case 'link':
+          showLinkInput();
+          break;
+      }
+    });
+  });
+
+  // Link input
+  linkApplyBtn.addEventListener('click', applyLink);
+  linkCancelBtn.addEventListener('click', hideLinkInput);
+  linkUrlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyLink();
+    }
+    if (e.key === 'Escape') {
+      hideLinkInput();
+    }
+  });
+
+  // Save / New / Drafts
+  saveDraftBtn.addEventListener('click', saveDraft);
+  newPostBtn.addEventListener('click', newPost);
+  draftsToggleBtn.addEventListener('click', toggleDraftsDropdown);
+
+  // Drafts list delegation
+  draftsList.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const deleteBtn = target.closest('.draft-delete-btn') as HTMLElement | null;
+    if (deleteBtn) {
+      e.stopPropagation();
+      const id = deleteBtn.getAttribute('data-delete-id');
+      if (id) deleteDraft(id);
+      return;
+    }
+
+    const draftItem = target.closest('.draft-item') as HTMLElement | null;
+    if (draftItem) {
+      const id = draftItem.getAttribute('data-draft-id');
+      if (id) loadDraft(id);
+    }
+  });
+
+  // Export
+  exportBtn.addEventListener('click', exportMarkdown);
+  exportModalClose.addEventListener('click', closeExportModal);
+  exportModalOverlay.addEventListener('click', closeExportModal);
+  copyExportBtn.addEventListener('click', copyToClipboard);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault();
+      saveDraft();
+    }
+  });
+
+  // Update toolbar state on selection change
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === contentInput) {
+      updateToolbarState();
+    }
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('#drafts-toggle-btn') && !target.closest('#drafts-dropdown')) {
+      closeDraftsDropdown();
+    }
+  });
+
+  // Auto-save every 30 seconds
+  setInterval(() => {
+    const title = titleInput.textContent?.trim() || '';
+    const content = contentInput.innerHTML.replace(/<[^>]*>/g, '').trim();
+    if (title || content) {
+      saveDraft();
+    }
+  }, 30000);
+
+  // ─── Initialize ──────────────────────────────────────────────────
+  updateDraftsCount();
+  titleInput.focus();
+</script>

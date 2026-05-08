@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+import type { CollectionEntry } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
+  .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="Blog | Ken's Blog">
+  <main class="max-w-3xl mx-auto px-6 py-24">
+    <div class="mb-16 animate-fade-in">
+      <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">
+        Archive
+      </p>
+      <h1 class="font-display text-display-sm md:text-display-md text-foreground">
+        BLOG
+      </h1>
+      <p class="text-foreground-secondary mt-4 text-lg">
+        {posts.length} post{posts.length !== 1 ? 's' : ''}
+      </p>
+    </div>
+
+    <div class="space-y-12">
+      {posts.map((post: CollectionEntry<'posts'>, index: number) => (
+        <article class="group animate-fade-in" style={`animation-delay: ${index * 100}ms`}>
+          <a href={`/blog/${post.id}`} class="block">
+            <div class="flex items-baseline justify-between mb-2">
+              <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
+                {post.data.pubDate.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </time>
+              {post.data.tags && post.data.tags.length > 0 && (
+                <span class="text-foreground-muted text-xs uppercase tracking-wider font-sans">
+                  {post.data.tags[0]}
+                </span>
+              )}
+            </div>
+            <h2 class="font-display text-2xl md:text-3xl text-foreground group-hover:text-foreground-secondary transition-colors duration-200 leading-tight">
+              {post.data.title}
+            </h2>
+            {post.data.description && (
+              <p class="text-foreground-secondary mt-2 text-base leading-relaxed font-sans">
+                {post.data.description}
+              </p>
+            )}
+          </a>
+        </article>
+      ))}
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,68 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post: CollectionEntry<'posts'>) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} | Ken's Blog`} description={post.data.description}>
+  <main class="max-w-3xl mx-auto px-6 py-24">
+    <article class="animate-fade-in">
+      <header class="mb-12">
+        <div class="flex items-baseline justify-between mb-4">
+          <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
+            {post.data.pubDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </time>
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="flex gap-2">
+              {post.data.tags.map((tag: string) => (
+                <span class="text-foreground-muted text-xs uppercase tracking-wider font-sans">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+        <h1 class="font-display text-display-sm md:text-display-md text-foreground leading-tight">
+          {post.data.title}
+        </h1>
+        {post.data.description && (
+          <p class="text-foreground-secondary mt-4 text-lg leading-relaxed font-sans">
+            {post.data.description}
+          </p>
+        )}
+      </header>
+
+      <div class="prose-light">
+        <Content />
+      </div>
+
+      <footer class="mt-16 pt-8 border-t border-background-elevated">
+        <a
+          href="/blog"
+          class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"
+        >
+          ← Back to all posts
+        </a>
+      </footer>
+    </article>
+  </main>
+</BaseLayout>
