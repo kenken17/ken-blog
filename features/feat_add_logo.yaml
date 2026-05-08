@@ -1,11 +1,10 @@
 id: feat_add_logo
 name: Add logo to blog
-description: Add a logon to the blob landing page and each blog post to enhance brand recognition and user experience.
+description: Add a logo to each blog post to enhance brand recognition and user experience.
 business_goal: Increase brand visibility and create a cohesive user experience across the blog platform.
 scope:
   in_scope:
     - use plain text as logo (Ken's Blog)
-    - adding a logo to the blog landing page
     - adding a logo to each blog post page
     - ensuring the logo is responsive and does not affect page load times
     - ensuring the logo is show up correctly in both desktop and mobile views
@@ -17,7 +16,7 @@ constraints:
   - logo file size must be optimized for web use (preferably under 100KB)
   - implementation must not cause significant delays in page load times
 success_criteria:
-  - logo is visible and correctly displayed on the blog landing page and each blog post page
+  - logo is visible and correctly displayed on blog post page
   - no significant increase in page load times after implementation
   - positive feedback from users regarding the new logo placement and design
 metrics:
