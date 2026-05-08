@@ -17,8 +17,8 @@
   }
 
   ::selection {
-    background-color: #2563EB;
-    color: #FFFFFF;
+    background-color: #09090B;
+    color: #FAFAFA;
   }
 }
 
@@ -26,9 +26,9 @@
   .prose-light {
     @apply prose;
     @apply prose-headings:text-foreground prose-p:text-foreground-secondary;
-    @apply prose-a:text-accent hover:prose-a:text-accent-hover;
+    @apply prose-a:text-foreground hover:prose-a:text-foreground-secondary;
     @apply prose-strong:text-foreground;
-    @apply prose-code:text-accent prose-pre:bg-background-elevated;
-    @apply prose-blockquote:border-l-accent;
+    @apply prose-code:text-foreground prose-pre:bg-background-elevated;
+    @apply prose-blockquote:border-l-foreground;
   }
 }

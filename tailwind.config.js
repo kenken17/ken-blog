@@ -16,11 +16,6 @@ export default {
           muted: '#A1A1AA',
           inverse: '#FAFAFA',
         },
-        accent: {
-          DEFAULT: '#2563EB',
-          hover: '#1D4ED8',
-          muted: '#DBEAFE',
-        },
       },
       fontFamily: {
         display: ['Barlow Condensed', 'system-ui', 'sans-serif'],

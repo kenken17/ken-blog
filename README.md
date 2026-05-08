@@ -6,7 +6,7 @@ A minimal, typographic blog built with Astro and Tailwind CSS.
 
 - **Style:** Swiss Modernism 2.0
 - **Typography:** Barlow Condensed (display) + Space Grotesk (body)
-- **Palette:** Warm white background, near-black text, blue accent
+- **Palette:** Black, grey, and white
 
 ## Tech Stack
 
