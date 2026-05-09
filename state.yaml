@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-09T14:40:06+08:00'
+last_updated: '2026-05-09T15:40:00+08:00'
 features:
   feat_add_tag_list:
     status: completed
@@ -32,3 +32,50 @@ features:
         status: done
         completed_at: '2026-05-09T14:40:06+08:00'
         notes: Full build passed — astro check (0 errors, 0 warnings, 0 hints) + astro build (7 pages, including /tags, /tags/ai, /tags/vim).
+  feat_add_search_bar:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Created scripts/generate-search-index.ts that reads posts, parses frontmatter with js-yaml, excludes drafts, outputs public/search-index.json.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-09T15:35:00+08:00'
+        notes: Added prebuild script to package.json, build runs prebuild then astro check && astro build. Installed tsx as devDependency.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Created src/components/SearchBar.astro with desktop input, mobile toggle/overlay, results dropdown, and data-search attributes.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-09T15:38:00+08:00'
+        notes: Integrated SearchBar into BaseLayout header. Fixed to always show header (even on homepage with showLogo=false) so search is on all pages.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Created src/scripts/search.ts with fetchSearchIndex (cached), searchPosts, highlightText, debounce, renderResults, initSearch.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Wired search module to SearchBar via script import. Handles input, keyboard nav, Cmd/Ctrl+K, Escape, outside click.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Dropdown styled with Tailwind — absolute positioning, shadow, max-height, hover states, empty state, max 8 results.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-09T15:33:00+08:00'
+        notes: Mobile search shows icon button, expands to full overlay with backdrop, close button. Escape or backdrop tap collapses.
+      TASK-5-1:
+        status: done
+        completed_at: '2026-05-09T15:35:00+08:00'
+        notes: Created src/scripts/__tests__/search.test.ts with 16 tests covering filtering, highlighting, debounce, fetch. All passing.
+      TASK-5-2:
+        status: done
+        completed_at: '2026-05-09T15:40:00+08:00'
+        notes: Created e2e/search.spec.ts with 6 tests. Installed @playwright/test. All 8 Chromium tests passing.
+      TASK-5-3:
+        status: done
+        completed_at: '2026-05-09T15:40:00+08:00'
+        notes: Build exits 0. astro check 0 errors/warnings/hints. dist/search-index.json present (216 bytes). 7 pages built.

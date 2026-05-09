@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
+import SearchBar from '../components/SearchBar.astro';
 
 interface Props {
   title: string;
@@ -25,13 +26,12 @@ const { title, description = "Ken's personal blog", showLogo = true } = Astro.pr
   <title>{title}</title>
 </head>
 <body class="bg-background text-foreground antialiased">
-  {showLogo && (
-    <header class="w-full">
-      <div class="max-w-3xl mx-auto px-6 py-4 flex justify-start">
-        <Logo />
-      </div>
-    </header>
-  )}
+  <header class="w-full">
+    <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+      {showLogo ? <Logo /> : <div />}
+      <SearchBar />
+    </div>
+  </header>
   <slot />
 </body>
 </html>

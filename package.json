@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "prebuild": "tsx scripts/generate-search-index.ts",
+    "build": "npm run prebuild && astro check && astro build",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler pages deploy dist --project-name=ken-blog",
     "astro": "astro",
@@ -20,11 +21,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.0",
+    "@playwright/test": "^1.59.1",
     "@testing-library/dom": "^10.0.0",
     "@types/node": "^25.6.2",
     "autoprefixer": "^10.4.0",
     "playwright": "^1.45.0",
     "postcss": "^8.4.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.0",
     "vitest": "^2.0.0"
   }
