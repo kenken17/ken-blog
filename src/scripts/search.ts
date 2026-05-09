@@ -265,6 +265,14 @@ export function initSearch(): void {
     mobileClose.addEventListener('click', closeMobileSearch);
   }
 
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', (e) => {
+      if (e.target === mobileOverlay) {
+        closeMobileSearch();
+      }
+    });
+  }
+
   document.addEventListener('click', (e) => {
     if (!container.contains(e.target as Node)) {
       closeDropdown();
