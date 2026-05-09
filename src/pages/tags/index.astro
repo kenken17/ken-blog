@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, getTagCounts } from '../../utils/tags';
+import type { CollectionEntry } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
+  .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const tags = getAllTags(posts);
+const tagCounts = getTagCounts(posts);
+---
+
+<BaseLayout title="Tags | Ken's Blog" description="Browse all topics covered on Ken's blog.">
+  <main class="max-w-3xl mx-auto px-6 py-24">
+    <div class="mb-16 animate-fade-in">
+      <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">
+        Topics
+      </p>
+      <h1 class="font-display text-display-sm md:text-display-md text-foreground">
+        TAGS
+      </h1>
+      <p class="text-foreground-secondary mt-4 text-lg">
+        {tags.length} topic{tags.length !== 1 ? 's' : ''}
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3 animate-fade-in">
+      {tags.map((tag: string) => {
+        const count = tagCounts.get(tag) ?? 0;
+        return (
+          <a
+            href={`/tags/${tag}`}
+            class="group inline-flex items-center gap-2 px-4 py-2 border border-background-elevated rounded-full text-foreground-muted hover:text-foreground hover:border-foreground-muted transition-colors duration-200"
+            aria-label={`${count} post${count !== 1 ? 's' : ''} tagged ${tag}`}
+          >
+            <span class="text-sm font-sans uppercase tracking-wider">{tag}</span>
+            <span class="text-xs font-sans text-foreground-muted group-hover:text-foreground transition-colors duration-200">
+              {count}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </main>
+</BaseLayout>
