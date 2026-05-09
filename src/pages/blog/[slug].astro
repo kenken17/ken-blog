@@ -34,9 +34,13 @@ const { Content } = await render(post);
           {post.data.tags && post.data.tags.length > 0 && (
             <div class="flex gap-2">
               {post.data.tags.map((tag: string) => (
-                <span class="text-foreground-muted text-xs uppercase tracking-wider font-sans">
+                <a
+                  href={`/tags/${tag}`}
+                  class="text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+                  aria-label={`Posts tagged ${tag}`}
+                >
                   {tag}
-                </span>
+                </a>
               ))}
             </div>
           )}
