@@ -25,21 +25,25 @@ const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean
     <div class="space-y-12">
       {posts.map((post: CollectionEntry<'posts'>, index: number) => (
         <article class="group animate-fade-in" style={`animation-delay: ${index * 100}ms`}>
+          <div class="flex items-baseline justify-between mb-2">
+            <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
+              {post.data.pubDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </time>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <a
+                href={`/tags/${post.data.tags[0]}`}
+                class="text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+                aria-label={`Posts tagged ${post.data.tags[0]}`}
+              >
+                {post.data.tags[0]}
+              </a>
+            )}
+          </div>
           <a href={`/blog/${post.id}`} class="block">
-            <div class="flex items-baseline justify-between mb-2">
-              <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
-                {post.data.pubDate.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </time>
-              {post.data.tags && post.data.tags.length > 0 && (
-                <span class="text-foreground-muted text-xs uppercase tracking-wider font-sans">
-                  {post.data.tags[0]}
-                </span>
-              )}
-            </div>
             <h2 class="font-display text-2xl md:text-3xl text-foreground group-hover:text-foreground-secondary transition-colors duration-200 leading-tight">
               {post.data.title}
             </h2>
