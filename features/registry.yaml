@@ -7,3 +7,7 @@ features:
     name: feat_add_tag_list
     file: feat_add_tag_list.yaml
     status: completed
+  - id: F-3
+    name: feat_add_search_bar
+    file: feat_add_search_bar.yaml
+    status: queued
