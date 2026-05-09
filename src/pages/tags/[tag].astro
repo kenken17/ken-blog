@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, getPostsByTag } from '../../utils/tags';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft);
+  const tags = getAllTags(posts);
+
+  return tags.map((tag: string) => ({
+    params: { tag },
+    props: { tag },
+  }));
+}
+
+interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
+  .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const posts = getPostsByTag(allPosts, tag);
+---
+
+<BaseLayout title={`Tag: ${tag} | Ken's Blog`} description={`All posts tagged "${tag}" on Ken's blog.`}>
+  <main class="max-w-3xl mx-auto px-6 py-24">
+    <div class="mb-16 animate-fade-in">
+      <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">
+        Tag
+      </p>
+      <h1 class="font-display text-display-sm md:text-display-md text-foreground uppercase">
+        {tag}
+      </h1>
+      <p class="text-foreground-secondary mt-4 text-lg">
+        {posts.length} post{posts.length !== 1 ? 's' : ''}
+      </p>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="text-foreground-secondary text-lg animate-fade-in">
+        No posts found for this tag.
+      </p>
+    ) : (
+      <div class="space-y-12">
+        {posts.map((post: CollectionEntry<'posts'>, index: number) => (
+          <article class="group animate-fade-in" style={`animation-delay: ${index * 100}ms`}>
+            <a href={`/blog/${post.id}`} class="block">
+              <div class="flex items-baseline justify-between mb-2">
+                <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
+                  {post.data.pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </time>
+              </div>
+              <h2 class="font-display text-2xl md:text-3xl text-foreground group-hover:text-foreground-secondary transition-colors duration-200 leading-tight">
+                {post.data.title}
+              </h2>
+              {post.data.description && (
+                <p class="text-foreground-secondary mt-2 text-base leading-relaxed font-sans">
+                  {post.data.description}
+                </p>
+              )}
+            </a>
+          </article>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-16 pt-8 border-t border-background-elevated animate-fade-in">
+      <a
+        href="/tags"
+        class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"
+      >
+        ← All tags
+      </a>
+    </div>
+  </main>
+</BaseLayout>
