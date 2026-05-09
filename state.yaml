@@ -1,3 +1,34 @@
 version: 1
-last_updated: null
-features: {}
+last_updated: '2026-05-09T14:40:06+08:00'
+features:
+  feat_add_tag_list:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-09T14:37:54+08:00'
+        notes: Created src/utils/tags.ts with getAllTags, getPostsByTag, getTagCounts + unit tests. All 8 tests passing.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-09T14:38:00+08:00'
+        notes: Created src/pages/tags/index.astro with alphabetical tag listing, post counts, and responsive styling.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-09T14:38:30+08:00'
+        notes: Created src/pages/tags/[tag].astro with getStaticPaths, filtered post list sorted by date, back link.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-09T14:38:45+08:00'
+        notes: Updated src/pages/blog/[slug].astro to render tags as clickable links with aria-labels.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-09T14:39:00+08:00'
+        notes: Updated src/pages/blog.astro to render primary tag as clickable link, avoiding nested anchors.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-09T14:37:54+08:00'
+        notes: Covered by tests in src/utils/__tests__/tags.test.ts (8 tests passing).
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-09T14:40:06+08:00'
+        notes: Full build passed — astro check (0 errors, 0 warnings, 0 hints) + astro build (7 pages, including /tags, /tags/ai, /tags/vim).
