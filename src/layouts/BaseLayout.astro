@@ -1,12 +1,14 @@
 ---
 import '../styles/global.css';
+import Logo from '../components/Logo.astro';
 
 interface Props {
   title: string;
   description?: string;
+  showLogo?: boolean;
 }
 
-const { title, description = "Ken's personal blog" } = Astro.props;
+const { title, description = "Ken's personal blog", showLogo = true } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -23,6 +25,13 @@ const { title, description = "Ken's personal blog" } = Astro.props;
   <title>{title}</title>
 </head>
 <body class="bg-background text-foreground antialiased">
+  {showLogo && (
+    <header class="w-full">
+      <div class="max-w-3xl mx-auto px-6 py-4 flex justify-start">
+        <Logo />
+      </div>
+    </header>
+  )}
   <slot />
 </body>
 </html>

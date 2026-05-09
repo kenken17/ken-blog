@@ -9,7 +9,7 @@ const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: bool
 const posts = allPosts.slice(0, 5);
 ---
 
-<BaseLayout title="Ken's Blog">
+<BaseLayout title="Ken's Blog" showLogo={false}>
   <main>
     <!-- Hero / Intro -->
     <section class="min-h-[70vh] flex flex-col items-center justify-center px-6 py-20">
