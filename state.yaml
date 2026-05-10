@@ -79,3 +79,18 @@ features:
         status: done
         completed_at: '2026-05-09T15:40:00+08:00'
         notes: Build exits 0. astro check 0 errors/warnings/hints. dist/search-index.json present (216 bytes). 7 pages built.
+  feat_add_github_linkedin:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-10T14:12:00+08:00'
+        notes: Created src/components/SocialLinks.astro with inline SVG GitHub and LinkedIn icons, Tailwind styling, accessibility attributes. No external dependencies.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-10T14:12:00+08:00'
+        notes: Integrated SocialLinks into src/pages/index.astro below tagline with mt-6 spacing. Layout centered and responsive.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-10T14:12:00+08:00'
+        notes: All accessibility criteria verified — target=_blank, rel=noopener noreferrer, aria-labels, focus-visible rings, hover transitions. astro check 0 errors/warnings/hints. astro build 7 pages complete. Added E2E test in e2e/homepage.spec.ts covering social link visibility, hrefs, and attributes. 3/3 Chromium tests passing.

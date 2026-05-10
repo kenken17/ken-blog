@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 
 const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -12,7 +13,7 @@ const posts = allPosts.slice(0, 5);
 <BaseLayout title="Ken's Blog" showLogo={false}>
   <main>
     <!-- Hero / Intro -->
-    <section class="min-h-[70vh] flex flex-col items-center justify-center px-6 py-20">
+    <section class="min-h-[50vh] flex flex-col items-center justify-center px-6 py-12">
       <div class="max-w-5xl w-full text-center animate-fade-in">
         <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-6 font-sans font-medium">
           Software Engineer & Designer
@@ -24,6 +25,9 @@ const posts = allPosts.slice(0, 5);
         <p class="text-xl md:text-2xl text-foreground-secondary max-w-2xl mx-auto leading-relaxed font-sans font-light">
           A place for thoughts on engineering, design, and technology.
         </p>
+        <div class="mt-2">
+          <SocialLinks />
+        </div>
       </div>
     </section>
 
