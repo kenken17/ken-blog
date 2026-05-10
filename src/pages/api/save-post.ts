@@ -3,6 +3,13 @@ import fs from 'fs';
 import path from 'path';
 
 export const POST: APIRoute = async ({ request }) => {
+  if (import.meta.env.PROD) {
+    return new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const { filename, content } = await request.json();
 
