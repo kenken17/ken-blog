@@ -11,3 +11,7 @@ features:
     name: feat_add_search_bar
     file: feat_add_search_bar.yaml
     status: completed
+  - id: F-4
+    name: feat_add_github_linkedin
+    file: feat_add_github_linkedin.yaml
+    status: queued

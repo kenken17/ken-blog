@@ -1,0 +1,23 @@
+id: feat_add_github_linkedin
+name: Add GitHub and LinkedIn Links to landing page under the tagline
+description: Add GitHub and LinkedIn links to the landing page under the tagline to increase visibility and accessibility of my social media profiles.
+business_goal: Increase visibility and accessibility of my social media profiles to attract more followers and potential collaborators.
+scope:
+  in_scope:
+    - Add GitHub and LinkedIn icons with links to the landing page under the tagline.
+    - Ensure the Github links to https://github.com/kenken17
+    - Ensure the LinkedIn links to https://www.linkedin.com/in/tze-ken-lee/
+  out_scope:
+    - Adding links to other social media platforms.
+    - Redesigning the landing page layout.
+constraints:
+  - The icons should be visually appealing and consistent with the overall design of the landing page.
+  - The links should open in a new tab to avoid navigating away from the landing page.
+success_criteria:
+  - GitHub and LinkedIn icons are added to the landing page under the tagline.
+  - The icons are visually appealing and consistent with the overall design of the landing page.
+  - The links open in a new tab when clicked.
+  - The links are opened correctly and lead to the respective GitHub and LinkedIn profiles.
+metrics:
+priority: P1
+complexity: Low
