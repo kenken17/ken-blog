@@ -1,5 +1,15 @@
 [
   {
+    "slug": "my-ai-era",
+    "title": "My AI era...",
+    "description": "",
+    "tags": [
+      "ai",
+      "random"
+    ],
+    "pubDate": "2026-05-10"
+  },
+  {
     "slug": "trying-gemini-free-tier-on-avante-nvim",
     "title": "Trying Gemini free tier on Avante.nvim",
     "description": "",

@@ -30,7 +30,39 @@
     @apply prose-a:text-foreground hover:prose-a:text-foreground-secondary;
     @apply prose-strong:text-foreground;
     @apply prose-code:text-foreground prose-pre:bg-background-elevated;
-    @apply prose-blockquote:border-l-foreground;
+    @apply prose-blockquote:border-l-0;
+  }
+
+  .prose-light blockquote {
+    text-align: center;
+    font-style: italic;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    border-top: 1px solid #E4E4E7;
+    border-bottom: 1px solid #E4E4E7;
+  }
+
+  .prose-light blockquote p {
+    color: #3F3F46;
+  }
+
+  .prose-light blockquote p:last-child {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-style: normal;
+    color: #71717A;
+  }
+
+  .prose-light blockquote p:first-child::before {
+    content: none;
+  }
+
+  .prose-light blockquote p:last-child::after {
+    content: none;
+  }
+
+  .prose-light blockquote p:last-child::before {
+    content: '— ';
   }
 
   .prose-light img {
