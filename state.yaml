@@ -1,6 +1,25 @@
 version: 1
 last_updated: '2026-05-09T15:40:00+08:00'
 features:
+  feat_add_logo:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-09T04:23:00+08:00'
+        notes: Created src/components/Logo.astro with text logo "KEN'S BLOG" as clickable homepage link using Barlow Condensed font. Pure text, no image assets.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-09T04:23:00+08:00'
+        notes: Integrated Logo into BaseLayout.astro header with semantic <header> landmark, max-w-3xl mx-auto px-6 py-8 spacing. Logo appears on all pages.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-09T04:23:00+08:00'
+        notes: Verified responsive behavior across viewports (320px, 768px, 1024px, 1440px). No overflow, truncation, or layout issues.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-09T04:23:00+08:00'
+        notes: Lighthouse audit confirms no performance regression. Plain text only, no new network requests. Accessibility scores maintained.
   feat_add_tag_list:
     status: completed
     tasks:

@@ -2,16 +2,25 @@ features:
   - id: F-1
     name: feat_add_logo
     file: feat_add_logo.yaml
+    priority: P1
     status: completed
   - id: F-2
     name: feat_add_tag_list
     file: feat_add_tag_list.yaml
+    priority: P1
     status: completed
   - id: F-3
     name: feat_add_search_bar
     file: feat_add_search_bar.yaml
+    priority: P1
     status: completed
   - id: F-4
     name: feat_add_github_linkedin
     file: feat_add_github_linkedin.yaml
+    priority: P1
+    status: completed
+  - id: F-5
+    name: feat_add_comment_section
+    file: feat_add_comment_section.yaml
+    priority: P1
     status: queued

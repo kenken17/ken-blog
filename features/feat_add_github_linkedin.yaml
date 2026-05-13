@@ -20,4 +20,3 @@ success_criteria:
   - The links are opened correctly and lead to the respective GitHub and LinkedIn profiles.
 metrics:
 priority: P1
-complexity: Low

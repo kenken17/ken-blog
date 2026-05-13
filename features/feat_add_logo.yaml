@@ -22,4 +22,3 @@ success_criteria:
 metrics:
   - page load time before and after logo implementation
 priority: P1
-complexity: Low

@@ -23,4 +23,3 @@ success_criteria:
   - no significant increase in page load times after implementation
 metrics:
 priority: P1
-complexity: Low
