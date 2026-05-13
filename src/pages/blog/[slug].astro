@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Comments from '../../components/Comments.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -58,6 +59,8 @@ const { Content } = await render(post);
       <div class="prose-light">
         <Content />
       </div>
+
+      <Comments slug={post.id} />
 
       <footer class="mt-16 pt-8 border-t border-background-elevated">
         <a

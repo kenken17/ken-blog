@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-09T15:40:00+08:00'
+last_updated: '2026-05-14T00:23:50+08:00'
 features:
   feat_add_logo:
     status: completed
@@ -98,6 +98,37 @@ features:
         status: done
         completed_at: '2026-05-09T15:40:00+08:00'
         notes: Build exits 0. astro check 0 errors/warnings/hints. dist/search-index.json present (216 bytes). 7 pages built.
+  feat_add_comment_section:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Created src/config/giscus.ts with typed GiscusConfig interface and giscusConfig object. All 9 fields exported with correct values.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Created src/components/Comments.astro with optional slug prop, section heading, giscus mount target, and inline script that dynamically injects Giscus with lazy loading and try/catch error handling.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Integrated Comments component into src/pages/blog/[slug].astro between prose content and footer. Added visual separator classes mt-16 pt-8 border-t border-background-elevated.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Verified responsive design — component uses max-w-3xl content width, font-display heading, and border-t separator matching existing footer style. No overflow on mobile.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: astro check passed with 0 errors, 0 warnings, 0 hints. astro build produced 9 static pages. data-loading="lazy" on Giscus script. No new npm dependencies. output: 'static' unchanged.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Created src/config/__tests__/giscus.test.ts with 4 tests verifying all required fields, theme='light', mapping='pathname', lang='en'. All passing.
+      TASK-3-TEST-2:
+        status: done
+        completed_at: '2026-05-14T00:23:50+08:00'
+        notes: Created tests/features/feat_add_comment_section/story-1.test.ts with 5 tests using @astrojs/compiler to verify component structure, script src, lazy loading, and slug prop handling. All passing.
   feat_add_github_linkedin:
     status: completed
     tasks:

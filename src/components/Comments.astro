@@ -1,0 +1,42 @@
+---
+import { giscusConfig } from '../config/giscus.ts';
+
+interface Props {
+  slug?: string;
+}
+
+const { slug } = Astro.props;
+const term = slug ?? Astro.url.pathname;
+---
+
+<section class="mt-16 pt-8 border-t border-background-elevated">
+  <h2 class="font-display text-2xl text-foreground-muted mb-6">Comments</h2>
+  <div id="giscus"></div>
+</section>
+
+<script is:inline define:vars={{ giscusConfig, term }}>
+  try {
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', giscusConfig.repo);
+    script.setAttribute('data-repo-id', giscusConfig.repoId);
+    script.setAttribute('data-category', giscusConfig.category);
+    script.setAttribute('data-category-id', giscusConfig.categoryId);
+    script.setAttribute('data-mapping', giscusConfig.mapping);
+    script.setAttribute('data-term', term);
+    script.setAttribute('data-theme', giscusConfig.theme);
+    script.setAttribute('data-lang', giscusConfig.lang);
+    script.setAttribute('data-reactions-enabled', giscusConfig.reactionsEnabled);
+    script.setAttribute('data-emit-metadata', giscusConfig.emitMetadata);
+    script.setAttribute('data-loading', 'lazy');
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+
+    const container = document.getElementById('giscus');
+    if (container) {
+      container.appendChild(script);
+    }
+  } catch (error) {
+    console.error('Failed to load Giscus comments:', error);
+  }
+</script>
