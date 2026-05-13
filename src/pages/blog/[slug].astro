@@ -21,9 +21,9 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={`${post.data.title} | Ken's Blog`} description={post.data.description}>
-  <main class="max-w-3xl mx-auto px-6 py-24">
+  <main class="max-w-4xl mx-auto px-6 py-24">
     <article class="animate-fade-in">
-      <header class="mb-12">
+      <header class="mb-12 max-w-prose">
         <div class="flex items-baseline justify-between mb-4">
           <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
             {post.data.pubDate.toLocaleDateString('en-US', {
@@ -60,9 +60,11 @@ const { Content } = await render(post);
         <Content />
       </div>
 
-      <Comments slug={post.id} />
+      <div class="max-w-prose">
+        <Comments slug={post.id} />
+      </div>
 
-      <footer class="mt-16 pt-8 border-t border-background-elevated">
+      <footer class="mt-16 pt-8 border-t border-background-elevated max-w-prose">
         <a
           href="/blog"
           class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"

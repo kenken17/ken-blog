@@ -8,10 +8,12 @@ describe('giscusConfig', () => {
     expect(giscusConfig).toHaveProperty('category');
     expect(giscusConfig).toHaveProperty('categoryId');
     expect(giscusConfig).toHaveProperty('mapping');
+    expect(giscusConfig).toHaveProperty('strict');
     expect(giscusConfig).toHaveProperty('theme');
     expect(giscusConfig).toHaveProperty('lang');
     expect(giscusConfig).toHaveProperty('reactionsEnabled');
     expect(giscusConfig).toHaveProperty('emitMetadata');
+    expect(giscusConfig).toHaveProperty('inputPosition');
   });
 
   it('has theme set to light', () => {
