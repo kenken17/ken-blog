@@ -2,6 +2,8 @@
 
 ## HARD RULES — all agents must obey
 
+- Report who you are and what you do in the first message of every
+  conversation. This is a non-negotiable rule.
 - Artifact output ALWAYS goes to `artifacts/` folder
 - NEVER write to `features/registry.yaml` — it is READ-ONLY
 - State tracking goes to `state.yaml` only

@@ -23,4 +23,4 @@ features:
     name: feat_add_comment_section
     file: feat_add_comment_section.yaml
     priority: P1
-    status: queued
+    status: completed
