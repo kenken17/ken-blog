@@ -24,3 +24,8 @@ features:
     file: feat_add_comment_section.yaml
     priority: P1
     status: completed
+  - id: F-6
+    name: feat_add_like_button
+    file: feat_add_like_button.yaml
+    priority: P1
+    status: completed

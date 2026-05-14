@@ -1,0 +1,84 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<button
+  class="like-button inline-flex items-center gap-1.5 text-foreground-muted hover:text-foreground transition-colors duration-200 font-sans text-sm cursor-pointer group"
+  data-slug={slug}
+  aria-label="View reactions and add your own via Giscus"
+  title="Click to open reactions in the comments section"
+  type="button"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    class="heart-icon transition-all duration-200 group-hover:scale-110"
+  >
+    <path
+      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+    ></path>
+  </svg>
+  <span class="like-count tabular-nums" aria-hidden="true">···</span>
+</button>
+
+<script>
+  import { fetchReactionCount } from '../utils/reactions.ts';
+
+  async function initLikeButton(button: HTMLButtonElement) {
+    const countEl = button.querySelector<HTMLSpanElement>('.like-count');
+    const heartIcon = button.querySelector<SVGSVGElement>('.heart-icon');
+    const slug = button.dataset.slug;
+
+    if (!countEl || !heartIcon || !slug) {
+      if (countEl) countEl.textContent = '';
+      return;
+    }
+
+    // Fetch initial count
+    try {
+      const count = await fetchReactionCount(slug);
+      countEl.textContent = count > 0 ? String(count) : '';
+    } catch {
+      countEl.textContent = '';
+    }
+
+    // Click handler – smooth-scroll to the Giscus reactions
+    button.addEventListener('click', () => {
+      const giscusSection = document.getElementById('giscus');
+      if (!giscusSection) return;
+
+      // Briefly fill the heart to acknowledge the click
+      const originalFill = heartIcon.getAttribute('fill');
+      heartIcon.setAttribute('fill', 'currentColor');
+      heartIcon.classList.add('scale-125');
+      setTimeout(() => {
+        heartIcon.setAttribute('fill', originalFill || 'none');
+        heartIcon.classList.remove('scale-125');
+      }, 300);
+
+      // Highlight the Giscus container
+      giscusSection.classList.add('ring-2', 'ring-foreground-muted', 'rounded-lg', 'transition-all');
+      setTimeout(() => {
+        giscusSection.classList.remove('ring-2', 'ring-foreground-muted', 'rounded-lg', 'transition-all');
+      }, 2000);
+
+      giscusSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLButtonElement>('.like-button')
+    .forEach(initLikeButton);
+</script>

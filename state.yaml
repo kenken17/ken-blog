@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-14T00:23:50+08:00'
+last_updated: '2026-05-14T22:16:00+08:00'
 features:
   feat_add_logo:
     status: completed
@@ -144,3 +144,26 @@ features:
         status: done
         completed_at: '2026-05-10T14:12:00+08:00'
         notes: All accessibility criteria verified — target=_blank, rel=noopener noreferrer, aria-labels, focus-visible rings, hover transitions. astro check 0 errors/warnings/hints. astro build 7 pages complete. Added E2E test in e2e/homepage.spec.ts covering social link visibility, hrefs, and attributes. 3/3 Chromium tests passing.
+  feat_add_like_button:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-14T22:11:00+08:00'
+        notes: Created src/utils/reactions.ts with fetchReactionCount. Queries GitHub GraphQL API for 👍 reactions, returns 0 on any error. No new dependencies.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-14T22:15:00+08:00'
+        notes: Created src/components/LikeButton.astro with heart SVG, count display, loading state, hover animation, and click handler that smooth-scrolls to Giscus comments.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-14T22:16:00+08:00'
+        notes: Integrated LikeButton into src/pages/blog/[slug].astro in the header row next to tags, passing post.id as slug prop.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-14T22:11:18+08:00'
+        notes: Created src/utils/__tests__/reactions.test.ts with 6 tests covering success, missing token, HTTP error, GraphQL errors, empty results, and network failure. All passing.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-14T22:11:25+08:00'
+        notes: Build passes — astro check 0 errors/warnings/hints, 9 pages built. LikeButton confirmed in dist output. All 41 tests passing.
