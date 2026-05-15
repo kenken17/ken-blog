@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-14T22:16:00+08:00'
+last_updated: '2026-05-16T01:03:00+08:00'
 features:
   feat_add_logo:
     status: completed
@@ -167,3 +167,26 @@ features:
         status: done
         completed_at: '2026-05-14T22:11:25+08:00'
         notes: Build passes — astro check 0 errors/warnings/hints, 9 pages built. LikeButton confirmed in dist output. All 41 tests passing.
+  feat_add_reading_time:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-16T01:03:00+08:00'
+        notes: Created src/utils/reading-time.ts with calculateReadingTime and WORDS_PER_MINUTE = 200. Strips markdown syntax before counting words, rounds up, minimum 1 minute.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-16T01:03:00+08:00'
+        notes: Created src/utils/__tests__/reading-time.test.ts with 9 tests covering normal content, empty string, single word, 200 words, 201 words, markdown stripping, very long content, and headings. All passing.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-16T01:03:00+08:00'
+        notes: Updated src/pages/blog/[slug].astro to display reading time next to date with · separator and muted text style.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-16T01:03:00+08:00'
+        notes: Updated src/pages/blog.astro to display reading time on each post card next to date with · separator and muted text style.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-16T01:03:00+08:00'
+        notes: Full build passed — astro check (0 errors, 0 warnings, 0 hints) + astro build (9 pages). All 50 tests passing.

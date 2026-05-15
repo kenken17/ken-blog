@@ -581,7 +581,7 @@
     // If no text selected, insert the URL as text
     const sel = window.getSelection();
     if (sel && sel.isCollapsed) {
-      getEditorDoc().execCommand('insertHTML', false, `<a href="${url}">${url}</a>`);
+      getEditorDoc().execCommand('insertHTML', false, `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
     } else {
       getEditorDoc().execCommand('createLink', false, url);
     }
