@@ -29,3 +29,8 @@ features:
     file: feat_add_like_button.yaml
     priority: P1
     status: completed
+  - id: F-7
+    name: feat_add_reading_time
+    file: feat_add_reading_time.yaml
+    priority: P1
+    status: queued
