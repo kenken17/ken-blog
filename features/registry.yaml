@@ -33,4 +33,9 @@ features:
     name: feat_add_reading_time
     file: feat_add_reading_time.yaml
     priority: P1
+    status: completed
+  - id: F-8
+    name: feat_add_rss_feed
+    file: feat_add_rss_feed.yaml
+    priority: P1
     status: queued
