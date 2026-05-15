@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-16T01:03:00+08:00'
+last_updated: '2026-05-16T12:00:00+08:00'
 features:
   feat_add_logo:
     status: completed
@@ -190,3 +190,26 @@ features:
         status: done
         completed_at: '2026-05-16T01:03:00+08:00'
         notes: Full build passed — astro check (0 errors, 0 warnings, 0 hints) + astro build (9 pages). All 50 tests passing.
+  feat_add_rss_feed:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-16T01:40:00+08:00'
+        notes: '@astrojs/rss already present in package.json at ^4.0.18. npm install verified.'
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-16T01:41:00+08:00'
+        notes: 'Created src/pages/rss.xml.ts with GET handler using @astrojs/rss. Fetches posts, filters drafts, sorts by pubDate desc, returns valid RSS 2.0 XML. Fixed type import (CollectionEntry from astro:content).'
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-16T01:41:00+08:00'
+        notes: 'RSS autodiscovery link already present in BaseLayout.astro <head>. Verified on all pages.'
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-16T01:42:00+08:00'
+        notes: 'Created tests/features/feat_add_rss_feed/story-4.test.ts with 5 tests covering channel metadata, draft exclusion, sorting, required fields, and empty description. All passing.'
+      TASK-3-TEST-2:
+        status: done
+        completed_at: '2026-05-16T01:43:00+08:00'
+        notes: 'Created e2e/features/feat_add_rss_feed/story-4.spec.ts with 4 Playwright tests. All pass on chromium (HTTP 200, valid structure, non-draft posts, autodiscovery link).'
