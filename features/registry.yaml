@@ -38,4 +38,4 @@ features:
     name: feat_add_rss_feed
     file: feat_add_rss_feed.yaml
     priority: P1
-    status: queued
+    status: completed
