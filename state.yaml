@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-16T14:00:00+08:00'
+last_updated: '2026-05-16T15:00:00+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -387,78 +387,4 @@ features:
         status: done
         completed_at: '2026-05-16T10:16:18+08:00'
         notes: 'Created e2e/features/feat_add_pwa_support/story-4.spec.ts with 2 Playwright tests verifying all PWA meta tags presence and manifest theme_color consistency. All passing on chromium.'
-  feat_add_dark_mode:
-    status: in-progress
-    tasks:
-      TASK-1-1:
-        status: pending
-        notes: 'Configure darkMode: class in tailwind.config.js and set up CSS custom properties for semantic color tokens'
-      TASK-1-2:
-        status: pending
-        notes: 'Add dark mode CSS custom properties and base styles in global.css with :root and .dark overrides'
-      TASK-1-3:
-        status: pending
-        notes: 'Update tailwind.config.js colors to reference CSS custom properties for automatic dark mode switching'
-      TASK-1-TEST-1:
-        status: pending
-        notes: 'Unit test for CSS custom property definitions and Tailwind config validation'
-      TASK-1-TEST-2:
-        status: pending
-        notes: 'E2E test for dark mode CSS foundation — verify custom properties switch when dark class toggled'
-      TASK-2-1:
-        status: pending
-        notes: 'Create src/utils/theme.ts with getStoredTheme, setStoredTheme, getSystemPreference, getEffectiveTheme, applyTheme, toggleTheme'
-      TASK-2-2:
-        status: pending
-        notes: 'Create ThemeToggle.astro component with sun/moon icons and inline script for toggle behavior'
-      TASK-2-3:
-        status: pending
-        notes: 'Add FOUC-prevention inline script to BaseLayout.astro head section'
-      TASK-2-4:
-        status: pending
-        notes: 'Integrate ThemeToggle into BaseLayout header next to SearchBar'
-      TASK-2-TEST-1:
-        status: pending
-        notes: 'Unit tests for theme utility module (localStorage, matchMedia, class toggling)'
-      TASK-2-TEST-2:
-        status: pending
-        notes: 'E2E tests for toggle visibility, click behavior, persistence, system preference, FOUC prevention'
-      TASK-3-1:
-        status: pending
-        notes: 'Add dark mode styles to BaseLayout and global elements (selection, transitions)'
-      TASK-3-2:
-        status: pending
-        notes: 'Add dark mode styles to all page templates (index, blog, blog/[slug], tags, admin/write)'
-      TASK-3-3:
-        status: pending
-        notes: 'Add dark mode styles to all components (Logo, SearchBar, SocialLinks, LikeButton, Editor)'
-      TASK-3-4:
-        status: pending
-        notes: 'Add dark prose styling for article content in global.css (.dark .prose-light overrides)'
-      TASK-3-TEST-1:
-        status: pending
-        notes: 'E2E test for dark mode visual correctness across all pages and components'
-      TASK-4-1:
-        status: pending
-        notes: 'Update Giscus theme dynamically based on dark mode state via postMessage'
-      TASK-4-2:
-        status: pending
-        notes: 'Update theme-color meta tag and apple-mobile-web-app-status-bar-style dynamically'
-      TASK-4-3:
-        status: pending
-        notes: 'Add dark mode support to offline.html with FOUC-prevention script'
-      TASK-4-4:
-        status: pending
-        notes: 'Verify service worker caches theme-related assets correctly for offline dark mode'
-      TASK-4-TEST-1:
-        status: pending
-        notes: 'E2E test for Giscus theme switching, theme-color meta updates, and offline page dark mode'
-      TASK-5-TEST-1:
-        status: pending
-        notes: 'Comprehensive unit tests for theme utility module (all functions, edge cases, >80% coverage)'
-      TASK-5-TEST-2:
-        status: pending
-        notes: 'E2E integration test for full dark mode flow (fresh visit, toggle, persistence, navigation, accessibility)'
-      TASK-5-TEST-3:
-        status: pending
-        notes: 'Build verification — astro check + astro build with zero errors'
+

@@ -48,4 +48,4 @@ features:
     name: feat_add_dark_mode
     file: feat_add_dark_mode.yaml
     priority: P1
-    status: in-progress
+    status: completed
