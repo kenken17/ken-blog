@@ -49,3 +49,8 @@ features:
     file: feat_add_dark_mode.yaml
     priority: P1
     status: completed
+  - id: F-10
+    name: feat_add_seo_optimization
+    file: feat_add_seo_optimization.yaml
+    priority: P1
+    status: queued
