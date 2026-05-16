@@ -1,6 +1,105 @@
 version: 1
-last_updated: '2026-05-16T12:00:00+08:00'
+last_updated: '2026-05-16T14:00:00+08:00'
 features:
+  feat_add_dark_mode:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Added darkMode: 'class' to tailwind.config.js. Config parses without errors.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Added CSS custom properties for all 8 semantic colors on :root and .dark in global.css. Added smooth transitions and prose-dark overrides.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Updated tailwind.config.js colors to reference CSS custom properties. All existing bg-background, text-foreground, etc. classes now switch automatically.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created src/utils/theme.ts with getStoredTheme, setStoredTheme, getSystemPreference, getEffectiveTheme, applyTheme, toggleTheme, initTheme.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created src/components/ThemeToggle.astro with sun/moon SVG icons, vanilla JS island, aria-label, keyboard accessible button.
+      TASK-2-3:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Added inline FOUC-prevention script in BaseLayout head that runs before paint, sets dark class and theme-color meta.
+      TASK-2-4:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Integrated ThemeToggle into BaseLayout header next to SearchBar. Responsive layout maintained.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: BaseLayout uses CSS variable-based colors. No hardcoded light-only colors remain. Selection colors adapt to theme.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: All page templates verified — no hardcoded hex colors. prose-light class handles dark mode via CSS overrides.
+      TASK-3-3:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: All components updated. Editor.astro scoped styles now use CSS custom properties. SocialLinks, LikeButton, SearchBar use CSS vars.
+      TASK-3-4:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: prose-dark styling implemented via .dark .prose-light CSS overrides in global.css. Covers headings, paragraphs, links, code, blockquotes, images.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Comments.astro now detects theme on load and watches for class changes via MutationObserver to postMessage Giscus iframe.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: theme-color and apple-mobile-web-app-status-bar-style meta tags update dynamically via FOUC script and ThemeToggle.
+      TASK-4-3:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: offline.html includes FOUC-prevention script and CSS custom properties for dark mode.
+      TASK-4-4:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Service worker already caches offline.html and global.css. FOUC script is inline so cached with pages. No changes needed.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created tests/features/feat_add_dark_mode/story-1.test.ts with assertions for CSS custom properties, Tailwind config, and transitions.
+      TASK-1-TEST-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created e2e/features/feat_add_dark_mode/story-1.spec.ts with tests for transitions, default light background, and dark class toggling.
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created tests/features/feat_add_dark_mode/story-2.test.ts with comprehensive unit tests for all theme utility functions.
+      TASK-2-TEST-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created e2e/features/feat_add_dark_mode/story-2.spec.ts with E2E tests for toggle visibility, theme switching, persistence, and FOUC prevention.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created e2e/features/feat_add_dark_mode/story-3.spec.ts with visual correctness tests for all pages and components in dark mode.
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created e2e/features/feat_add_dark_mode/story-4.spec.ts with tests for theme-color meta tag, apple status bar style, and offline page dark mode.
+      TASK-5-TEST-1:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created tests/features/feat_add_dark_mode/story-5.test.ts with edge case tests for corrupted localStorage, missing matchMedia, and undefined document.
+      TASK-5-TEST-2:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: Created e2e/features/feat_add_dark_mode/story-5.spec.ts with full integration flow tests covering fresh visits, toggling, navigation, and keyboard accessibility.
+      TASK-5-TEST-3:
+        status: done
+        completed_at: '2026-05-16T14:00:00+08:00'
+        notes: astro check reports 0 errors, 0 warnings, 0 hints. astro build completes successfully with 9 pages. All 113 unit tests pass. All 52 Chromium E2E tests pass.
   feat_add_logo:
     status: completed
     tasks:
@@ -288,3 +387,78 @@ features:
         status: done
         completed_at: '2026-05-16T10:16:18+08:00'
         notes: 'Created e2e/features/feat_add_pwa_support/story-4.spec.ts with 2 Playwright tests verifying all PWA meta tags presence and manifest theme_color consistency. All passing on chromium.'
+  feat_add_dark_mode:
+    status: in-progress
+    tasks:
+      TASK-1-1:
+        status: pending
+        notes: 'Configure darkMode: class in tailwind.config.js and set up CSS custom properties for semantic color tokens'
+      TASK-1-2:
+        status: pending
+        notes: 'Add dark mode CSS custom properties and base styles in global.css with :root and .dark overrides'
+      TASK-1-3:
+        status: pending
+        notes: 'Update tailwind.config.js colors to reference CSS custom properties for automatic dark mode switching'
+      TASK-1-TEST-1:
+        status: pending
+        notes: 'Unit test for CSS custom property definitions and Tailwind config validation'
+      TASK-1-TEST-2:
+        status: pending
+        notes: 'E2E test for dark mode CSS foundation — verify custom properties switch when dark class toggled'
+      TASK-2-1:
+        status: pending
+        notes: 'Create src/utils/theme.ts with getStoredTheme, setStoredTheme, getSystemPreference, getEffectiveTheme, applyTheme, toggleTheme'
+      TASK-2-2:
+        status: pending
+        notes: 'Create ThemeToggle.astro component with sun/moon icons and inline script for toggle behavior'
+      TASK-2-3:
+        status: pending
+        notes: 'Add FOUC-prevention inline script to BaseLayout.astro head section'
+      TASK-2-4:
+        status: pending
+        notes: 'Integrate ThemeToggle into BaseLayout header next to SearchBar'
+      TASK-2-TEST-1:
+        status: pending
+        notes: 'Unit tests for theme utility module (localStorage, matchMedia, class toggling)'
+      TASK-2-TEST-2:
+        status: pending
+        notes: 'E2E tests for toggle visibility, click behavior, persistence, system preference, FOUC prevention'
+      TASK-3-1:
+        status: pending
+        notes: 'Add dark mode styles to BaseLayout and global elements (selection, transitions)'
+      TASK-3-2:
+        status: pending
+        notes: 'Add dark mode styles to all page templates (index, blog, blog/[slug], tags, admin/write)'
+      TASK-3-3:
+        status: pending
+        notes: 'Add dark mode styles to all components (Logo, SearchBar, SocialLinks, LikeButton, Editor)'
+      TASK-3-4:
+        status: pending
+        notes: 'Add dark prose styling for article content in global.css (.dark .prose-light overrides)'
+      TASK-3-TEST-1:
+        status: pending
+        notes: 'E2E test for dark mode visual correctness across all pages and components'
+      TASK-4-1:
+        status: pending
+        notes: 'Update Giscus theme dynamically based on dark mode state via postMessage'
+      TASK-4-2:
+        status: pending
+        notes: 'Update theme-color meta tag and apple-mobile-web-app-status-bar-style dynamically'
+      TASK-4-3:
+        status: pending
+        notes: 'Add dark mode support to offline.html with FOUC-prevention script'
+      TASK-4-4:
+        status: pending
+        notes: 'Verify service worker caches theme-related assets correctly for offline dark mode'
+      TASK-4-TEST-1:
+        status: pending
+        notes: 'E2E test for Giscus theme switching, theme-color meta updates, and offline page dark mode'
+      TASK-5-TEST-1:
+        status: pending
+        notes: 'Comprehensive unit tests for theme utility module (all functions, edge cases, >80% coverage)'
+      TASK-5-TEST-2:
+        status: pending
+        notes: 'E2E integration test for full dark mode flow (fresh visit, toggle, persistence, navigation, accessibility)'
+      TASK-5-TEST-3:
+        status: pending
+        notes: 'Build verification — astro check + astro build with zero errors'

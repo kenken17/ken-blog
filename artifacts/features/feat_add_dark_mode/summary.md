@@ -1,0 +1,9 @@
+# Feature: Add Dark Mode — Summary
+
+| Story | One-liner | Acceptance criteria |
+|--------|-----------|---------------------|
+| Story 1: Tailwind Dark Mode Configuration & CSS Foundation | Configure `darkMode: 'class'` and CSS custom properties so all semantic color tokens switch automatically when the `dark` class is toggled | Tailwind config has `darkMode: 'class'`; CSS custom properties defined for all 8 semantic colors with `.dark` overrides; `prose-dark` class exists; smooth transitions |
+| Story 2: Theme Toggle Component & Persistence | Create a sun/moon toggle button in the header that persists preference in localStorage and respects system `prefers-color-scheme`, with FOUC prevention | Toggle renders in header; click switches theme; localStorage persists; system preference respected; FOUC-prevention script in `<head>`; keyboard accessible |
+| Story 3: Dark Mode Styling for Pages & Components | Add dark mode styles to all pages and components so everything renders correctly in both themes | All pages and components render with proper contrast in dark mode; no hardcoded light-only colors; prose content readable; interactive states visible |
+| Story 4: Dynamic Theme Integration (Giscus, PWA, Meta) | Make Giscus comments, theme-color meta tag, and offline page respond to dark mode dynamically | Giscus switches theme on toggle; theme-color meta updates; offline page supports dark mode; service worker caches theme assets |
+| Story 5: Testing | Comprehensive unit and E2E tests for theme utilities, toggle behavior, persistence, and visual correctness | Unit tests cover all theme utility functions (>80% coverage); E2E tests cover toggle, persistence, system preference, FOUC prevention, and visual correctness across pages; build passes with zero errors |

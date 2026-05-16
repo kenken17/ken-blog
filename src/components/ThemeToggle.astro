@@ -1,0 +1,130 @@
+---
+// ThemeToggle.astro — vanilla JS island, no framework dependency
+---
+
+<button
+  type="button"
+  aria-label="Toggle dark mode"
+  data-theme-toggle
+  class="p-2 text-foreground-secondary hover:text-foreground transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none rounded-sm"
+>
+  <!-- Sun icon (visible in dark mode) -->
+  <svg
+    data-sun-icon
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2" />
+    <path d="M12 20v2" />
+    <path d="m4.93 4.93 1.41 1.41" />
+    <path d="m17.66 17.66 1.41 1.41" />
+    <path d="M2 12h2" />
+    <path d="M20 12h2" />
+    <path d="m6.34 17.66-1.41 1.41" />
+    <path d="m19.07 4.93-1.41 1.41" />
+  </svg>
+
+  <!-- Moon icon (visible in light mode) -->
+  <svg
+    data-moon-icon
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class=""
+    aria-hidden="true"
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </svg>
+</button>
+
+<script>
+  import { toggleTheme, initTheme } from '../utils/theme.ts';
+
+  function updateIcons(theme: 'light' | 'dark') {
+    const sun = document.querySelector<SVGSVGElement>('[data-sun-icon]');
+    const moon = document.querySelector<SVGSVGElement>('[data-moon-icon]');
+    if (!sun || !moon) return;
+
+    if (theme === 'dark') {
+      sun.classList.remove('hidden');
+      moon.classList.add('hidden');
+    } else {
+      sun.classList.add('hidden');
+      moon.classList.remove('hidden');
+    }
+  }
+
+  function updateThemeColorMeta(theme: 'light' | 'dark') {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (meta) {
+      meta.content = theme === 'dark' ? '#09090B' : '#FAFAFA';
+    }
+    const appleMeta = document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleMeta) {
+      appleMeta.content = theme === 'dark' ? 'black-translucent' : 'default';
+    }
+  }
+
+  function updateGiscusTheme(theme: 'light' | 'dark') {
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow?.postMessage(
+      { giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } } },
+      'https://giscus.app'
+    );
+  }
+
+  function onThemeChange(theme: 'light' | 'dark') {
+    updateIcons(theme);
+    updateThemeColorMeta(theme);
+    updateGiscusTheme(theme);
+  }
+
+  // Initialize on mount
+  const initialTheme = initTheme();
+  onThemeChange(initialTheme);
+
+  // Listen for system preference changes when no stored preference
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  mediaQuery.addEventListener('change', (event) => {
+    try {
+      const hasStored = localStorage.getItem('theme');
+      if (hasStored) return;
+      const newTheme = event.matches ? 'dark' : 'light';
+      const root = document.documentElement;
+      if (newTheme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+      onThemeChange(newTheme);
+    } catch {
+      return;
+    }
+  });
+
+  // Toggle button click handler
+  const toggleBtn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const newTheme = toggleTheme();
+      onThemeChange(newTheme);
+    });
+  }
+</script>

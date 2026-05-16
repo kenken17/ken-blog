@@ -231,27 +231,26 @@
 </div>
 
 <style>
-  /* Scoped styles for contenteditable behavior */
   #content-input h2 {
     font-family: 'Barlow Condensed', system-ui, sans-serif;
     font-size: 1.75rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: #09090B;
+    color: var(--color-foreground);
     margin: 2rem 0 1rem 0;
     line-height: 1.2;
   }
 
   #content-input blockquote {
-    border-left: 3px solid #09090B;
+    border-left: 3px solid var(--color-foreground);
     padding-left: 1.25rem;
     margin: 1.5rem 0;
-    color: #3F3F46;
+    color: var(--color-foreground-secondary);
     font-style: italic;
   }
 
   #content-input a {
-    color: #09090B;
+    color: var(--color-foreground);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
@@ -259,11 +258,11 @@
   }
 
   #content-input a:hover {
-    color: #3F3F46;
+    color: var(--color-foreground-secondary);
   }
 
   #content-input strong {
-    color: #09090B;
+    color: var(--color-foreground);
     font-weight: 600;
   }
 
@@ -278,28 +277,24 @@
     margin: 1.5rem 0;
   }
 
-  /* Toolbar active state */
   .toolbar-btn.active {
-    color: #09090B;
-    background-color: #E4E4E7;
+    color: var(--color-foreground);
+    background-color: var(--color-background-hover);
   }
 
-  /* Draft item hover */
   .draft-item {
     transition: background-color 0.15s ease;
   }
 
   .draft-item:hover {
-    background-color: #F4F4F5;
+    background-color: var(--color-background-elevated);
   }
 
-  /* Focus styles */
   #title-input:focus,
   #content-input:focus {
     outline: none;
   }
 
-  /* Smooth placeholder transitions */
   [contenteditable]:empty:before {
     opacity: 0.4;
     pointer-events: none;

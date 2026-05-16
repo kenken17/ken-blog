@@ -1,20 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
       colors: {
         background: {
-          DEFAULT: '#FAFAFA',
-          surface: '#FFFFFF',
-          elevated: '#F4F4F5',
-          hover: '#E4E4E7',
+          DEFAULT: 'var(--color-background)',
+          surface: 'var(--color-background-surface)',
+          elevated: 'var(--color-background-elevated)',
+          hover: 'var(--color-background-hover)',
         },
         foreground: {
-          DEFAULT: '#09090B',
-          secondary: '#3F3F46',
-          muted: '#A1A1AA',
-          inverse: '#FAFAFA',
+          DEFAULT: 'var(--color-foreground)',
+          secondary: 'var(--color-foreground-secondary)',
+          muted: 'var(--color-foreground-muted)',
+          inverse: 'var(--color-foreground-inverse)',
         },
       },
       fontFamily: {
