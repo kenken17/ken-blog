@@ -7,7 +7,7 @@ features:
       TASK-1-1:
         status: done
         completed_at: '2026-05-16T14:00:00+08:00'
-        notes: Added darkMode: 'class' to tailwind.config.js. Config parses without errors.
+        notes: Added darkMode 'class' to tailwind.config.js. Config parses without errors.
       TASK-1-2:
         status: done
         completed_at: '2026-05-16T14:00:00+08:00'
@@ -219,7 +219,7 @@ features:
       TASK-3-1:
         status: done
         completed_at: '2026-05-14T00:23:50+08:00'
-        notes: astro check passed with 0 errors, 0 warnings, 0 hints. astro build produced 9 static pages. data-loading="lazy" on Giscus script. No new npm dependencies. output: 'static' unchanged.
+        notes: "astro check passed with 0 errors, 0 warnings, 0 hints. astro build produced 9 static pages. data-loading=\"lazy\" on Giscus script. No new npm dependencies. output: 'static' unchanged."
       TASK-3-TEST-1:
         status: done
         completed_at: '2026-05-14T00:23:50+08:00'
@@ -354,7 +354,7 @@ features:
       TASK-3-1:
         status: done
         completed_at: '2026-05-16T10:16:18+08:00'
-        notes: 'Created public/offline.html with inline styles matching blog design, "You\'re Offline" heading, explanatory message, and Try Again button. Fully self-contained with no external dependencies.'
+        notes: "Created public/offline.html with inline styles matching blog design, \"You're Offline\" heading, explanatory message, and Try Again button. Fully self-contained with no external dependencies."
       TASK-3-2:
         status: done
         completed_at: '2026-05-16T10:16:18+08:00'
@@ -387,4 +387,3 @@ features:
         status: done
         completed_at: '2026-05-16T10:16:18+08:00'
         notes: 'Created e2e/features/feat_add_pwa_support/story-4.spec.ts with 2 Playwright tests verifying all PWA meta tags presence and manifest theme_color consistency. All passing on chromium.'
-
