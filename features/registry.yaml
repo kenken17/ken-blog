@@ -39,3 +39,13 @@ features:
     file: feat_add_rss_feed.yaml
     priority: P1
     status: completed
+  - id: F-9
+    name: feat_add_pwa_support
+    file: feat_add_pwa_support.yaml
+    priority: P1
+    status: queued
+  - id: F-10
+    name: feat_add_dark_mode
+    file: feat_add_dark_mode.yaml
+    priority: P1
+    status: queued
