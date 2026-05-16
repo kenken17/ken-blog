@@ -24,9 +24,9 @@ const readingTime = calculateReadingTime(post.body);
 ---
 
 <BaseLayout title={`${post.data.title} | Ken's Blog`} description={post.data.description}>
-  <main class="max-w-4xl mx-auto px-6 py-24">
+  <main class="max-w-3xl mx-auto px-6 py-24">
     <article class="animate-fade-in">
-      <header class="mb-12 max-w-prose">
+      <header class="mb-12">
         <div class="flex items-baseline justify-between mb-4">
           <div class="flex items-center gap-2">
             <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
@@ -70,11 +70,11 @@ const readingTime = calculateReadingTime(post.body);
         <Content />
       </div>
 
-      <div class="max-w-prose">
+      <div>
         <Comments slug={post.id} />
       </div>
 
-      <footer class="mt-16 pt-8 border-t border-background-elevated max-w-prose">
+      <footer class="mt-16 pt-8 border-t border-background-elevated">
         <a
           href="/blog"
           class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"

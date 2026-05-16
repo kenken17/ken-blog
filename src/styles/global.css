@@ -26,6 +26,7 @@
 @layer components {
   .prose-light {
     @apply prose;
+    @apply max-w-none;
     @apply prose-headings:text-foreground prose-p:text-foreground-secondary;
     @apply prose-a:text-foreground hover:prose-a:text-foreground-secondary;
     @apply prose-strong:text-foreground;
