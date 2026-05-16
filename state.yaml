@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-16T12:00:00+08:00'
+last_updated: '2026-05-16T10:20:00+08:00'
 features:
   feat_add_logo:
     status: completed
@@ -213,3 +213,78 @@ features:
         status: done
         completed_at: '2026-05-16T01:43:00+08:00'
         notes: 'Created e2e/features/feat_add_rss_feed/story-4.spec.ts with 4 Playwright tests. All pass on chromium (HTTP 200, valid structure, non-draft posts, autodiscovery link).'
+  feat_add_pwa_support:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created public/manifest.json with all required PWA manifest fields: name, short_name, start_url, display, background_color, theme_color, description, and icons array.'
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Added <link rel="manifest" href="/manifest.json" /> to src/layouts/BaseLayout.astro <head> section.'
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created tests/features/feat_add_pwa_support/story-1.test.ts with 6 tests covering valid JSON, required fields, display standalone, name/short_name, start_url, and color consistency. All passing.'
+      TASK-1-TEST-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created e2e/features/feat_add_pwa_support/story-1.spec.ts with 2 Playwright tests verifying manifest link in head and manifest.json accessibility/validity. All passing on chromium.'
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created scripts/generate-pwa-icons.ts using sharp to rasterize favicon.svg into 192x192, 512x512, 180x180 (Apple), and maskable 512x512 icons. Added generate-pwa-icons script to package.json. All icons generated successfully.'
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Updated public/manifest.json icons array with correct src, sizes, type, and purpose for all generated icons.'
+      TASK-2-3:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Added <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" /> to src/layouts/BaseLayout.astro <head> section.'
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created tests/features/feat_add_pwa_support/story-2.test.ts with 2 tests verifying icon file existence and manifest icon references. All passing.'
+      TASK-2-TEST-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created e2e/features/feat_add_pwa_support/story-2.spec.ts with 2 Playwright tests verifying Apple touch icon link and icon file accessibility. All passing on chromium.'
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created public/offline.html with inline styles matching blog design, "You\'re Offline" heading, explanatory message, and Try Again button. Fully self-contained with no external dependencies.'
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created public/sw.js with CACHE_VERSION constant, install/activate/fetch handlers. Network-first for navigation, cache-first for static assets, network-only for other requests. Does not cache POST or non-GET requests.'
+      TASK-3-3:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Added service worker registration script before </body> in src/layouts/BaseLayout.astro. Registers /sw.js on load for supported browsers.'
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created tests/features/feat_add_pwa_support/story-3.test.ts with 10 tests covering SW file existence, cache version, install/activate/fetch handlers, offline fallback reference, network-first strategy, cache-first strategy, and non-GET exclusion. All passing.'
+      TASK-3-TEST-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created e2e/features/feat_add_pwa_support/story-3.spec.ts with 3 Playwright tests verifying SW registration script presence, sw.js accessibility/validity, and offline.html accessibility. All passing on chromium.'
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Added apple-mobile-web-app-capable, apple-mobile-web-app-status-bar-style, and apple-mobile-web-app-title meta tags to src/layouts/BaseLayout.astro <head>. Verified existing theme-color matches manifest.'
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Verified manifest.json theme_color and background_color (#FAFAFA) match BaseLayout.astro meta theme-color tag.'
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created tests/features/feat_add_pwa_support/story-4.test.ts with 6 tests covering theme_color consistency, background_color, required meta tags, manifest link, Apple touch icon link, and SW registration. All passing.'
+      TASK-4-TEST-2:
+        status: done
+        completed_at: '2026-05-16T10:16:18+08:00'
+        notes: 'Created e2e/features/feat_add_pwa_support/story-4.spec.ts with 2 Playwright tests verifying all PWA meta tags presence and manifest theme_color consistency. All passing on chromium.'
