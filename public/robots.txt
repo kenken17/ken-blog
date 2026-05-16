@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ken-blog.pages.dev/sitemap-index.xml

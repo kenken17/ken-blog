@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, getPostsByTag } from '../../utils/tags';
+import { generateJsonLd } from '../../utils/seo';
 import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -23,9 +24,33 @@ const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: bool
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const posts = getPostsByTag(allPosts, tag);
+
+const jsonLd = [
+  generateJsonLd({
+    type: 'CollectionPage',
+    title: `Tag: ${tag}`,
+    description: `All posts tagged "${tag}" on Ken's blog.`,
+    canonicalPath: `/tags/${tag}`,
+  }),
+  generateJsonLd({
+    type: 'BreadcrumbList',
+    title: `Tag: ${tag}`,
+    breadcrumbs: [
+      { name: 'Home', url: '/' },
+      { name: 'Tags', url: '/tags' },
+      { name: tag, url: `/tags/${tag}` },
+    ],
+  }),
+];
 ---
 
-<BaseLayout title={`Tag: ${tag} | Ken's Blog`} description={`All posts tagged "${tag}" on Ken's blog.`}>
+<BaseLayout
+  title={`Tag: ${tag} | Ken's Blog`}
+  description={`All posts tagged "${tag}" on Ken's blog.`}
+  canonicalUrl={`/tags/${tag}`}
+  ogType="website"
+  jsonLd={jsonLd}
+>
   <main class="max-w-3xl mx-auto px-6 py-24">
     <div class="mb-16 animate-fade-in">
       <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, getTagCounts } from '../../utils/tags';
+import { generateJsonLd } from '../../utils/seo';
 import type { CollectionEntry } from 'astro:content';
 
 const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
@@ -9,9 +10,22 @@ const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean
 
 const tags = getAllTags(posts);
 const tagCounts = getTagCounts(posts);
+
+const jsonLd = generateJsonLd({
+  type: 'CollectionPage',
+  title: 'Tags',
+  description: 'Browse all topics covered on Ken\'s blog.',
+  canonicalPath: '/tags',
+});
 ---
 
-<BaseLayout title="Tags | Ken's Blog" description="Browse all topics covered on Ken's blog.">
+<BaseLayout
+  title="Tags | Ken's Blog"
+  description="Browse all topics covered on Ken's blog."
+  canonicalUrl="/tags"
+  ogType="website"
+  jsonLd={jsonLd}
+>
   <main class="max-w-3xl mx-auto px-6 py-24">
     <div class="mb-16 animate-fade-in">
       <p class="text-foreground-muted text-sm uppercase tracking-[0.3em] mb-4 font-sans font-medium">

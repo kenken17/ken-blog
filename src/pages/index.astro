@@ -3,14 +3,29 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SocialLinks from '../components/SocialLinks.astro';
+import { generateJsonLd } from '../utils/seo';
 
 const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const posts = allPosts.slice(0, 5);
+
+const jsonLd = generateJsonLd({
+  type: 'WebSite',
+  title: "Ken's Blog",
+  description: "A place for thoughts on engineering, design, and technology.",
+  canonicalPath: '/',
+});
 ---
 
-<BaseLayout title="Ken's Blog" showLogo={false}>
+<BaseLayout
+  title="Ken's Blog"
+  description="A place for thoughts on engineering, design, and technology."
+  showLogo={false}
+  canonicalUrl="/"
+  ogType="website"
+  jsonLd={jsonLd}
+>
   <main>
     <!-- Hero / Intro -->
     <section class="min-h-[50vh] flex flex-col items-center justify-center px-6 py-12">

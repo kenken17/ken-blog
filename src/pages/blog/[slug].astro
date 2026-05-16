@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Comments from '../../components/Comments.astro';
 import LikeButton from '../../components/LikeButton.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
+import { generateJsonLd } from '../../utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -21,9 +22,25 @@ interface Props {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = calculateReadingTime(post.body);
+
+const jsonLd = generateJsonLd({
+  type: 'Article',
+  title: post.data.title,
+  description: post.data.description,
+  canonicalPath: `/blog/${post.id}`,
+  pubDate: post.data.pubDate.toISOString(),
+  updatedDate: post.data.updatedDate?.toISOString(),
+  tags: post.data.tags,
+});
 ---
 
-<BaseLayout title={`${post.data.title} | Ken's Blog`} description={post.data.description}>
+<BaseLayout
+  title={`${post.data.title} | Ken's Blog`}
+  description={post.data.description}
+  canonicalUrl={`/blog/${post.id}`}
+  ogType="article"
+  jsonLd={jsonLd}
+>
   <main class="max-w-3xl mx-auto px-6 py-24">
     <article class="animate-fade-in">
       <header class="mb-12">
