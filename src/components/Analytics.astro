@@ -1,0 +1,37 @@
+---
+import { analyticsConfig } from '../config/analytics';
+
+const { enabled, domain, scriptSrc } = analyticsConfig;
+---
+
+{enabled && (
+  <script is:inline set:html={`(function() {
+    function injectAnalytics() {
+      if (document.querySelector('script[data-analytics]')) return;
+      var script = document.createElement('script');
+      script.defer = true;
+      script.setAttribute('data-domain', '${domain}');
+      script.src = '${scriptSrc}';
+      script.setAttribute('data-analytics', 'plausible');
+      document.head.appendChild(script);
+    }
+
+    function getConsent() {
+      try {
+        return localStorage.getItem('analytics_consent');
+      } catch (e) {
+        return null;
+      }
+    }
+
+    if (getConsent() === 'accepted') {
+      injectAnalytics();
+    }
+
+    window.addEventListener('consent:change', function(e) {
+      if (e.detail && e.detail.choice === 'accepted') {
+        injectAnalytics();
+      }
+    });
+  })();`} />
+)}

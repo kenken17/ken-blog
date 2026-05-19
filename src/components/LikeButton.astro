@@ -35,6 +35,7 @@ const { slug } = Astro.props;
 
 <script>
   import { fetchReactionCount } from '../utils/reactions.ts';
+  import { trackEvent } from '../utils/analytics.ts';
 
   async function initLikeButton(button: HTMLButtonElement) {
     const countEl = button.querySelector<HTMLSpanElement>('.like-count');
@@ -56,6 +57,7 @@ const { slug } = Astro.props;
 
     // Click handler – smooth-scroll to the Giscus reactions
     button.addEventListener('click', () => {
+      trackEvent('like_click', { slug });
       const giscusSection = document.getElementById('giscus');
       if (!giscusSection) return;
 

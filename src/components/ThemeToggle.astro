@@ -55,6 +55,7 @@
 
 <script>
   import { toggleTheme, initTheme } from '../utils/theme.ts';
+  import { trackEvent } from '../utils/analytics.ts';
 
   function updateIcons(theme: 'light' | 'dark') {
     const sun = document.querySelector<SVGSVGElement>('[data-sun-icon]');
@@ -124,6 +125,7 @@
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       const newTheme = toggleTheme();
+      trackEvent('theme_toggle', { theme: newTheme });
       onThemeChange(newTheme);
     });
   }

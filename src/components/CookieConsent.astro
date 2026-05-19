@@ -1,0 +1,87 @@
+---
+import { analyticsConfig } from '../config/analytics';
+
+const { enabled } = analyticsConfig;
+---
+
+{enabled && (
+  <div
+    data-cookie-consent
+    class="fixed bottom-0 left-0 right-0 z-50 bg-background-surface border-t border-background-elevated shadow-lg transform translate-y-full transition-transform duration-300"
+    role="dialog"
+    aria-label="Cookie consent"
+  >
+    <div class="max-w-3xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="text-sm text-foreground-secondary">
+        <p>
+          This site uses privacy-friendly analytics to understand how visitors interact with the blog.
+          <a
+            href="#privacy"
+            class="underline text-foreground hover:text-foreground-secondary transition-colors outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded-sm"
+          >
+            Learn more
+          </a>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          data-consent-decline
+          class="px-4 py-2 text-sm text-foreground-secondary hover:text-foreground bg-background-elevated hover:bg-background-hover rounded-md transition-colors outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+        >
+          Decline
+        </button>
+        <button
+          type="button"
+          data-consent-accept
+          class="px-4 py-2 text-sm text-background-inverse bg-foreground hover:bg-foreground-secondary rounded-md transition-colors outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  import { getConsent, setConsent } from '../utils/consent.ts';
+
+  function initCookieConsent() {
+    const banner = document.querySelector<HTMLElement>('[data-cookie-consent]');
+    if (!banner) return;
+
+    const existing = getConsent();
+    if (existing !== null) {
+      banner.classList.add('hidden');
+      return;
+    }
+
+    // Show banner
+    requestAnimationFrame(() => {
+      banner.classList.remove('translate-y-full');
+    });
+
+    const acceptBtn = banner.querySelector<HTMLButtonElement>('[data-consent-accept]');
+    const declineBtn = banner.querySelector<HTMLButtonElement>('[data-consent-decline]');
+
+    function hideBanner() {
+      if (!banner) return;
+      banner.classList.add('translate-y-full');
+      setTimeout(() => {
+        if (banner) banner.classList.add('hidden');
+      }, 300);
+    }
+
+    acceptBtn?.addEventListener('click', () => {
+      setConsent('accepted');
+      hideBanner();
+    });
+
+    declineBtn?.addEventListener('click', () => {
+      setConsent('declined');
+      hideBanner();
+    });
+  }
+
+  initCookieConsent();
+</script>

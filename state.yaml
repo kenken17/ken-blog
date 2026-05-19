@@ -463,62 +463,81 @@ features:
         completed_at: '2026-05-16T13:10:41+08:00'
         notes: Created tests/features/seo/story-5.test.ts with 3 tests verifying SITE_URL, siteConfig fields, and non-empty string values.
   feat_add_analytics:
-    status: in-progress
+    status: completed
     tasks:
       TASK-1-1:
-        status: pending
-        notes: Create analytics config module in src/config/analytics.ts
+        status: done
+        completed_at: '2026-05-19T11:10:00+08:00'
+        notes: Created src/config/analytics.ts with typed AnalyticsConfig interface, enabled derived from import.meta.env.PROD, measurementId from PUBLIC_ANALYTICS_ID, domain from SITE_URL, cookieless tracking mode.
       TASK-1-2:
-        status: pending
-        notes: Add PUBLIC_ANALYTICS_ID env variable to .env.example
+        status: done
+        completed_at: '2026-05-19T11:10:00+08:00'
+        notes: Created .env.example with PUBLIC_ANALYTICS_ID placeholder and documentation comment.
       TASK-2-1:
-        status: pending
-        notes: Create Analytics.astro component with conditional script rendering
+        status: done
+        completed_at: '2026-05-19T11:12:00+08:00'
+        notes: Created src/components/Analytics.astro with conditional script injection logic, data-domain attribute, and consent-aware loading via localStorage check and consent:change listener.
       TASK-2-2:
-        status: pending
-        notes: Integrate Analytics component into BaseLayout.astro head
+        status: done
+        completed_at: '2026-05-19T11:12:00+08:00'
+        notes: Integrated Analytics component into BaseLayout.astro <head> after meta tags. Component renders nothing in dev mode.
       TASK-3-1:
-        status: pending
-        notes: Create trackEvent utility in src/utils/analytics.ts
+        status: done
+        completed_at: '2026-05-19T11:13:00+08:00'
+        notes: Created src/utils/analytics.ts with trackEvent function that wraps window.plausible, includes global type declaration, and gracefully no-ops when analytics is unavailable.
       TASK-3-2:
-        status: pending
-        notes: Add search event tracking to SearchBar.astro
+        status: done
+        completed_at: '2026-05-19T11:13:00+08:00'
+        notes: Added trackEvent('search', { query }) call in src/scripts/search.ts when user presses Enter in SearchBar.
       TASK-3-3:
-        status: pending
-        notes: Add like_click event tracking to LikeButton.astro
+        status: done
+        completed_at: '2026-05-19T11:13:00+08:00'
+        notes: Added trackEvent('like_click', { slug }) call in LikeButton.astro click handler before scrolling to Giscus.
       TASK-3-4:
-        status: pending
-        notes: Add theme_toggle event tracking to ThemeToggle.astro
+        status: done
+        completed_at: '2026-05-19T11:13:00+08:00'
+        notes: Added trackEvent('theme_toggle', { theme }) call in ThemeToggle.astro click handler after toggling theme.
       TASK-3-5:
-        status: pending
-        notes: Add outbound_click event tracking to SocialLinks.astro
+        status: done
+        completed_at: '2026-05-19T11:13:00+08:00'
+        notes: Added click event listeners on external links in SocialLinks.astro that call trackEvent('outbound_click', { url, label }).
       TASK-4-1:
-        status: pending
-        notes: Create consent utility in src/utils/consent.ts
+        status: done
+        completed_at: '2026-05-19T11:14:00+08:00'
+        notes: Created src/utils/consent.ts with getConsent, setConsent, hasConsented functions. Wraps localStorage in try/catch and dispatches consent:change CustomEvent.
       TASK-4-2:
-        status: pending
-        notes: Create CookieConsent.astro component with Accept/Decline banner
+        status: done
+        completed_at: '2026-05-19T11:14:00+08:00'
+        notes: Created src/components/CookieConsent.astro with fixed bottom banner, Accept/Decline buttons, privacy policy link, vanilla JS logic, and Tailwind CSS styling with CSS custom properties.
       TASK-4-3:
-        status: pending
-        notes: Integrate consent check into Analytics.astro for conditional loading
+        status: done
+        completed_at: '2026-05-19T11:14:00+08:00'
+        notes: Analytics.astro checks consent via localStorage before injecting script, and listens for consent:change to dynamically inject when consent is granted mid-session.
       TASK-4-4:
-        status: pending
-        notes: Integrate CookieConsent component into BaseLayout.astro body
+        status: done
+        completed_at: '2026-05-19T11:14:00+08:00'
+        notes: Integrated CookieConsent component at end of <body> in BaseLayout.astro. Banner appears on first visit and respects stored choice on subsequent visits.
       TASK-5-1:
-        status: pending
-        notes: Write unit tests for analytics config
+        status: done
+        completed_at: '2026-05-19T11:15:00+08:00'
+        notes: Created tests/features/feat_add_analytics/story-1.test.ts with 5 tests covering config shape, enabled in dev, measurementId from env, domain from SITE_URL, and fallback logic. All passing.
       TASK-5-2:
-        status: pending
-        notes: Write unit tests for analytics event utility
+        status: done
+        completed_at: '2026-05-19T11:15:00+08:00'
+        notes: Created tests/features/feat_add_analytics/story-3.test.ts with 6 tests covering trackEvent calls, no-op behavior, props handling, missing window, and plausible throwing. All passing.
       TASK-5-3:
-        status: pending
-        notes: Write unit tests for consent utility
+        status: done
+        completed_at: '2026-05-19T11:15:00+08:00'
+        notes: Created tests/features/feat_add_analytics/story-4.test.ts with 8 tests covering getConsent, setConsent, hasConsented, localStorage errors, and consent:change event dispatch. All passing.
       TASK-5-4:
-        status: pending
-        notes: Write integration tests for Analytics and CookieConsent components
+        status: done
+        completed_at: '2026-05-19T11:15:00+08:00'
+        notes: Created tests/features/feat_add_analytics/story-2.test.ts with 7 tests covering Analytics component rendering, consent check, config import, and CookieConsent banner/buttons/privacy link. All passing.
       TASK-5-5:
-        status: pending
-        notes: Write integration tests for custom event tracking
+        status: done
+        completed_at: '2026-05-19T11:15:00+08:00'
+        notes: Created tests/features/feat_add_analytics/story-5.test.ts with 5 tests covering search, like_click, theme_toggle, outbound_click events, and no-op when plausible is undefined. All passing.
       TASK-5-6:
-        status: pending
-        notes: Run full test suite and verify no regressions
+        status: done
+        completed_at: '2026-05-19T11:16:00+08:00'
+        notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.

@@ -1,3 +1,5 @@
+import { trackEvent } from '../utils/analytics';
+
 export interface SearchIndexEntry {
   slug: string;
   title: string;
@@ -233,6 +235,7 @@ export function initSearch(): void {
       if (selectedIndex >= 0 && items[selectedIndex]) {
         items[selectedIndex]!.click();
       } else if (activeInput?.value.trim()) {
+        trackEvent('search', { query: activeInput.value.trim() });
         performSearch(activeInput.value);
       }
     } else if (e.key === 'Escape') {

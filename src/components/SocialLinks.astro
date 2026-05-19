@@ -2,12 +2,13 @@
 // SocialLinks.astro — GitHub, LinkedIn, and RSS icon links
 ---
 
-<div class="flex items-center justify-center gap-4">
+<div class="social-links flex items-center justify-center gap-4" data-social-links>
   <a
     href="https://github.com/kenken17"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="GitHub profile"
+    data-social-label="GitHub"
     class="text-foreground-muted hover:text-foreground transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none rounded-sm"
   >
     <svg
@@ -32,6 +33,7 @@
     target="_blank"
     rel="noopener noreferrer"
     aria-label="LinkedIn profile"
+    data-social-label="LinkedIn"
     class="text-foreground-muted hover:text-foreground transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none rounded-sm"
   >
     <svg
@@ -76,3 +78,18 @@
     </svg>
   </a>
 </div>
+
+<script>
+  import { trackEvent } from '../utils/analytics.ts';
+
+  document.querySelectorAll<HTMLElement>('[data-social-links] a').forEach((link) => {
+    const href = link.getAttribute('href');
+    const label = link.getAttribute('data-social-label');
+    if (!href || !label) return;
+    if (!href.startsWith('http')) return;
+
+    link.addEventListener('click', () => {
+      trackEvent('outbound_click', { url: href, label });
+    });
+  });
+</script>
