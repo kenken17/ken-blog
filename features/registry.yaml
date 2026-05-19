@@ -58,4 +58,4 @@ features:
     name: feat_add_analytics
     file: feat_add_analytics.yaml
     priority: P1
-    status: queued
+    status: completed
