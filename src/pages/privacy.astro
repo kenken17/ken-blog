@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="Privacy policy for Ken's Blog."
+  canonicalUrl="/privacy"
+>
+  <main class="max-w-3xl mx-auto px-6 py-24">
+    <h1 class="font-display text-display-sm md:text-display-md text-foreground mb-8">
+      PRIVACY POLICY
+    </h1>
+
+    <div class="prose-light space-y-8">
+      <section>
+        <h2 class="font-display text-2xl text-foreground mb-4">Analytics</h2>
+        <p>
+          This blog uses <a href="https://plausible.io" target="_blank" rel="noopener noreferrer" class="underline">Plausible Analytics</a>, a privacy-friendly analytics tool that does not use cookies and does not collect any personal data.
+        </p>
+        <p>
+          Plausible is GDPR-compliant by default. No cookies are stored, no personal information is collected, and no data is shared with third parties. The analytics data helps understand how visitors interact with the blog so it can be improved.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-2xl text-foreground mb-4">Consent</h2>
+        <p>
+          On your first visit, you will see a cookie consent banner. You can choose to accept or decline analytics tracking. Your choice is stored in your browser's local storage and is respected on all subsequent visits.
+        </p>
+        <p>
+          If you decline, no analytics tracking will occur. You can change your decision at any time by clearing your browser's local storage for this site.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-2xl text-foreground mb-4">No Personal Data Collection</h2>
+        <p>
+          This blog does not collect, store, or process any personally identifiable information. There are no user accounts, no comments that require personal data, and no tracking of individual user identities.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-2xl text-foreground mb-4">Third-Party Services</h2>
+        <p>
+          The blog uses the following third-party services:
+        </p>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Plausible Analytics</strong> — Privacy-friendly, cookieless analytics. No personal data is collected.</li>
+          <li><strong>Giscus</strong> — Comment system powered by GitHub Discussions. Comments are subject to <a href="https://github.com/privacy" target="_blank" rel="noopener noreferrer" class="underline">GitHub's Privacy Policy</a>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="font-display text-2xl text-foreground mb-4">Contact</h2>
+        <p>
+          If you have any questions about this privacy policy, please reach out via the social links on the blog.
+        </p>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
