@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-16T13:15:00+08:00'
+last_updated: '2026-05-19T10:00:00+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -462,3 +462,63 @@ features:
         status: done
         completed_at: '2026-05-16T13:10:41+08:00'
         notes: Created tests/features/seo/story-5.test.ts with 3 tests verifying SITE_URL, siteConfig fields, and non-empty string values.
+  feat_add_analytics:
+    status: in-progress
+    tasks:
+      TASK-1-1:
+        status: pending
+        notes: Create analytics config module in src/config/analytics.ts
+      TASK-1-2:
+        status: pending
+        notes: Add PUBLIC_ANALYTICS_ID env variable to .env.example
+      TASK-2-1:
+        status: pending
+        notes: Create Analytics.astro component with conditional script rendering
+      TASK-2-2:
+        status: pending
+        notes: Integrate Analytics component into BaseLayout.astro head
+      TASK-3-1:
+        status: pending
+        notes: Create trackEvent utility in src/utils/analytics.ts
+      TASK-3-2:
+        status: pending
+        notes: Add search event tracking to SearchBar.astro
+      TASK-3-3:
+        status: pending
+        notes: Add like_click event tracking to LikeButton.astro
+      TASK-3-4:
+        status: pending
+        notes: Add theme_toggle event tracking to ThemeToggle.astro
+      TASK-3-5:
+        status: pending
+        notes: Add outbound_click event tracking to SocialLinks.astro
+      TASK-4-1:
+        status: pending
+        notes: Create consent utility in src/utils/consent.ts
+      TASK-4-2:
+        status: pending
+        notes: Create CookieConsent.astro component with Accept/Decline banner
+      TASK-4-3:
+        status: pending
+        notes: Integrate consent check into Analytics.astro for conditional loading
+      TASK-4-4:
+        status: pending
+        notes: Integrate CookieConsent component into BaseLayout.astro body
+      TASK-5-1:
+        status: pending
+        notes: Write unit tests for analytics config
+      TASK-5-2:
+        status: pending
+        notes: Write unit tests for analytics event utility
+      TASK-5-3:
+        status: pending
+        notes: Write unit tests for consent utility
+      TASK-5-4:
+        status: pending
+        notes: Write integration tests for Analytics and CookieConsent components
+      TASK-5-5:
+        status: pending
+        notes: Write integration tests for custom event tracking
+      TASK-5-6:
+        status: pending
+        notes: Run full test suite and verify no regressions
