@@ -63,4 +63,4 @@ features:
     name: feat_add_custom_404_page
     file: feat_add_custom_404_page.yaml
     priority: P1
-    status: queued
+    status: completed
