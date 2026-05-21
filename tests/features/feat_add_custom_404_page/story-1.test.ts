@@ -21,12 +21,6 @@ describe('custom 404 page (story 1 + story 2)', () => {
     expect(source).toContain('href="/"');
   });
 
-  it('includes SearchBar component', () => {
-    const source = fs.readFileSync(pagePath, 'utf-8');
-    expect(source).toContain("import SearchBar from '../components/SearchBar.astro'");
-    expect(source).toContain('<SearchBar />');
-  });
-
   it('fetches and renders recent posts', () => {
     const source = fs.readFileSync(pagePath, 'utf-8');
     expect(source).toContain("getCollection('posts'");

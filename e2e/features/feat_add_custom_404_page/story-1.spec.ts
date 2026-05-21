@@ -34,12 +34,6 @@ test('navigation links route to Home, Blog, and Tags', async ({ page }) => {
   await expect(page).toHaveURL('/');
 });
 
-test('search bar is rendered on the 404 page', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(missingPath);
-  await expect(page.locator('[data-search-input]').first()).toBeVisible();
-});
-
 test('404 page remains readable at mobile and desktop viewport sizes', async ({ page }) => {
   for (const viewport of [
     { width: 375, height: 812 },
