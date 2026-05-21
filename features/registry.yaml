@@ -49,13 +49,18 @@ features:
     file: feat_add_dark_mode.yaml
     priority: P1
     status: completed
-  - id: F-10
+  - id: F-11
     name: feat_add_seo_optimization
     file: feat_add_seo_optimization.yaml
     priority: P1
     status: completed
-  - id: F-11
+  - id: F-12
     name: feat_add_analytics
     file: feat_add_analytics.yaml
     priority: P1
     status: completed
+  - id: F-13
+    name: feat_add_custom_404_page
+    file: feat_add_custom_404_page.yaml
+    priority: P1
+    status: queued
