@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-19T11:26:55+08:00'
+last_updated: '2026-05-21T23:00:00+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -542,7 +542,7 @@ features:
         completed_at: '2026-05-19T11:16:00+08:00'
         notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.
   feat_add_custom_404_page:
-    status: in-progress
+    status: completed
     tasks:
       TASK-1-1:
         status: done
