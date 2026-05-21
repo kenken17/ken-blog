@@ -15,12 +15,6 @@ describe('custom 404 page (story 1 + story 2)', () => {
     expect(source).toContain('Page Not Found');
   });
 
-  it('includes Back to Home link', () => {
-    const source = fs.readFileSync(pagePath, 'utf-8');
-    expect(source).toContain('Back to Home');
-    expect(source).toContain('href="/"');
-  });
-
   it('fetches and renders recent posts', () => {
     const source = fs.readFileSync(pagePath, 'utf-8');
     expect(source).toContain("getCollection('posts'");

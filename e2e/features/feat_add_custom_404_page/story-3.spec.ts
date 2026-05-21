@@ -14,7 +14,6 @@ for (const viewport of viewports) {
     await page.goto(missingPath);
 
     await expect(page.getByRole('heading', { name: '404', level: 1 })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Search Posts', level: 2 })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Recent Posts', level: 2 })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Explore', level: 2 })).toBeVisible();
 

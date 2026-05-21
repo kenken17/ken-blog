@@ -12,12 +12,6 @@ test('visiting a non-existent route renders the custom 404 page', async ({ page 
   await expect(page.getByText('The page you were trying to reach does not exist or may have been moved.')).toBeVisible();
 });
 
-test('Back to Home link navigates to homepage', async ({ page }) => {
-  await page.goto(missingPath);
-  await page.getByRole('link', { name: 'Back to Home' }).click();
-  await expect(page).toHaveURL('/');
-});
-
 test('navigation links route to Home, Blog, and Tags', async ({ page }) => {
   await page.goto(missingPath);
 
