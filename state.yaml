@@ -541,3 +541,6 @@ features:
         status: done
         completed_at: '2026-05-19T11:16:00+08:00'
         notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.
+  feat_add_custom_404_page:
+    status: in-progress
+    tasks: {}
