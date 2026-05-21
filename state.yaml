@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-19T11:26:55+08:00'
+last_updated: '2026-05-21T23:00:00+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -541,3 +541,58 @@ features:
         status: done
         completed_at: '2026-05-19T11:16:00+08:00'
         notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.
+  feat_add_custom_404_page:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Created src/pages/404.astro using BaseLayout with a prominent 404 heading, Page Not Found subheading, friendly message, and semantic Tailwind styling.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added 404 SEO metadata constants, canonical /404 path, and generateMetaTags-driven description passed into BaseLayout.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added accessible Back to Home link/button to / with keyboard-visible focus treatment.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Implemented getCollection('posts') query on 404 page with draft filtering, pubDate descending sort, and top 3 recent posts selection.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added Recent Posts section rendering title/date/link entries matching existing blog page styling patterns.
+      TASK-2-3:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Imported and rendered SearchBar on the 404 page in a dedicated searchable section.
+      TASK-2-4:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added accessible navigation links section with Home (/), Blog (/blog), and Tags (/tags).
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Implemented responsive 404 layout with max-w-3xl container and mobile/tablet/desktop-friendly spacing and structure.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added proper heading hierarchy (h1/h2), semantic landmarks, and aria labels for navigation and search sections.
+      TASK-3-3:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Used semantic theme classes (bg/text/border variables) so the 404 page supports both light and dark modes consistently.
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added unit tests at tests/features/feat_add_custom_404_page/story-1.test.ts covering 404 content, back-home link, SearchBar, recent posts, and nav links.
+      TASK-4-TEST-2:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added Playwright e2e tests at e2e/features/feat_add_custom_404_page/story-1.spec.ts for missing-route rendering, navigation behavior, and responsive readability.
+      TASK-4-TEST-3:
+        status: done
+        completed_at: '2026-05-21T22:56:14+08:00'
+        notes: Added responsive Playwright coverage at e2e/features/feat_add_custom_404_page/story-3.spec.ts for 375/768/1280 layouts and overflow checks.
