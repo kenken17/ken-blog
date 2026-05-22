@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Comments from '../../components/Comments.astro';
 import LikeButton from '../../components/LikeButton.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { generateJsonLd } from '../../utils/seo';
 
@@ -22,6 +23,17 @@ interface Props {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = calculateReadingTime(post.body);
+
+// Parse code block metadata from markdown body for client-side enhancement
+const codeBlockMeta: { language: string; filename: string }[] = [];
+const codeFenceRegex = /```(\w+)(?:\s+title=["']([^"']+)["'])?[\s\S]*?```/g;
+let match;
+while ((match = codeFenceRegex.exec(post.body)) !== null) {
+  codeBlockMeta.push({
+    language: match[1] || 'text',
+    filename: match[2] || '',
+  });
+}
 
 const jsonLd = generateJsonLd({
   type: 'Article',
@@ -83,8 +95,8 @@ const jsonLd = generateJsonLd({
         )}
       </header>
 
-      <div class="prose-light">
-        <Content />
+      <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
+        <Content components={{ pre: CodeBlock }} />
       </div>
 
       <div>
@@ -180,5 +192,134 @@ const jsonLd = generateJsonLd({
         link.setAttribute('rel', 'noopener noreferrer');
       }
     });
+  </script>
+
+  <script>
+    // Enhance <pre> elements with CodeBlock wrapper (fallback for markdown content)
+    (function() {
+      const languageDisplayMap: Record<string, string> = {
+        js: 'JavaScript', javascript: 'JavaScript',
+        ts: 'TypeScript', typescript: 'TypeScript',
+        jsx: 'JSX', tsx: 'TSX',
+        py: 'Python', python: 'Python',
+        sh: 'Bash', bash: 'Bash', shell: 'Shell',
+        zsh: 'Zsh', rb: 'Ruby', ruby: 'Ruby',
+        cpp: 'C++', 'c++': 'C++',
+        cs: 'C#', 'c#': 'C#',
+        md: 'Markdown', markdown: 'Markdown',
+        yaml: 'YAML', yml: 'YAML',
+        json: 'JSON', html: 'HTML', css: 'CSS',
+        scss: 'SCSS', sql: 'SQL', go: 'Go', rs: 'Rust',
+        rust: 'Rust', java: 'Java',
+      };
+
+      function enhanceCodeBlocks() {
+        const proseContainer = document.querySelector('.prose-light');
+        const metaAttr = proseContainer?.getAttribute('data-code-blocks');
+        const metaList: { language: string; filename: string }[] = metaAttr ? JSON.parse(metaAttr) : [];
+        let metaIndex = 0;
+
+        document.querySelectorAll('.prose-light pre').forEach(pre => {
+          // Skip already enhanced blocks
+          if (pre.closest('.code-block-wrapper')) return;
+
+          const parent = pre.parentElement;
+          if (!parent) return;
+
+          // Extract language
+          let language = 'text';
+          const dataLang = pre.getAttribute('data-language');
+          if (dataLang) {
+            language = dataLang.toLowerCase();
+          } else {
+            const className = pre.className || '';
+            const match = className.match(/language-(\w+)/);
+            if (match) language = match[1].toLowerCase();
+          }
+
+          // Get filename from parsed metadata or data-filename attribute
+          let filename = pre.getAttribute('data-filename') || '';
+          if (!filename && metaList[metaIndex]) {
+            filename = metaList[metaIndex].filename;
+          }
+          metaIndex++;
+
+          const displayLanguage = languageDisplayMap[language] || language;
+
+          // Create wrapper
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper group my-6 rounded-lg border border-background-hover overflow-hidden bg-background-elevated';
+          wrapper.setAttribute('data-language', language);
+
+          const header = document.createElement('div');
+          header.className = 'code-block-header flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-background-surface border-b border-background-hover md:px-4';
+
+          let headerHtml = '<div class="flex items-center gap-2 min-w-0 flex-1">';
+          if (language !== 'text') {
+            headerHtml += `<span class="language-badge inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wider bg-background-elevated text-foreground-secondary rounded border border-background-hover shrink-0">${displayLanguage}</span>`;
+          }
+          if (filename) {
+            headerHtml += `<span class="filename text-xs font-sans text-foreground-muted truncate" title="${filename.replace(/"/g, '&quot;')}">${filename}</span>`;
+          }
+          headerHtml += '</div>';
+
+          headerHtml += `<button type="button" class="copy-btn flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-sans text-foreground-muted hover:text-foreground transition-colors duration-200 rounded hover:bg-background-elevated focus:outline-none focus:ring-2 focus:ring-foreground-muted/30 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 shrink-0" aria-label="Copy code to clipboard" title="Copy code" data-copy>
+            <svg class="copy-icon w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="check-icon hidden w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="copy-text hidden md:inline">Copy</span>
+          </button>`;
+
+          header.innerHTML = headerHtml;
+
+          const body = document.createElement('div');
+          body.className = 'code-block-body relative overflow-x-auto';
+
+          wrapper.appendChild(header);
+
+          // Insert wrapper where pre was, then move pre into body
+          parent.insertBefore(wrapper, pre);
+          body.appendChild(pre);
+          wrapper.appendChild(body);
+
+          // Add copy functionality
+          const copyBtn = wrapper.querySelector('.copy-btn') as HTMLElement | null;
+          if (copyBtn) {
+            copyBtn.addEventListener('click', async () => {
+              const clone = pre.cloneNode(true) as HTMLElement;
+              clone.querySelectorAll('.line-number').forEach(el => el.remove());
+              let text = clone.textContent || '';
+              text = text.replace(/\n+$/, '').replace(/^\n+/, '');
+              try {
+                await navigator.clipboard.writeText(text);
+                const copyIcon = copyBtn.querySelector('.copy-icon');
+                const checkIcon = copyBtn.querySelector('.check-icon');
+                const copyText = copyBtn.querySelector('.copy-text');
+                if (copyIcon) copyIcon.classList.add('hidden');
+                if (checkIcon) checkIcon.classList.remove('hidden');
+                if (copyText) copyText.textContent = 'Copied!';
+                setTimeout(() => {
+                  if (copyIcon) copyIcon.classList.remove('hidden');
+                  if (checkIcon) checkIcon.classList.add('hidden');
+                  if (copyText) copyText.textContent = 'Copy';
+                }, 2000);
+              } catch (err) {
+                console.error('Failed to copy:', err);
+              }
+            });
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', enhanceCodeBlocks);
+      } else {
+        enhanceCodeBlocks();
+      }
+    })();
   </script>
 </BaseLayout>
