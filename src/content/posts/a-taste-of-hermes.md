@@ -2,7 +2,7 @@
 title: "A taste of Hermes"
 pubDate: 2026-05-22
 description: ""
-tags: ["AI", "Hermes"]
+tags: ["ai", "hermes"]
 ---
 
 Due to all the vibe & hype, mixed with peer pressure, tried [Hermes](https://hermes-agent.nousresearch.com/) just now. It's actually cool! Run smoothly on my local docker container. Doc down the nooks and crannies for reference.
