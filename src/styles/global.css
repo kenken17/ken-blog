@@ -93,7 +93,7 @@
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 2rem 0;
+    margin: 2rem auto;
   }
 
   .dark .prose-light {
