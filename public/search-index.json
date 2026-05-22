@@ -1,11 +1,11 @@
 [
   {
-    "slug": "test-code-blocks",
-    "title": "Code Block Test Fixture",
-    "description": "A test post for verifying code block rendering features.",
+    "slug": "a-taste-of-hermes",
+    "title": "A taste of Hermes",
+    "description": "",
     "tags": [
-      "test",
-      "code"
+      "AI",
+      "Hermes"
     ],
     "pubDate": "2026-05-22"
   },

@@ -3,7 +3,7 @@ title: "Code Block Test Fixture"
 pubDate: 2026-05-22
 description: "A test post for verifying code block rendering features."
 tags: ["test", "code"]
-draft: false
+draft: true
 ---
 
 This post contains code blocks for testing the enhanced code block feature.
@@ -16,7 +16,7 @@ function greet(name) {
   return `Hello, ${name}!`;
 }
 
-greet('World');
+greet("World");
 ```
 
 ## Python Example
