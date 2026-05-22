@@ -1,0 +1,180 @@
+---
+// CodeBlock.astro — Enhanced code block with language badge, filename header, and copy button
+interface Props {
+  class?: string;
+  'data-filename'?: string;
+  tabindex?: string;
+  style?: string;
+}
+
+const { class: className, 'data-filename': filename } = Astro.props;
+
+// Extract language from class like "shiki language-javascript" or "language-js"
+let language = 'text';
+if (className) {
+  const match = className.match(/language-([a-zA-Z0-9+#]+)/);
+  if (match) {
+    language = match[1].toLowerCase();
+  }
+}
+
+// Map common language aliases for display
+const languageDisplayMap: Record<string, string> = {
+  js: 'JavaScript',
+  ts: 'TypeScript',
+  jsx: 'JSX',
+  tsx: 'TSX',
+  py: 'Python',
+  sh: 'Bash',
+  bash: 'Bash',
+  shell: 'Shell',
+  zsh: 'Zsh',
+  rb: 'Ruby',
+  cpp: 'C++',
+  'c++': 'C++',
+  cs: 'C#',
+  'c#': 'C#',
+  md: 'Markdown',
+  yaml: 'YAML',
+  yml: 'YAML',
+  json: 'JSON',
+  html: 'HTML',
+  css: 'CSS',
+  scss: 'SCSS',
+  sql: 'SQL',
+  go: 'Go',
+  rs: 'Rust',
+};
+
+const displayLanguage = languageDisplayMap[language] || language;
+---
+
+<div class="code-block-wrapper group my-6 rounded-lg border border-background-hover overflow-hidden bg-background-elevated" data-language={language}>
+  {/* Header bar */}
+  <div class="code-block-header flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-background-surface border-b border-background-hover md:px-4">
+    <div class="flex items-center gap-2 min-w-0 flex-1">
+      {language !== 'text' && (
+        <span class="language-badge inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wider bg-background-elevated text-foreground-secondary rounded border border-background-hover shrink-0">
+          {displayLanguage}
+        </span>
+      )}
+      {filename && (
+        <span class="filename text-xs font-sans text-foreground-muted truncate" title={filename}>
+          {filename}
+        </span>
+      )}
+    </div>
+    <button
+      type="button"
+      class="copy-btn flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-sans text-foreground-muted hover:text-foreground transition-colors duration-200 rounded hover:bg-background-elevated focus:outline-none focus:ring-2 focus:ring-foreground-muted/30 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 shrink-0"
+      aria-label="Copy code to clipboard"
+      title="Copy code"
+      data-copy
+    >
+      <svg class="copy-icon w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <svg class="check-icon hidden w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span class="copy-text hidden md:inline">Copy</span>
+    </button>
+  </div>
+
+  {/* Code body */}
+  <div class="code-block-body relative overflow-x-auto">
+    <slot />
+  </div>
+</div>
+
+<script>
+  (function() {
+    function findCodeText(wrapper: HTMLElement): string {
+      const pre = wrapper.querySelector('.code-block-body pre');
+      if (!pre) return '';
+
+      // Clone to avoid mutating the DOM
+      const clone = pre.cloneNode(true) as HTMLElement;
+
+      // Remove line numbers from clone
+      clone.querySelectorAll('.line-number').forEach(el => el.remove());
+
+      // Also remove any shiki-transformer-generated line number spans
+      clone.querySelectorAll('[data-line-numbers]').forEach(el => {
+        // If the element itself is a line number container, remove it
+        if (el.classList.contains('line-number')) {
+          el.remove();
+        }
+      });
+
+      // Get text content and clean up
+      let text = clone.textContent || '';
+      // Trim trailing whitespace but preserve internal formatting
+      text = text.replace(/\n+$/, '').replace(/^\n+/, '');
+      return text;
+    }
+
+    function initCopyButtons() {
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        // Prevent duplicate listeners
+        if ((btn as HTMLElement).dataset.copyInit === 'true') return;
+        (btn as HTMLElement).dataset.copyInit = 'true';
+
+        btn.addEventListener('click', async () => {
+          const wrapper = btn.closest('.code-block-wrapper') as HTMLElement | null;
+          if (!wrapper) return;
+
+          const code = findCodeText(wrapper);
+
+          try {
+            await navigator.clipboard.writeText(code);
+
+            const copyIcon = btn.querySelector('.copy-icon');
+            const checkIcon = btn.querySelector('.check-icon');
+            const copyText = btn.querySelector('.copy-text');
+
+            if (copyIcon) copyIcon.classList.add('hidden');
+            if (checkIcon) checkIcon.classList.remove('hidden');
+            if (copyText) copyText.textContent = 'Copied!';
+
+            setTimeout(() => {
+              if (copyIcon) copyIcon.classList.remove('hidden');
+              if (checkIcon) checkIcon.classList.add('hidden');
+              if (copyText) copyText.textContent = 'Copy';
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy code:', err);
+            const copyText = btn.querySelector('.copy-text');
+            if (copyText) {
+              copyText.textContent = 'Failed';
+              setTimeout(() => {
+                copyText.textContent = 'Copy';
+              }, 2000);
+            }
+          }
+        });
+      });
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCopyButtons);
+    } else {
+      initCopyButtons();
+    }
+
+    // Also re-init when new content is added (for dynamic pages if needed)
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement && node.querySelector('.copy-btn')) {
+            initCopyButtons();
+            return;
+          }
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+</script>

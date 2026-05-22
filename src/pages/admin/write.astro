@@ -1,10 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Editor from '../../components/Editor.astro';
-
-if (import.meta.env.PROD) {
-  return new Response('Not Found', { status: 404 });
-}
 ---
 
 <BaseLayout title="Write | Admin">

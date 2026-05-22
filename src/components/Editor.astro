@@ -57,6 +57,16 @@
             <polyline points="21 15 16 10 5 21"></polyline>
           </svg>
         </button>
+        <button
+          data-command="codeBlock"
+          class="toolbar-btn group relative px-2.5 py-1.5 text-foreground-muted hover:text-foreground font-mono text-sm hover:bg-background-hover rounded transition-all duration-200"
+          title="Code Block"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div id="save-indicator" class="text-foreground-muted text-xs uppercase tracking-wider font-sans opacity-0 transition-opacity duration-300">
@@ -107,6 +117,43 @@
         </button>
         <button
           id="image-cancel-btn"
+          class="px-3 py-1 text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Code block language selector (hidden by default) -->
+    <div id="codeblock-input-wrapper" class="hidden max-w-3xl mx-auto px-6 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="text-foreground-muted text-xs font-sans">Language</span>
+        <select
+          id="codeblock-lang-select"
+          class="flex-1 bg-transparent border-b border-foreground-muted focus:border-foreground text-foreground-secondary text-sm font-sans py-1 px-1 outline-none transition-colors duration-200 cursor-pointer"
+        >
+          <option value="text">Text</option>
+          <option value="bash">Bash</option>
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="ruby">Ruby</option>
+        </select>
+        <input
+          id="codeblock-filename-input"
+          type="text"
+          placeholder="filename (optional)"
+          class="flex-1 bg-transparent border-b border-foreground-muted focus:border-foreground text-foreground-secondary text-sm font-sans py-1 px-1 outline-none transition-colors duration-200"
+        />
+        <button
+          id="codeblock-apply-btn"
+          class="px-3 py-1 bg-foreground text-foreground-inverse text-xs uppercase tracking-wider font-sans font-medium hover:bg-foreground-secondary transition-colors duration-200"
+        >
+          Insert
+        </button>
+        <button
+          id="codeblock-cancel-btn"
           class="px-3 py-1 text-foreground-muted text-xs uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
         >
           Cancel
@@ -277,6 +324,25 @@
     margin: 1.5rem 0;
   }
 
+  #content-input pre {
+    background-color: var(--color-background-elevated);
+    border: 1px solid var(--color-background-hover);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  #content-input pre code {
+    background-color: transparent;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-foreground);
+  }
+
   .toolbar-btn.active {
     color: var(--color-foreground);
     background-color: var(--color-background-hover);
@@ -306,6 +372,7 @@
   const STORAGE_KEY = 'ken-blog-drafts';
   let currentDraftId: string | null = null;
   let savedSelection: { startNode: Node; startOffset: number; endNode: Node; endOffset: number } | null = null;
+  let lastCodeLanguage = 'text';
 
   // ─── DOM References ──────────────────────────────────────────────
   const titleInput = document.getElementById('title-input')!;
@@ -323,6 +390,11 @@
   const imageUrlInput = document.getElementById('image-url-input') as HTMLInputElement;
   const imageApplyBtn = document.getElementById('image-apply-btn')!;
   const imageCancelBtn = document.getElementById('image-cancel-btn')!;
+  const codeblockInputWrapper = document.getElementById('codeblock-input-wrapper')!;
+  const codeblockLangSelect = document.getElementById('codeblock-lang-select') as HTMLSelectElement;
+  const codeblockFilenameInput = document.getElementById('codeblock-filename-input') as HTMLInputElement;
+  const codeblockApplyBtn = document.getElementById('codeblock-apply-btn')!;
+  const codeblockCancelBtn = document.getElementById('codeblock-cancel-btn')!;
   const exportModal = document.getElementById('export-modal')!;
   const exportOutput = document.getElementById('export-output') as HTMLTextAreaElement;
   const exportBtn = document.getElementById('export-btn')!;
@@ -613,6 +685,38 @@
     getEditorDoc().execCommand('insertHTML', false, `<p><img src="${base64}" alt="" style="max-width:100%;display:block;margin:1.5rem 0;" /></p>`);
   }
 
+  // ─── Code Block Handling ───────────────────────────────────────
+  function showCodeBlockInput(): void {
+    saveCurrentSelection();
+    codeblockInputWrapper.classList.remove('hidden');
+    codeblockLangSelect.value = lastCodeLanguage;
+    codeblockFilenameInput.value = '';
+    codeblockLangSelect.focus();
+  }
+
+  function hideCodeBlockInput(): void {
+    codeblockInputWrapper.classList.add('hidden');
+    codeblockFilenameInput.value = '';
+  }
+
+  function applyCodeBlock(): void {
+    const lang = codeblockLangSelect.value;
+    const filename = codeblockFilenameInput.value.trim();
+    lastCodeLanguage = lang;
+
+    restoreSelection();
+    contentInput.focus();
+
+    const sel = window.getSelection();
+    const selectedText = sel && !sel.isCollapsed ? sel.toString() : '';
+
+    const filenameAttr = filename ? ` data-filename="${filename}"` : '';
+    const html = `<pre class="language-${lang}"${filenameAttr}><code class="language-${lang}">${selectedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre><p><br></p>`;
+
+    getEditorDoc().execCommand('insertHTML', false, html);
+    hideCodeBlockInput();
+  }
+
   // ─── HTML → Markdown ─────────────────────────────────────────────
   function htmlToMarkdown(html: string): string {
     const temp = document.createElement('div');
@@ -653,7 +757,22 @@
         case 'ol': return `${children}\n`;
         case 'li': return `- ${children}\n`;
         case 'code': return `\`${text}\``;
-        case 'pre': return `\`\`\`\n${text}\n\`\`\`\n\n`;
+        case 'pre': {
+          // Extract language from code class or pre class
+          let lang = 'text';
+          const codeEl = el.querySelector('code');
+          const preClass = el.getAttribute('class') || '';
+          const codeClass = codeEl?.getAttribute('class') || '';
+          const classMatch = (preClass + ' ' + codeClass).match(/language-(\w+)/);
+          if (classMatch) {
+            lang = classMatch[1];
+          }
+          // Extract filename from data-filename
+          const filename = el.getAttribute('data-filename');
+          const titleAttr = filename ? ` title="${filename}"` : '';
+          const codeText = codeEl ? codeEl.textContent?.trimEnd() || '' : text;
+          return `\`\`\`${lang}${titleAttr}\n${codeText}\n\`\`\`\n\n`;
+        }
         case 'div': return `${children}\n`;
         case 'span': return children;
         default: return children;
@@ -777,6 +896,9 @@
         case 'image':
           showImageInput();
           break;
+        case 'codeBlock':
+          showCodeBlockInput();
+          break;
       }
     });
   });
@@ -804,6 +926,28 @@
     }
     if (e.key === 'Escape') {
       hideImageInput();
+    }
+  });
+
+  // Code block input
+  codeblockApplyBtn.addEventListener('click', applyCodeBlock);
+  codeblockCancelBtn.addEventListener('click', hideCodeBlockInput);
+  codeblockLangSelect.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyCodeBlock();
+    }
+    if (e.key === 'Escape') {
+      hideCodeBlockInput();
+    }
+  });
+  codeblockFilenameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyCodeBlock();
+    }
+    if (e.key === 'Escape') {
+      hideCodeBlockInput();
     }
   });
 

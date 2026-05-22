@@ -133,4 +133,77 @@
   .dark .prose-light ol li::marker {
     color: var(--color-foreground-muted);
   }
+
+  /* ─── Code Block Overrides ─────────────────────────────────── */
+  .prose-light .code-block-wrapper pre {
+    margin: 0;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  .prose-light .code-block-wrapper code {
+    background-color: transparent;
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  @media (min-width: 768px) {
+    .prose-light .code-block-wrapper code {
+      font-size: 0.9rem;
+    }
+  }
+
+  .dark .prose-light .code-block-wrapper pre,
+  .dark .prose-light .code-block-wrapper code {
+    background-color: transparent;
+  }
+
+  /* Shiki line number styling */
+  .prose-light .code-block-wrapper .line {
+    display: block;
+    padding-left: 0.5rem;
+    padding-right: 1rem;
+  }
+
+  .prose-light .code-block-wrapper .line-number {
+    display: inline-block;
+    width: 2.5rem;
+    margin-right: 1rem;
+    padding-right: 0.5rem;
+    text-align: right;
+    color: var(--color-foreground-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    -webkit-user-select: none;
+    border-right: 1px solid var(--color-background-hover);
+  }
+
+  .prose-light .code-block-wrapper code {
+    counter-reset: none;
+  }
+
+  /* Code block scrollbar styling */
+  .code-block-body::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .code-block-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .code-block-body::-webkit-scrollbar-thumb {
+    background-color: var(--color-background-hover);
+    border-radius: 3px;
+  }
+
+  .code-block-body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-foreground-muted);
+  }
+
+  /* Firefox scrollbar */
+  .code-block-body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-background-hover) transparent;
+  }
 }

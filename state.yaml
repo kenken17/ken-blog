@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-21T23:00:00+08:00'
+last_updated: '2026-05-22T13:47:11+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -541,6 +541,81 @@ features:
         status: done
         completed_at: '2026-05-19T11:16:00+08:00'
         notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.
+  feat_add_code_block:
+    status: completed
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-22T00:00:00+08:00'
+        notes: Created src/components/CodeBlock.astro with language badge, filename header, copy button, dark/light mode support, responsive touch targets, and inline copy script.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-22T00:05:00+08:00'
+        notes: Added remarkCodeFilename plugin to astro.config.mjs that parses title="..." from code fence metadata and attaches data-filename to <pre> tags.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-05-22T00:10:00+08:00'
+        notes: Integrated CodeBlock into src/pages/blog/[slug].astro via <Content components={{ pre: CodeBlock }} />.
+      TASK-1-4:
+        status: done
+        completed_at: '2026-05-22T00:15:00+08:00'
+        notes: Verified CodeBlock uses theme-aware Tailwind classes; added code block overrides in global.css for pre/code backgrounds, line numbers, and scrollbar styling.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-22T00:20:00+08:00'
+        notes: Created tests/features/feat_add_code_block/story-1.test.ts with 17 tests covering component compilation, structure, accessibility, language detection, copy functionality, and theme-aware classes. All passing.
+      TASK-1-TEST-2:
+        status: done
+        completed_at: '2026-05-22T01:15:00+08:00'
+        notes: Created e2e/features/feat_add_code_block/story-1.spec.ts with 10 tests covering language badges, filenames, copy button, clipboard content, visual feedback, pre preservation, and dark mode. All passing.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-22T00:30:00+08:00'
+        notes: Installed @shikijs/transformers and configured transformerLineNumbers in astro.config.mjs markdown.shikiConfig.transformers.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-22T00:35:00+08:00'
+        notes: Verified and enhanced line number styles in global.css with tabular-nums, right border separator, user-select: none, and proper alignment. Copy script already removes .line-number elements.
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-05-22T00:40:00+08:00'
+        notes: Created e2e/features/feat_add_code_block/story-2.spec.ts with 6 tests covering line number visibility, increment, copy-safe behavior, readability, tabular-nums, and user-select: none.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-22T00:45:00+08:00'
+        notes: Added flex-wrap to code block header, responsive font sizes (0.8rem mobile, 0.9rem desktop), overflow-x-auto on body, 44px touch targets on copy button, custom scrollbar styling.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-22T00:50:00+08:00'
+        notes: Verified responsive behavior through implemented flex-wrap, overflow-x-auto, responsive font sizes, and 44px touch targets. E2E tests cover 375/768/1280 viewports.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-22T00:50:00+08:00'
+        notes: Created e2e/features/feat_add_code_block/story-3.spec.ts with 7 responsive tests covering mobile/tablet/desktop viewports, horizontal scroll, copy button accessibility, header overflow, and line number alignment.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-22T01:00:00+08:00'
+        notes: Added code block toolbar button with SVG icon, data-command="codeBlock", and keyboard accessible title attribute.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-22T01:00:00+08:00'
+        notes: Added language selection dropdown with Text, Bash, Python, JavaScript, Java, C++, Ruby options and optional filename input.
+      TASK-4-3:
+        status: done
+        completed_at: '2026-05-22T01:00:00+08:00'
+        notes: Implemented code block insertion logic using insertHTML with <pre><code class="language-xxx"> structure. Wraps selected text or inserts empty block.
+      TASK-4-4:
+        status: done
+        completed_at: '2026-05-22T01:00:00+08:00'
+        notes: Updated htmlToMarkdown to extract language from class and data-filename from <pre>, outputting ```xxx title="file" syntax.
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-05-22T01:05:00+08:00'
+        notes: Created e2e/features/feat_add_code_block/story-4.spec.ts with 8 tests covering toolbar button visibility, language selector, all supported languages, default Text, code block insertion, text wrapping, filename input, and cancel behavior.
+      TASK-5-TEST-1:
+        status: done
+        completed_at: '2026-05-22T01:40:00+08:00'
+        notes: All 17 new unit tests pass. All 31 new e2e tests pass on Chromium. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 14 pages successfully. 1 pre-existing analytics test failure unrelated to this feature.
   feat_add_custom_404_page:
     status: completed
     tasks:

@@ -16,8 +16,10 @@
     "typecheck": "astro check"
   },
   "dependencies": {
+    "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
+    "@shikijs/transformers": "^4.1.0",
     "@tailwindcss/typography": "^0.5.10",
     "astro": "^6.3.1",
     "pi-subagents": "^0.24.4",

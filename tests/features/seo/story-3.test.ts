@@ -7,7 +7,8 @@ describe('sitemap integration', () => {
     const configPath = resolve(process.cwd(), 'astro.config.mjs');
     const configContent = readFileSync(configPath, 'utf-8');
     expect(configContent).toContain("import sitemap from '@astrojs/sitemap'");
-    expect(configContent).toContain('integrations: [sitemap()]');
+    expect(configContent).toContain('sitemap()');
+    expect(configContent).toContain('integrations:');
   });
 
   it('robots.txt references the sitemap', () => {
