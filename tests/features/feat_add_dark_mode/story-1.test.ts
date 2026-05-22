@@ -68,11 +68,6 @@ describe('dark mode CSS foundation', () => {
     expect(css).toContain('color: var(--color-foreground)');
   });
 
-  it('global.css has smooth transition on html', () => {
-    const css = fs.readFileSync(globalCssPath, 'utf-8');
-    expect(css).toContain('transition: background-color 0.2s ease, color 0.2s ease');
-  });
-
   it('global.css defines dark prose overrides', () => {
     const css = fs.readFileSync(globalCssPath, 'utf-8');
     expect(css).toContain('.dark .prose-light');

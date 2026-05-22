@@ -50,7 +50,7 @@ describe('CookieConsent component', () => {
   it('renders privacy learn more link', async () => {
     const code = await compileComponent(cookieConsentPath);
     expect(code).toContain('Learn more');
-    expect(code).toContain('#privacy');
+    expect(code).toContain('/privacy');
   });
 
   it('imports consent utilities', async () => {

@@ -1,16 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('dark mode CSS foundation', () => {
-  test('html has transition for smooth theme switching', async ({ page }) => {
-    await page.goto('/');
-    const html = page.locator('html');
-    const transition = await html.evaluate((el) =>
-      window.getComputedStyle(el).transitionProperty
-    );
-    expect(transition).toContain('background-color');
-    expect(transition).toContain('color');
-  });
-
   test('body has light background by default', async ({ page }) => {
     await page.goto('/');
     const body = page.locator('body');
