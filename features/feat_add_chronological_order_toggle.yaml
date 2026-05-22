@@ -1,0 +1,24 @@
+id: feat_add_chronological_order_toggle
+name: Add Chronological Order Toggle to Listing of Blog Posts/Tags
+description: Allow users to toggle between chronological and reverse chronological order when viewing the listing of blog posts and tags.
+business_goal: Improve user experience by giving users the option to view blog posts and tags in their preferred order, enhancing navigation and content discovery.
+scope:
+  in_scope:
+    - Implement a toggle button on the blog post listing page and tag listing page that allows users to switch between chronological and reverse chronological order.
+    - Ensure that the toggle state is preserved across sessions using cookies or local storage.
+    - Update the UI to reflect the current sorting order clearly.
+  out_scope:
+    - Implementing additional sorting options (e.g., by popularity, by author).
+    - Changing the default sorting order for all users.
+constraints:
+  technical:
+    - The implementation must be compatible with the existing frontend framework and backend API.
+    - The toggle functionality should not significantly impact page load times or performance.
+  non-technical:
+    - The feature should be designed to be intuitive and user-friendly, requiring minimal user education.
+success_criteria:
+  - Users can successfully toggle between chronological and reverse chronological order on the blog post listing page and tag listing page.
+  - The toggle state is preserved across sessions, allowing users to maintain their preferred sorting order.
+  - User feedback indicates an improved experience in navigating and discovering content based on their preferred sorting order.
+metrics:
+priority: P1
