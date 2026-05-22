@@ -68,4 +68,4 @@ features:
     name: feat_add_code_block
     file: feat_add_code_block.yaml
     priority: P1
-    status: queued
+    status: completed
