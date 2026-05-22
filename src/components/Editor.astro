@@ -139,6 +139,7 @@
           <option value="java">Java</option>
           <option value="cpp">C++</option>
           <option value="ruby">Ruby</option>
+          <option value="yaml">YAML</option>
         </select>
         <input
           id="codeblock-filename-input"
@@ -325,22 +326,47 @@
   }
 
   #content-input pre {
+    position: relative;
     background-color: var(--color-background-elevated);
     border: 1px solid var(--color-background-hover);
     border-radius: 0.5rem;
-    padding: 1rem;
+    padding: 1.75rem 1rem 1rem 1rem;
     margin: 1rem 0;
     overflow-x: auto;
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.85rem;
     line-height: 1.7;
+    white-space: pre;
+    tab-size: 2;
+  }
+
+  #content-input pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.25rem 0.75rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-surface);
+    border-bottom: 1px solid var(--color-background-hover);
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    pointer-events: none;
+    user-select: none;
   }
 
   #content-input pre code {
     background-color: transparent;
+    font-family: inherit;
     font-size: inherit;
     line-height: inherit;
-    color: var(--color-foreground);
+    color: var(--color-foreground-secondary);
   }
 
   .toolbar-btn.active {
@@ -711,7 +737,7 @@
     const selectedText = sel && !sel.isCollapsed ? sel.toString() : '';
 
     const filenameAttr = filename ? ` data-filename="${filename}"` : '';
-    const html = `<pre class="language-${lang}"${filenameAttr}><code class="language-${lang}">${selectedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre><p><br></p>`;
+    const html = `<pre class="language-${lang}" data-lang="${lang}"${filenameAttr}><code class="language-${lang}">${selectedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre><p><br></p>`;
 
     getEditorDoc().execCommand('insertHTML', false, html);
     hideCodeBlockInput();
