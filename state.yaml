@@ -1,8 +1,8 @@
 version: 1
-last_updated: '2026-05-23T00:00:00+08:00'
+last_updated: '2026-05-23T11:23:11+08:00'
 features:
   feat_add_chronological_order_toggle:
-    status: pr-created
+    status: completed
     tasks:
       TASK-1-1:
         status: done
