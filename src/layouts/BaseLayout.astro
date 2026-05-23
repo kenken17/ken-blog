@@ -89,6 +89,21 @@ const resolvedCanonical = canonicalUrl ? `${SITE_URL}${canonicalUrl}` : SITE_URL
       }
     })();
   </script>
+  <script is:inline>
+    (function() {
+      var sortOrder = null;
+      try {
+        sortOrder = localStorage.getItem('sort_order');
+      } catch (e) {
+        sortOrder = null;
+      }
+      if (sortOrder === 'chronological' || sortOrder === 'reverse-chronological') {
+        document.documentElement.setAttribute('data-sort-order', sortOrder);
+      } else {
+        document.documentElement.setAttribute('data-sort-order', 'reverse-chronological');
+      }
+    })();
+  </script>
 </head>
 <body class="bg-background text-foreground antialiased">
   <header class="w-full">

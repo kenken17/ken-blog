@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SortOrderToggle from '../components/SortOrderToggle.astro';
 import { calculateReadingTime } from '../utils/reading-time';
 import { generateJsonLd } from '../utils/seo';
 
@@ -32,14 +33,17 @@ const jsonLd = generateJsonLd({
       <h1 class="font-display text-display-sm md:text-display-md text-foreground">
         BLOG
       </h1>
-      <p class="text-foreground-secondary mt-4 text-lg">
-        {posts.length} post{posts.length !== 1 ? 's' : ''}
-      </p>
+      <div class="flex items-center justify-between mt-4">
+        <p class="text-foreground-secondary text-lg">
+          {posts.length} post{posts.length !== 1 ? 's' : ''}
+        </p>
+        <SortOrderToggle />
+      </div>
     </div>
 
-    <div class="space-y-12">
+    <div class="space-y-12" data-posts-container>
       {posts.map((post: CollectionEntry<'posts'>, index: number) => (
-        <article class="group animate-fade-in" style={`animation-delay: ${index * 100}ms`}>
+        <article class="group animate-fade-in" data-pub-date={post.data.pubDate.toISOString()} style={`animation-delay: ${index * 100}ms`}>
           <div class="flex items-baseline justify-between mb-2">
             <div class="flex items-center gap-2">
               <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
@@ -76,4 +80,40 @@ const jsonLd = generateJsonLd({
       ))}
     </div>
   </main>
+
+  <script>
+    import { getEffectiveSortOrder, type SortOrder } from '../utils/sort-order.ts';
+
+    function reorderPosts(order: SortOrder) {
+      const container = document.querySelector<HTMLDivElement>('[data-posts-container]');
+      if (!container) return;
+
+      const articles = Array.from(container.querySelectorAll<HTMLElement>('[data-pub-date]'));
+      if (articles.length === 0) return;
+
+      const sorted = articles.sort((a, b) => {
+        const aDate = a.getAttribute('data-pub-date') ?? '';
+        const bDate = b.getAttribute('data-pub-date') ?? '';
+        if (order === 'chronological') {
+          return aDate.localeCompare(bDate);
+        }
+        return bDate.localeCompare(aDate);
+      });
+
+      sorted.forEach((article, index) => {
+        article.style.animationDelay = `${index * 100}ms`;
+        container.appendChild(article);
+      });
+    }
+
+    // Apply stored preference on initial load
+    const initialOrder = getEffectiveSortOrder();
+    reorderPosts(initialOrder);
+
+    // Listen for toggle changes
+    window.addEventListener('sort-order:change', (event: Event) => {
+      const customEvent = event as CustomEvent<{ order: SortOrder }>;
+      reorderPosts(customEvent.detail.order);
+    });
+  </script>
 </BaseLayout>
