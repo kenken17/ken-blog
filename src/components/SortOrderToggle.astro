@@ -1,0 +1,130 @@
+---
+// SortOrderToggle.astro — vanilla JS island, no framework dependency
+---
+
+<button
+  type="button"
+  data-sort-order-toggle
+  aria-label="Sort order: newest first — click to show oldest first"
+  class="p-2 text-foreground-secondary hover:text-foreground transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none rounded-sm"
+>
+  <!-- Ascending icon (visible in chronological order) -->
+  <svg
+    data-ascending-icon
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+    aria-hidden="true"
+  >
+    <path d="m3 8 4-4 4 4" />
+    <path d="M7 4v16" />
+    <path d="M11 12h4" />
+    <path d="M11 16h7" />
+    <path d="M11 20h10" />
+  </svg>
+
+  <!-- Descending icon (visible in reverse-chronological order) -->
+  <svg
+    data-descending-icon
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class=""
+    aria-hidden="true"
+  >
+    <path d="m3 16 4 4 4-4" />
+    <path d="M7 20V4" />
+    <path d="M11 12h4" />
+    <path d="M11 8h7" />
+    <path d="M11 4h10" />
+  </svg>
+</button>
+
+<script>
+  import {
+    getStoredSortOrder,
+    setStoredSortOrder,
+    getDefaultSortOrder,
+    toggleSortOrder,
+    type SortOrder,
+  } from '../utils/sort-order.ts';
+
+  function getEffectiveSortOrder(): SortOrder {
+    const stored = getStoredSortOrder();
+    if (stored) return stored;
+    // Fallback to data-sort-order attribute set by FOUC-prevention script
+    if (typeof document !== 'undefined') {
+      const attr = document.documentElement.getAttribute('data-sort-order');
+      if (attr === 'chronological' || attr === 'reverse-chronological') {
+        return attr;
+      }
+    }
+    return getDefaultSortOrder();
+  }
+
+  function updateIcons(order: SortOrder) {
+    const ascending = document.querySelector<SVGSVGElement>('[data-ascending-icon]');
+    const descending = document.querySelector<SVGSVGElement>('[data-descending-icon]');
+    if (!ascending || !descending) return;
+
+    if (order === 'chronological') {
+      ascending.classList.remove('hidden');
+      descending.classList.add('hidden');
+    } else {
+      ascending.classList.add('hidden');
+      descending.classList.remove('hidden');
+    }
+  }
+
+  function updateAriaLabel(order: SortOrder) {
+    const btn = document.querySelector<HTMLButtonElement>('[data-sort-order-toggle]');
+    if (!btn) return;
+
+    if (order === 'chronological') {
+      btn.setAttribute('aria-label', 'Sort order: oldest first — click to show newest first');
+    } else {
+      btn.setAttribute('aria-label', 'Sort order: newest first — click to show oldest first');
+    }
+  }
+
+  function dispatchSortOrderChange(order: SortOrder) {
+    document.documentElement.setAttribute('data-sort-order', order);
+    window.dispatchEvent(
+      new CustomEvent('sort-order:change', { detail: { order } })
+    );
+  }
+
+  function onSortOrderChange(order: SortOrder) {
+    updateIcons(order);
+    updateAriaLabel(order);
+  }
+
+  // Initialize on mount
+  const initialOrder = getEffectiveSortOrder();
+  onSortOrderChange(initialOrder);
+
+  // Toggle button click handler
+  const toggleBtn = document.querySelector<HTMLButtonElement>('[data-sort-order-toggle]');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const current = getEffectiveSortOrder();
+      const next = toggleSortOrder(current);
+      setStoredSortOrder(next);
+      onSortOrderChange(next);
+      dispatchSortOrderChange(next);
+    });
+  }
+</script>

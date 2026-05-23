@@ -1,6 +1,45 @@
 version: 1
-last_updated: '2026-05-22T13:47:11+08:00'
+last_updated: '2026-05-23T00:00:00+08:00'
 features:
+  feat_add_chronological_order_toggle:
+    status: in-progress
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-23T10:41:00+08:00'
+        notes: Created src/utils/sort-order.ts with SortOrder type, STORAGE_KEY, getStoredSortOrder, setStoredSortOrder, getDefaultSortOrder, getEffectiveSortOrder, toggleSortOrder, sortPosts. All SSR-safe with try/catch.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-23T10:41:00+08:00'
+        notes: Added sortTags function to sort-order.ts. chronological = A→Z, reverse-chronological = Z→A.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-23T10:42:00+08:00'
+        notes: Created src/components/SortOrderToggle.astro with ascending/descending SVG icons, vanilla JS inline script, aria-label updates, CustomEvent dispatch, keyboard accessible button. Swiss Modernism 2.0 styling.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-23T10:43:00+08:00'
+        notes: Integrated SortOrderToggle into blog.astro, tags/index.astro, and tags/[tag].astro headers. Responsive flex layout next to post/tag counts.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-23T10:43:00+08:00'
+        notes: Added data-pub-date attributes to articles and client-side reordering script to blog.astro. Listens for sort-order:change, reorders DOM, recalculates animation delays.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-23T10:43:00+08:00'
+        notes: Added data-pub-date attributes and client-side reordering script to tags/[tag].astro. Same pattern as blog page.
+      TASK-3-3:
+        status: done
+        completed_at: '2026-05-23T10:44:00+08:00'
+        notes: Added data-tag-name attributes and client-side reordering script to tags/index.astro. Added FOUC-prevention inline script to BaseLayout head that sets data-sort-order on html before paint.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-23T10:45:00+08:00'
+        notes: Created story-1.test.ts with 31 unit tests covering all sort-order utility functions. Tests cover happy path, SSR guards, localStorage errors, invalid values, sort direction correctness. All pass.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-23T10:46:00+08:00'
+        notes: Created story-2.test.ts (SortOrderToggle DOM logic) and story-3.spec.ts (Playwright E2E). E2E covers toggle visibility on all 3 page types, reordering, persistence across navigation/reload, keyboard accessibility, and FOUC prevention. All 31 unit tests and 20 E2E tests pass.
   feat_add_dark_mode:
     status: completed
     tasks:

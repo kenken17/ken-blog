@@ -1,14 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SortOrderToggle from '../../components/SortOrderToggle.astro';
 import { getAllTags, getTagCounts } from '../../utils/tags';
+import { sortTags, getDefaultSortOrder } from '../../utils/sort-order';
 import { generateJsonLd } from '../../utils/seo';
 import type { CollectionEntry } from 'astro:content';
 
 const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const tags = getAllTags(posts);
+const tags = sortTags(getAllTags(posts), getDefaultSortOrder());
 const tagCounts = getTagCounts(posts);
 
 const jsonLd = generateJsonLd({
@@ -34,18 +36,23 @@ const jsonLd = generateJsonLd({
       <h1 class="font-display text-display-sm md:text-display-md text-foreground">
         TAGS
       </h1>
-      <p class="text-foreground-secondary mt-4 text-lg">
-        {tags.length} topic{tags.length !== 1 ? 's' : ''}
-      </p>
+      <div class="flex items-center justify-between mt-4">
+        <p class="text-foreground-secondary text-lg">
+          {tags.length} topic{tags.length !== 1 ? 's' : ''}
+        </p>
+        <SortOrderToggle />
+      </div>
     </div>
 
-    <div class="flex flex-wrap gap-3 animate-fade-in">
-      {tags.map((tag: string) => {
+    <div class="flex flex-wrap gap-3 animate-fade-in" data-tags-container>
+      {tags.map((tag: string, index: number) => {
         const count = tagCounts.get(tag) ?? 0;
         return (
           <a
             href={`/tags/${tag}`}
+            data-tag-name={tag}
             class="group inline-flex items-center gap-2 px-4 py-2 border border-background-elevated rounded-full text-foreground-muted hover:text-foreground hover:border-foreground-muted transition-colors duration-200"
+            style={`animation-delay: ${index * 50}ms`}
             aria-label={`${count} post${count !== 1 ? 's' : ''} tagged ${tag}`}
           >
             <span class="text-sm font-sans uppercase tracking-wider">{tag}</span>
@@ -57,4 +64,40 @@ const jsonLd = generateJsonLd({
       })}
     </div>
   </main>
+
+  <script>
+    import { getEffectiveSortOrder, type SortOrder } from '../../utils/sort-order.ts';
+
+    function reorderTags(order: SortOrder) {
+      const container = document.querySelector<HTMLDivElement>('[data-tags-container]');
+      if (!container) return;
+
+      const links = Array.from(container.querySelectorAll<HTMLAnchorElement>('[data-tag-name]'));
+      if (links.length === 0) return;
+
+      const sorted = links.sort((a, b) => {
+        const aTag = a.getAttribute('data-tag-name') ?? '';
+        const bTag = b.getAttribute('data-tag-name') ?? '';
+        if (order === 'chronological') {
+          return aTag.localeCompare(bTag);
+        }
+        return bTag.localeCompare(aTag);
+      });
+
+      sorted.forEach((link, index) => {
+        link.style.animationDelay = `${index * 50}ms`;
+        container.appendChild(link);
+      });
+    }
+
+    // Apply stored preference on initial load
+    const initialOrder = getEffectiveSortOrder();
+    reorderTags(initialOrder);
+
+    // Listen for toggle changes
+    window.addEventListener('sort-order:change', (event: Event) => {
+      const customEvent = event as CustomEvent<{ order: SortOrder }>;
+      reorderTags(customEvent.detail.order);
+    });
+  </script>
 </BaseLayout>

@@ -1,0 +1,8 @@
+# Feature: Add Chronological Order Toggle — Summary
+
+| Story | One-liner | Acceptance criteria |
+|--------|-----------|---------------------|
+| Story 1: Sort Order Utility & Persistence | Create a `sort-order.ts` utility module with localStorage persistence for the user's preferred listing order, following the pattern of `theme.ts` | Module exports `SortOrder` type, storage functions (`getStoredSortOrder`, `setStoredSortOrder`), `getDefaultSortOrder`, `toggleSortOrder`, `sortPosts`, and `sortTags`; all SSR-safe with try/catch; default is reverse-chronological |
+| Story 2: SortOrderToggle Component | Create a toggle button component (vanilla JS Astro island) that renders on blog listing, tags index, and tag detail pages, allowing users to switch sort order | Toggle renders with ascending/descending icons; click switches order; `aria-label` reflects current state; keyboard accessible; dispatches `sort-order:change` custom event; styling matches Swiss Modernism 2.0 design system |
+| Story 3: Client-Side Post Reordering | Implement client-side DOM reordering on all three listing pages so posts/tags reorder instantly without a page reload, with FOUC prevention | Posts reorder on `/blog` and `/tags/[tag]`; tags reorder on `/tags`; animation delays recalculated; stored preference applied on page load; FOUC-prevention script in `<head>` sets `data-sort-order` attribute |
+| Story 4: Testing | Comprehensive unit and E2E tests for sort-order utility, toggle component, and reordering behavior | Unit tests cover all utility functions (>80% coverage); unit tests cover toggle DOM logic; E2E tests verify toggle renders, reordering works, persistence across navigations, keyboard accessibility, no FOUC |
