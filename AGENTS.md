@@ -8,7 +8,7 @@
 4. test-verifier runs tests — delegate to test-verifier[progress=true,skills=test-verifying,model=opencode-go/deepseek-v4-flash] — NEVER use the same agent/model that coded
 5. If FAIL: delegate fix back to task-executor, then re-run test-verifier — loop until PASS
 6. If PASS: delegate to checker[progress=true,skill=checkin,model=opencode-go/deepseek-v4-flash]
-7. CHECKPOINT: checker agent pauses for human 'merge' reply — orchestrator waits, does NOT close the task until merge is confirmed
+7. CHECKPOINT: checker CREATE a PULL REQUEST in remote and pauses for human 'merge' reply — orchestrator waits, does NOT close the task until merge is confirmed
 8. On merge confirmed: checker completes git merge, update `state.yaml` story status to done.
 
 NEVER let the coding agent verify its own work.
