@@ -1,0 +1,102 @@
+---
+import type { SortOrder } from '../utils/sortPreference';
+
+interface Props {
+  currentOrder?: SortOrder;
+  controls?: string;
+}
+
+const { currentOrder = 'desc', controls } = Astro.props;
+const isAscending = currentOrder === 'asc';
+---
+
+<button
+  type="button"
+  data-order-toggle-button
+  data-current-order={currentOrder}
+  data-controls={controls ?? ''}
+  class="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-background-elevated rounded-md text-sm font-sans text-foreground-muted hover:text-foreground hover:border-foreground-muted transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none"
+  aria-pressed={isAscending ? 'true' : 'false'}
+  aria-label={isAscending ? 'Sort: oldest first (click to switch to newest first)' : 'Sort: newest first (click to switch to oldest first)'}
+>
+  <span class="text-sm">Sort:</span>
+  <svg
+    data-order-toggle-icon
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="transition-transform duration-200"
+    aria-hidden="true"
+  >
+    {isAscending ? (
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    ) : (
+      <path d="M12 5v14M5 12l7 7 7-7" />
+    )}
+  </svg>
+</button>
+
+<script>
+  import type { SortOrder } from '../utils/sortPreference.ts';
+
+  const CHANGE_EVENT = 'blog:sort-order-changed';
+  const SET_EVENT = 'blog:sort-order-set';
+
+  function isSortOrder(value: unknown): value is SortOrder {
+    return value === 'asc' || value === 'desc';
+  }
+
+  function render(button: HTMLButtonElement, order: SortOrder): void {
+    const icon = button.querySelector<SVGSVGElement>('[data-order-toggle-icon]');
+
+    button.dataset.currentOrder = order;
+    button.setAttribute('aria-pressed', order === 'asc' ? 'true' : 'false');
+    button.setAttribute('aria-label', order === 'asc'
+      ? 'Sort: oldest first (click to switch to newest first)'
+      : 'Sort: newest first (click to switch to oldest first)'
+    );
+
+    if (icon) {
+      if (order === 'asc') {
+        icon.innerHTML = '<path d="M12 19V5M5 12l7-7 7 7" />';
+      } else {
+        icon.innerHTML = '<path d="M12 5v14M5 12l7 7 7-7" />';
+      }
+    }
+  }
+
+  function setupButton(button: HTMLButtonElement): void {
+    if (button.dataset.orderToggleBound === 'true') return;
+    button.dataset.orderToggleBound = 'true';
+
+    let currentOrder: SortOrder = button.dataset.currentOrder === 'asc' ? 'asc' : 'desc';
+    render(button, currentOrder);
+
+    button.addEventListener('click', () => {
+      currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+      render(button, currentOrder);
+
+      window.dispatchEvent(new CustomEvent(CHANGE_EVENT, {
+        detail: { order: currentOrder },
+      }));
+    });
+
+    window.addEventListener(SET_EVENT, (event: Event) => {
+      const customEvent = event as CustomEvent<{ order?: SortOrder }>;
+      const order = customEvent.detail?.order;
+      if (!isSortOrder(order)) return;
+
+      currentOrder = order;
+      render(button, currentOrder);
+    });
+  }
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-order-toggle-button]');
+  buttons.forEach((button) => setupButton(button));
+</script>

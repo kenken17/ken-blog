@@ -1,13 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import OrderToggle from '../components/OrderToggle.astro';
 import { calculateReadingTime } from '../utils/reading-time';
 import { generateJsonLd } from '../utils/seo';
+import { sortPostsByDate } from '../utils/tags';
 
 import type { CollectionEntry } from 'astro:content';
 
-const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
-  .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const allPosts = await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft);
+const posts = sortPostsByDate(allPosts, 'desc');
 
 const jsonLd = generateJsonLd({
   type: 'CollectionPage',
@@ -32,14 +34,22 @@ const jsonLd = generateJsonLd({
       <h1 class="font-display text-display-sm md:text-display-md text-foreground">
         BLOG
       </h1>
-      <p class="text-foreground-secondary mt-4 text-lg">
-        {posts.length} post{posts.length !== 1 ? 's' : ''}
-      </p>
+      <div class="mt-4 flex items-center gap-4">
+        <p class="text-foreground-secondary text-lg">
+          {posts.length} post{posts.length !== 1 ? 's' : ''}
+        </p>
+        <OrderToggle currentOrder="desc" controls="blog-post-list" />
+      </div>
     </div>
 
-    <div class="space-y-12">
+    <div id="blog-post-list" data-sort-list="blog-posts" class="space-y-12">
       {posts.map((post: CollectionEntry<'posts'>, index: number) => (
-        <article class="group animate-fade-in" style={`animation-delay: ${index * 100}ms`}>
+        <article
+          data-sort-item
+          data-pub-date={String(post.data.pubDate.valueOf())}
+          class="group animate-fade-in"
+          style={`animation-delay: ${index * 100}ms`}
+        >
           <div class="flex items-baseline justify-between mb-2">
             <div class="flex items-center gap-2">
               <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
@@ -76,4 +86,47 @@ const jsonLd = generateJsonLd({
       ))}
     </div>
   </main>
+
+  <script>
+    import { getSortPreference, setSortPreference } from '../utils/sortPreference.ts';
+    import type { SortOrder } from '../utils/sortPreference.ts';
+
+    function getTimestamp(element: HTMLElement): number {
+      const rawValue = element.dataset.pubDate;
+      const timestamp = Number(rawValue);
+      return Number.isFinite(timestamp) ? timestamp : 0;
+    }
+
+    function sortList(listElement: HTMLElement, order: SortOrder): void {
+      const items = Array.from(listElement.querySelectorAll<HTMLElement>('[data-sort-item]'));
+
+      items.sort((a, b) => {
+        const diff = getTimestamp(a) - getTimestamp(b);
+        return order === 'asc' ? diff : -diff;
+      });
+
+      for (const item of items) {
+        listElement.appendChild(item);
+      }
+    }
+
+    const listElement = document.querySelector<HTMLElement>('[data-sort-list="blog-posts"]');
+
+    if (listElement) {
+      const initialOrder = getSortPreference();
+      sortList(listElement, initialOrder);
+
+      window.dispatchEvent(new CustomEvent('blog:sort-order-set', {
+        detail: { order: initialOrder },
+      }));
+
+      window.addEventListener('blog:sort-order-changed', (event: Event) => {
+        const customEvent = event as CustomEvent<{ order?: SortOrder }>;
+        const order = customEvent.detail?.order === 'asc' ? 'asc' : 'desc';
+
+        sortList(listElement, order);
+        setSortPreference(order);
+      });
+    }
+  </script>
 </BaseLayout>

@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-22T13:47:11+08:00'
+last_updated: '2026-05-23T09:40:00+08:00'
 features:
   feat_add_dark_mode:
     status: completed
@@ -541,6 +541,65 @@ features:
         status: done
         completed_at: '2026-05-19T11:16:00+08:00'
         notes: Full test suite passes — 167/167 tests, 0 failures. astro check reports 0 errors, 0 warnings, 0 hints. astro build produces 9 pages successfully.
+  feat_add_chronological_order_toggle:
+    status: done
+    tasks:
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Created src/utils/sortPreference.ts with getSortPreference/setSortPreference using localStorage key blog:sort-order and safe fallbacks to desc.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Created reusable src/components/OrderToggle.astro with clear newest/oldest states, aria-pressed and aria-label updates, and custom change/set events.
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added sortPostsByDate(posts, sortOrder) utility and integrated optional asc/desc sorting for blog listing data preparation.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Integrated OrderToggle into src/pages/blog.astro with client-side DOM reordering (no full reload), active state sync, and persisted preference writes.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Extended getPostsByTag to accept optional sortOrder and use shared date sorting logic while preserving default desc behavior.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Integrated OrderToggle into src/pages/tags/[tag].astro with client-side reordering, active state sync, and preference persistence.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Blog listing now restores sort order from localStorage on load/reload and saves updated preference after toggle changes.
+      TASK-3-3:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Tag listing now restores and saves the same global sort preference key shared with blog listing.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added tests/features/feat_add_chronological_order_toggle/story-1.test.ts covering default desc, asc, explicit desc, and non-mutating sort behavior.
+      TASK-1-TEST-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added e2e/features/feat_add_chronological_order_toggle/story-1.spec.ts validating blog toggle visibility, ordering changes, and UI active state.
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added tests/features/feat_add_chronological_order_toggle/story-2.test.ts covering tag filtering plus asc/desc ordering.
+      TASK-2-TEST-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added e2e/features/feat_add_chronological_order_toggle/story-2.spec.ts validating tag page toggle visibility, ordering changes, and UI active state.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added tests/features/feat_add_chronological_order_toggle/story-3.test.ts covering default fallback, stored values, write behavior, and storage error handling.
+      TASK-3-TEST-2:
+        status: done
+        completed_at: '2026-05-23T09:40:00+08:00'
+        notes: Added e2e/features/feat_add_chronological_order_toggle/story-3.spec.ts validating persistence across reloads and shared preference behavior across blog and tag pages.
   feat_add_code_block:
     status: completed
     tasks:
@@ -555,7 +614,7 @@ features:
       TASK-1-3:
         status: done
         completed_at: '2026-05-22T00:10:00+08:00'
-        notes: Integrated CodeBlock into src/pages/blog/[slug].astro via <Content components={{ pre: CodeBlock }} />.
+        notes: 'Integrated CodeBlock into src/pages/blog/[slug].astro via <Content components={{ pre: CodeBlock }} />.'
       TASK-1-4:
         status: done
         completed_at: '2026-05-22T00:15:00+08:00'
@@ -575,11 +634,11 @@ features:
       TASK-2-2:
         status: done
         completed_at: '2026-05-22T00:35:00+08:00'
-        notes: Verified and enhanced line number styles in global.css with tabular-nums, right border separator, user-select: none, and proper alignment. Copy script already removes .line-number elements.
+        notes: 'Verified and enhanced line number styles in global.css with tabular-nums, right border separator, user-select: none, and proper alignment. Copy script already removes .line-number elements.'
       TASK-2-TEST-1:
         status: done
         completed_at: '2026-05-22T00:40:00+08:00'
-        notes: Created e2e/features/feat_add_code_block/story-2.spec.ts with 6 tests covering line number visibility, increment, copy-safe behavior, readability, tabular-nums, and user-select: none.
+        notes: 'Created e2e/features/feat_add_code_block/story-2.spec.ts with 6 tests covering line number visibility, increment, copy-safe behavior, readability, tabular-nums, and user-select: none.'
       TASK-3-1:
         status: done
         completed_at: '2026-05-22T00:45:00+08:00'
