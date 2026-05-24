@@ -1,0 +1,148 @@
+---
+// BlogTagFilter.astro — vanilla JS island, no framework dependency
+interface Props {
+  tags: string[];
+  tagCounts: Map<string, number>;
+}
+
+const { tags, tagCounts } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-2 mb-8" data-blog-tag-filter-container>
+  {tags.map((tag) => {
+    const count = tagCounts.get(tag) ?? 0;
+    return (
+      <button
+        type="button"
+        data-blog-tag-filter
+        data-tag={tag}
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-background-elevated rounded-full text-foreground-muted hover:text-foreground hover:border-foreground-muted transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none"
+        aria-pressed="false"
+        aria-label={`Filter by ${tag} (${count} post${count !== 1 ? 's' : ''})`}
+      >
+        <span class="text-sm font-sans uppercase tracking-wider">{tag}</span>
+        <span class="text-xs font-sans text-foreground-muted" data-tag-count>{count}</span>
+      </button>
+    );
+  })}
+</div>
+
+<script>
+  const STORAGE_KEY = 'blog_tag_filter';
+
+  function getStoredTags(): string[] {
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((t): t is string => typeof t === 'string');
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
+  function setStoredTags(tags: string[]): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tags));
+    } catch {
+      return;
+    }
+  }
+
+  function getEffectiveTags(): string[] {
+    const stored = getStoredTags();
+    if (stored.length > 0) return stored;
+    // Fallback to data-tag-filter attribute set by FOUC-prevention script
+    if (typeof document !== 'undefined') {
+      const attr = document.documentElement.getAttribute('data-tag-filter');
+      if (attr) {
+        try {
+          const parsed = JSON.parse(attr);
+          if (Array.isArray(parsed)) {
+            return parsed.filter((t): t is string => typeof t === 'string');
+          }
+        } catch {
+          return [];
+        }
+      }
+    }
+    return [];
+  }
+
+  function updateButtonState(button: HTMLButtonElement, isActive: boolean) {
+    if (isActive) {
+      button.classList.remove('border-background-elevated', 'text-foreground-muted');
+      button.classList.add('bg-foreground', 'text-background');
+      button.setAttribute('aria-pressed', 'true');
+      // Update count text color for contrast
+      const countSpan = button.querySelector<HTMLSpanElement>('[data-tag-count]');
+      if (countSpan) {
+        countSpan.classList.remove('text-foreground-muted');
+        countSpan.classList.add('text-background');
+      }
+    } else {
+      button.classList.remove('bg-foreground', 'text-background');
+      button.classList.add('border-background-elevated', 'text-foreground-muted');
+      button.setAttribute('aria-pressed', 'false');
+      const countSpan = button.querySelector<HTMLSpanElement>('[data-tag-count]');
+      if (countSpan) {
+        countSpan.classList.remove('text-background');
+        countSpan.classList.add('text-foreground-muted');
+      }
+    }
+  }
+
+  function dispatchTagFilterChange(tags: string[]) {
+    document.documentElement.setAttribute('data-tag-filter', JSON.stringify(tags));
+    window.dispatchEvent(
+      new CustomEvent('blog-tag-filter:change', { detail: { tags } })
+    );
+  }
+
+  function initBlogTagFilter() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-blog-tag-filter]');
+    if (buttons.length === 0) return;
+
+    const activeTags = new Set(getEffectiveTags());
+
+    // Initialize button states
+    buttons.forEach((button) => {
+      const tag = button.getAttribute('data-tag');
+      if (!tag) return;
+      const isActive = activeTags.has(tag);
+      updateButtonState(button, isActive);
+    });
+
+    // Dispatch initial state
+    if (activeTags.size > 0) {
+      dispatchTagFilterChange(Array.from(activeTags));
+    }
+
+    // Click handlers
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const tag = button.getAttribute('data-tag');
+        if (!tag) return;
+
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+          updateButtonState(button, false);
+        } else {
+          activeTags.add(tag);
+          updateButtonState(button, true);
+        }
+
+        const tagsArray = Array.from(activeTags);
+        setStoredTags(tagsArray);
+        dispatchTagFilterChange(tagsArray);
+      });
+    });
+  }
+
+  initBlogTagFilter();
+</script>
