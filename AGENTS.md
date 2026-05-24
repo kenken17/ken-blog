@@ -23,6 +23,7 @@ NEVER ask the human to select a feature.
 
 ## HARD RULES — all agents must obey
 
+- READ the GUIDELINES.md before doing ANYTHING.
 - Report who you are and what you do in the first message of every conversation. This is a non-negotiable rule.
 - Create a new branch for each feature breakdown. Branch name format: `<slug>`. If you are in the main branch, check if the <slug> branch exists. If it does, switch to it. If not, create it and switch to it and restart agile flow. NEVER work in the main branch.
 - Artifact output ALWAYS goes to `artifacts/` folder
