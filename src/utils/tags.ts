@@ -28,3 +28,17 @@ export function getTagCounts(posts: CollectionEntry<'posts'>[]): Map<string, num
   }
   return counts;
 }
+
+interface PostWithTags {
+  data: {
+    tags: string[];
+  };
+}
+
+export function filterPostsByTags<T extends PostWithTags>(
+  posts: T[],
+  selectedTags: string[]
+): T[] {
+  if (selectedTags.length === 0) return posts;
+  return posts.filter((post) => selectedTags.some((tag) => post.data.tags.includes(tag)));
+}

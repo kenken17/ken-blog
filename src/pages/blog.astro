@@ -2,13 +2,18 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SortOrderToggle from '../components/SortOrderToggle.astro';
+import BlogTagFilter from '../components/BlogTagFilter.astro';
 import { calculateReadingTime } from '../utils/reading-time';
+import { getAllTags, getTagCounts } from '../utils/tags';
 import { generateJsonLd } from '../utils/seo';
 
 import type { CollectionEntry } from 'astro:content';
 
 const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft))
   .sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const tags = getAllTags(posts);
+const tagCounts = getTagCounts(posts);
 
 const jsonLd = generateJsonLd({
   type: 'CollectionPage',
@@ -34,16 +39,18 @@ const jsonLd = generateJsonLd({
         BLOG
       </h1>
       <div class="flex items-center justify-between mt-4">
-        <p class="text-foreground-secondary text-lg">
+        <p class="text-foreground-secondary text-lg" data-post-count aria-live="polite">
           {posts.length} post{posts.length !== 1 ? 's' : ''}
         </p>
         <SortOrderToggle />
       </div>
     </div>
 
+    <BlogTagFilter tags={tags} tagCounts={tagCounts} />
+
     <div class="space-y-12" data-posts-container>
       {posts.map((post: CollectionEntry<'posts'>, index: number) => (
-        <article class="group animate-fade-in" data-pub-date={post.data.pubDate.toISOString()} style={`animation-delay: ${index * 100}ms`}>
+        <article class="group animate-fade-in" data-pub-date={post.data.pubDate.toISOString()} data-tags={JSON.stringify(post.data.tags)} style={`animation-delay: ${index * 100}ms`}>
           <div class="flex items-baseline justify-between mb-2">
             <div class="flex items-center gap-2">
               <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
@@ -106,14 +113,62 @@ const jsonLd = generateJsonLd({
       });
     }
 
-    // Apply stored preference on initial load
+    function filterPosts(selectedTags: string[]) {
+      const container = document.querySelector<HTMLDivElement>('[data-posts-container]');
+      if (!container) return;
+
+      const articles = Array.from(container.querySelectorAll<HTMLElement>('[data-tags]'));
+      const postCountEl = document.querySelector<HTMLParagraphElement>('[data-post-count]');
+
+      let visibleCount = 0;
+
+      articles.forEach((article) => {
+        const tagsAttr = article.getAttribute('data-tags');
+        if (!tagsAttr) return;
+
+        let postTags: string[] = [];
+        try {
+          postTags = JSON.parse(tagsAttr);
+        } catch {
+          postTags = [];
+        }
+
+        const shouldShow = selectedTags.length === 0 || selectedTags.some((tag) => postTags.includes(tag));
+
+        if (shouldShow) {
+          article.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          article.classList.add('hidden');
+        }
+      });
+
+      // Re-apply animation delays to visible posts
+      const visibleArticles = articles.filter((a) => !a.classList.contains('hidden'));
+      visibleArticles.forEach((article, index) => {
+        article.style.animationDelay = `${index * 100}ms`;
+      });
+
+      // Update post count
+      if (postCountEl) {
+        postCountEl.textContent = `${visibleCount} post${visibleCount !== 1 ? 's' : ''}`;
+      }
+    }
+
+    // Apply stored preferences on initial load
     const initialOrder = getEffectiveSortOrder();
     reorderPosts(initialOrder);
 
-    // Listen for toggle changes
+    // Listen for sort-order toggle changes
     window.addEventListener('sort-order:change', (event: Event) => {
       const customEvent = event as CustomEvent<{ order: SortOrder }>;
       reorderPosts(customEvent.detail.order);
+    });
+
+    // Listen for tag filter changes
+    window.addEventListener('blog-tag-filter:change', (event: Event) => {
+      const customEvent = event as CustomEvent<{ tags: string[] }>;
+      filterPosts(customEvent.detail.tags);
     });
   </script>
 </BaseLayout>
