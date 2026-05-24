@@ -78,4 +78,4 @@ features:
     name: feat_add_category_filter
     file: feat_add_category_filter.yaml
     priority: P1
-    status: queued
+    status: completed
