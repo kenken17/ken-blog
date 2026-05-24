@@ -1,5 +1,5 @@
 version: 1
-last_updated: '2026-05-24T00:00:00+08:00'
+last_updated: '2026-05-24T15:33:30+08:00'
 features:
   feat_add_chronological_order_toggle:
     status: completed
@@ -711,7 +711,7 @@ features:
         completed_at: '2026-05-21T22:56:14+08:00'
         notes: Added responsive Playwright coverage at e2e/features/feat_add_custom_404_page/story-3.spec.ts for 375/768/1280 layouts and overflow checks.
   feat_add_category_filter:
-    status: in-progress
+    status: completed
     notes: Scope changed to "enhanced tag filtering" (Option A) — inline multi-select tag pills on /blog instead of separate category system. Reuses existing tags data and src/utils/tags.ts. No schema changes.
     tasks:
       TASK-1-1:
