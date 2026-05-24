@@ -11,7 +11,17 @@ const posts = defineCollection({
     updatedDate: z.coerce.date().optional(),
     draft: z.boolean().optional().default(false),
     tags: z.array(z.string()).optional().default([]),
+    author: z.string().optional().default('ken'),
   }),
 });
 
-export const collections = { posts };
+const authors = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/authors' }),
+  schema: z.object({
+    name: z.string(),
+    avatar: z.string(),
+    bio: z.string(),
+  }),
+});
+
+export const collections = { posts, authors };

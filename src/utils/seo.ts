@@ -169,5 +169,14 @@ export function generateJsonLd(options: GenerateJsonLdOptions): JsonLdObject {
     };
   }
 
+  if (type === 'Person') {
+    return {
+      ...base,
+      '@type': 'Person',
+      name: title,
+      description,
+    };
+  }
+
   return base;
 }

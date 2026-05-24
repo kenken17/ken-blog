@@ -1,6 +1,57 @@
 version: 1
-last_updated: '2026-05-24T15:33:30+08:00'
+last_updated: '2026-05-25T00:02:00+08:00'
 features:
+  feat_add_author_bio:
+    status: in-progress
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-05-24T15:35:00+08:00'
+        notes: Added authors collection with name, avatar, bio schema. Added optional author field to posts collection with default 'ken'. Exported updated collections object.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-05-24T15:36:00+08:00'
+        notes: Created src/content/authors/ken.md with frontmatter and placeholder avatar at public/images/avatar.png.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-05-24T15:38:00+08:00'
+        notes: Created src/pages/author/[id].astro with getStaticPaths, author profile, bio, and filtered post list. Added Person JSON-LD support to seo.ts.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-05-24T15:38:00+08:00'
+        notes: Author page uses only existing Tailwind classes and design tokens consistent with blog.astro and [slug].astro.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-05-24T15:40:00+08:00'
+        notes: Added author name as clickable link in blog post header metadata with specified Tailwind classes.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-05-24T15:40:00+08:00'
+        notes: Updated getStaticPaths to fetch authors collection and pass matching author data as prop to each post page.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-05-24T15:41:00+08:00'
+        notes: Author page has title, description, canonical URL, JSON-LD Person schema, and ogType=profile.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-05-24T15:41:00+08:00'
+        notes: Verified single h1 (author name), h2 for posts section, avatar alt text, focus styles on links, and contrast via existing design tokens.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-05-25T00:00:00+08:00'
+        notes: Verified existing story-1.test.ts passes (7/7 tests). Tests content.config.ts authors collection schema, ken.md frontmatter, and avatar existence.
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-05-25T00:00:00+08:00'
+        notes: Created story-2.test.ts with 14 tests covering author page file existence, getStaticPaths, BaseLayout usage, avatar/h1/bio rendering, post filtering/sorting, footer link, Tailwind classes, and Person JSON-LD schema.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-05-25T00:00:00+08:00'
+        notes: Created story-3.test.ts with 7 tests covering author link presence, Tailwind utility classes, aria-label, getStaticPaths author fetching, matching logic, prop passing, and Props interface declaration.
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-05-25T00:00:00+08:00'
+        notes: Created story-4.spec.ts with 9 E2E tests covering single h1, h2 posts section, avatar alt text, focusable author link, page title, meta description, canonical URL, JSON-LD Person schema, og:type profile, and responsive layout.
   feat_add_chronological_order_toggle:
     status: completed
     tasks:

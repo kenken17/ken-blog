@@ -10,17 +10,23 @@ import { generateJsonLd } from '../../utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  return posts.map((post: CollectionEntry<'posts'>) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  const authors = await getCollection('authors');
+  return posts.map((post: CollectionEntry<'posts'>) => {
+    const authorId = post.data.author ?? 'ken';
+    const author = authors.find((a: CollectionEntry<'authors'>) => a.id === authorId);
+    return {
+      params: { slug: post.id },
+      props: { post, author },
+    };
+  });
 }
 
 interface Props {
   post: CollectionEntry<'posts'>;
+  author?: CollectionEntry<'authors'>;
 }
 
-const { post } = Astro.props;
+const { post, author } = Astro.props;
 const { Content } = await render(post);
 const readingTime = calculateReadingTime(post.body);
 
@@ -67,6 +73,18 @@ const jsonLd = generateJsonLd({
             </time>
             <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
             <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">{readingTime} min read</span>
+            {author && (
+              <>
+                <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
+                <a
+                  href={`/author/${author.id}`}
+                  class="text-foreground-muted text-sm uppercase tracking-wider font-sans hover:text-foreground transition-colors duration-200"
+                  aria-label={`Posts by ${author.data.name}`}
+                >
+                  {author.data.name}
+                </a>
+              </>
+            )}
           </div>
           <div class="flex items-center gap-4">
             <LikeButton slug={post.id} />
