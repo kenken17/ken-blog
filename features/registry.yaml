@@ -74,3 +74,8 @@ features:
     file: feat_add_chronological_order_toggle.yaml
     priority: P1
     status: completed
+  - id: F-16
+    name: feat_add_category_filter
+    file: feat_add_category_filter.yaml
+    priority: P1
+    status: queued
