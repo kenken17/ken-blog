@@ -6,6 +6,7 @@ import BlogTagFilter from '../components/BlogTagFilter.astro';
 import { calculateReadingTime } from '../utils/reading-time';
 import { getAllTags, getTagCounts } from '../utils/tags';
 import { generateJsonLd } from '../utils/seo';
+import { getPhotoThumbnail, isPhotoPost } from '../utils/posts';
 
 import type { CollectionEntry } from 'astro:content';
 
@@ -14,6 +15,17 @@ const posts = (await getCollection('posts', ({ data }: { data: { draft?: boolean
 
 const tags = getAllTags(posts);
 const tagCounts = getTagCounts(posts);
+const postsWithMeta: Array<{
+  post: CollectionEntry<'posts'>;
+  index: number;
+  photoPost: boolean;
+  photoThumbnail: ReturnType<typeof getPhotoThumbnail>;
+}> = posts.map((post: CollectionEntry<'posts'>, index: number) => ({
+  post,
+  index,
+  photoPost: isPhotoPost(post),
+  photoThumbnail: getPhotoThumbnail(post),
+}));
 
 const jsonLd = generateJsonLd({
   type: 'CollectionPage',
@@ -49,10 +61,10 @@ const jsonLd = generateJsonLd({
     <BlogTagFilter tags={tags} tagCounts={tagCounts} />
 
     <div class="space-y-12" data-posts-container>
-      {posts.map((post: CollectionEntry<'posts'>, index: number) => (
+      {postsWithMeta.map(({ post, index, photoPost, photoThumbnail }) => (
         <article class="group animate-fade-in" data-pub-date={post.data.pubDate.toISOString()} data-tags={JSON.stringify(post.data.tags)} style={`animation-delay: ${index * 100}ms`}>
-          <div class="flex items-baseline justify-between mb-2">
-            <div class="flex items-center gap-2">
+          <div class="flex items-baseline justify-between mb-2 gap-3">
+            <div class="flex items-center gap-2 flex-wrap">
               <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
                 {post.data.pubDate.toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -62,6 +74,18 @@ const jsonLd = generateJsonLd({
               </time>
               <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
               <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">{calculateReadingTime(post.body)} min read</span>
+              {photoPost && (
+                <>
+                  <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
+                  <span class="inline-flex items-center gap-1 text-foreground-muted text-xs uppercase tracking-wider font-sans" aria-label="Photo post">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    Photo
+                  </span>
+                </>
+              )}
             </div>
             {post.data.tags && post.data.tags.length > 0 && (
               <a
@@ -73,10 +97,26 @@ const jsonLd = generateJsonLd({
               </a>
             )}
           </div>
+
           <a href={`/blog/${post.id}`} class="block">
+            {photoPost && photoThumbnail && (
+              <div class="mb-4 overflow-hidden border border-background-elevated bg-background-elevated">
+                <img
+                  src={photoThumbnail.url}
+                  srcset={`${photoThumbnail.url}?w=480 480w, ${photoThumbnail.url}?w=768 768w, ${photoThumbnail.url}?w=1200 1200w`}
+                  sizes="(min-width: 768px) 42rem, 100vw"
+                  alt={photoThumbnail.alt}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full aspect-[16/9] object-cover group-hover:scale-[1.01] transition-transform duration-300"
+                />
+              </div>
+            )}
+
             <h2 class="font-display text-2xl md:text-3xl text-foreground group-hover:text-foreground-secondary transition-colors duration-200 leading-tight">
               {post.data.title}
             </h2>
+
             {post.data.description && (
               <p class="text-foreground-secondary mt-2 text-base leading-relaxed font-sans">
                 {post.data.description}

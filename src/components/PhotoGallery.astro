@@ -1,0 +1,260 @@
+---
+import type { PostImage } from '../utils/posts';
+
+interface Props {
+  images: PostImage[];
+}
+
+const { images = [] } = Astro.props;
+
+const sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw';
+
+function buildSrcSet(url: string): string {
+  if (!url) {
+    return '';
+  }
+
+  const widths = [480, 768, 1024, 1440];
+  return widths.map((width) => `${url}?w=${width} ${width}w`).join(', ');
+}
+---
+
+{images.length > 0 && (
+  <section aria-label="Photo gallery" class="animate-fade-in">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6" data-photo-gallery>
+      {images.map((image, index) => (
+        <figure class="group" data-photo-item>
+          <button
+            type="button"
+            class="block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground-muted/50 rounded-lg"
+            data-photo-trigger={index}
+            aria-label={`Open image ${index + 1} of ${images.length}: ${image.alt}`}
+          >
+            <img
+              src={image.url}
+              srcset={buildSrcSet(image.url)}
+              sizes={sizes}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+              class="w-full aspect-[4/3] object-cover rounded-lg border border-background-elevated bg-background-surface transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+          </button>
+          {image.caption && (
+            <figcaption class="mt-2 text-sm text-foreground-secondary font-sans leading-relaxed">
+              {image.caption}
+            </figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+
+    <div
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-foreground/90 backdrop-blur-sm p-4"
+      data-photo-lightbox
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image viewer"
+    >
+      <button
+        type="button"
+        class="absolute top-5 right-5 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        data-lightbox-close
+        aria-label="Close image viewer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="absolute left-3 md:left-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        data-lightbox-prev
+        aria-label="Previous image"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="max-w-[92vw] max-h-[92vh] flex flex-col items-center gap-3">
+        <img
+          src=""
+          alt=""
+          data-lightbox-image
+          class="max-w-full max-h-[80vh] object-contain rounded-lg"
+        />
+        <p data-lightbox-caption class="text-foreground-inverse/90 text-sm md:text-base font-sans text-center"></p>
+        <p data-lightbox-counter class="text-foreground-inverse/70 text-xs uppercase tracking-wider font-sans"></p>
+      </div>
+
+      <button
+        type="button"
+        class="absolute right-3 md:right-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        data-lightbox-next
+        aria-label="Next image"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </section>
+)}
+
+<script>
+  interface GalleryImage {
+    url: string;
+    alt: string;
+    caption: string | undefined;
+  }
+
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-photo-trigger]'));
+  const lightbox = document.querySelector<HTMLDivElement>('[data-photo-lightbox]');
+  const lightboxImage = document.querySelector<HTMLImageElement>('[data-lightbox-image]');
+  const lightboxCaption = document.querySelector<HTMLParagraphElement>('[data-lightbox-caption]');
+  const lightboxCounter = document.querySelector<HTMLParagraphElement>('[data-lightbox-counter]');
+  const closeButton = document.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+  const prevButton = document.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
+  const nextButton = document.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+
+  const images: GalleryImage[] = triggers
+    .map((trigger) => {
+      const img = trigger.querySelector('img');
+      if (!img) {
+        return null;
+      }
+
+      const figure = trigger.closest('figure');
+      const captionEl = figure?.querySelector('figcaption');
+      return {
+        url: img.currentSrc || img.src,
+        alt: img.alt,
+        caption: captionEl?.textContent?.trim(),
+      };
+    })
+    .filter((image): image is GalleryImage => image !== null);
+
+  let activeIndex = 0;
+  let previouslyFocused: HTMLElement | null = null;
+
+  function updateLightbox(): void {
+    if (!lightboxImage || !lightboxCaption || !lightboxCounter || images.length === 0) {
+      return;
+    }
+
+    const current = images[activeIndex];
+    if (!current) {
+      return;
+    }
+
+    lightboxImage.src = current.url;
+    lightboxImage.alt = current.alt;
+    lightboxCaption.textContent = current.caption || current.alt || '';
+    lightboxCounter.textContent = `${activeIndex + 1} / ${images.length}`;
+  }
+
+  function openLightbox(index: number): void {
+    if (!lightbox || images.length === 0) {
+      return;
+    }
+
+    previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    activeIndex = index;
+    updateLightbox();
+
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    closeButton?.focus();
+  }
+
+  function closeLightbox(): void {
+    if (!lightbox || !lightboxImage) {
+      return;
+    }
+
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    lightboxImage.src = '';
+    document.body.style.overflow = '';
+    previouslyFocused?.focus();
+  }
+
+  function showPrevious(): void {
+    if (images.length === 0) {
+      return;
+    }
+
+    activeIndex = (activeIndex - 1 + images.length) % images.length;
+    updateLightbox();
+  }
+
+  function showNext(): void {
+    if (images.length === 0) {
+      return;
+    }
+
+    activeIndex = (activeIndex + 1) % images.length;
+    updateLightbox();
+  }
+
+  triggers.forEach((trigger, index) => {
+    trigger.addEventListener('click', () => openLightbox(index));
+  });
+
+  closeButton?.addEventListener('click', closeLightbox);
+  prevButton?.addEventListener('click', showPrevious);
+  nextButton?.addEventListener('click', showNext);
+
+  lightbox?.addEventListener('click', (event: MouseEvent) => {
+    if (event.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    if (!lightbox || lightbox.classList.contains('hidden')) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeLightbox();
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showPrevious();
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showNext();
+    }
+
+    if (event.key === 'Tab') {
+      const focusables = [closeButton, prevButton, nextButton].filter(
+        (el): el is HTMLButtonElement => Boolean(el),
+      );
+      if (focusables.length === 0) {
+        return;
+      }
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    }
+  });
+</script>

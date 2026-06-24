@@ -789,3 +789,127 @@ features:
         status: done
         completed_at: '2026-05-24T23:22:00+08:00'
         notes: Created e2e/features/feat_add_category_filter/story-3.spec.ts with 12 Playwright E2E tests. Covers visibility, single/multi-tag filtering, deselect, persistence across navigation/reload, keyboard (Enter/Space), SortOrderToggle composition, post count updates, FOUC prevention, and aria-live region. All 24 E2E tests pass (12 x 2 browsers).
+  feat_add_photo_blog_post:
+    status: completed
+    notes: All 15 implementation tasks (Stories 1-6) and all 11 test tasks complete. 125 unit tests and 63 E2E tests pass. All 188/188 photo feature tests pass (1 pre-existing 404 test failure). Merged via PR.
+    tasks:
+      TASK-1-1:
+        status: done
+        completed_at: '2026-06-24T15:23:25+08:00'
+        notes: Updated src/content.config.ts posts schema with photo fields (postType and images array of {url, alt, caption}) while preserving existing post compatibility.
+      TASK-1-2:
+        status: done
+        completed_at: '2026-06-24T15:23:25+08:00'
+        notes: Added src/content/posts/photo-post-sample.md with valid photo frontmatter and multiple image entries that validate against schema.
+      TASK-1-3:
+        status: done
+        completed_at: '2026-06-24T15:23:25+08:00'
+        notes: Created src/utils/posts.ts with isPhotoPost/getPostType/getPhotoImages/getPhotoThumbnail utilities for photo post detection and shared metadata extraction.
+      TASK-2-1:
+        status: done
+        completed_at: '2026-06-24T15:24:13+08:00'
+        notes: Created src/components/PhotoGallery.astro to accept image props, render captioned gallery items, and support gallery display with sample content.
+      TASK-2-2:
+        status: done
+        completed_at: '2026-06-24T15:24:13+08:00'
+        notes: Implemented lightbox modal with overlay, close button, escape support, arrow navigation, and keyboard focus handling.
+      TASK-2-3:
+        status: done
+        completed_at: '2026-06-24T15:24:13+08:00'
+        notes: Added responsive grid classes for 1-column mobile, 2-column tablet, and 3-4 column larger breakpoints.
+      TASK-3-1:
+        status: done
+        completed_at: '2026-06-24T15:25:16+08:00'
+        notes: Created PhotoPostForm component with title/description inputs, drag-drop upload area, preview list, and image reordering controls.
+      TASK-3-2:
+        status: done
+        completed_at: '2026-06-24T15:25:16+08:00'
+        notes: Added client-side upload logic for file selection, drag-and-drop, preview generation, type/size validation, caption editing, and POST submission to API.
+      TASK-3-3:
+        status: done
+        completed_at: '2026-06-24T15:25:16+08:00'
+        notes: Implemented /api/photo-post endpoint to validate form data, save uploaded images to public/images/posts/, and create markdown photo post files in src/content/posts/.
+      TASK-4-1:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: src/pages/blog/[slug].astro already has PhotoGallery integration, photo post detection via isPhotoPost, conditional gallery + prose rendering, and existing regular post path preserved.
+      TASK-4-2:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: Title tag, meta description, canonical URL, OG image (photoThumbnail), OG type article, JSON-LD with Article + ImageGallery schema for photo posts already present.
+      TASK-4-3:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: Back to all posts link, newer/older post navigation with aria-labels, and author link all already present.
+      TASK-5-1:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: src/pages/blog.astro already has photo post detection (isPhotoPost), thumbnail display, camera SVG icon, and consistent styling with regular posts.
+      TASK-5-2:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: First image extracted as thumbnail via getPhotoThumbnail, srcset with responsive widths, 16:9 aspect ratio, hover zoom effect.
+      TASK-5-3:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: scripts/generate-search-index.ts already includes postType, thumbnail, imageCount fields, fallback description from captions/alt text, and photo posts properly indexed.
+      TASK-6-1:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: native loading="lazy" and decoding="async" on all gallery images in PhotoGallery.astro and blog list thumbnails.
+      TASK-6-2:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: buildSrcSet() utility generates srcset (480w, 768w, 1024w, 1440w), sizes attribute adapts to viewport breakpoints.
+      TASK-6-3:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: alt text on all images, keyboard navigation (ArrowLeft/Right/Escape/Tab), focus-visible rings, ARIA labels, role=dialog, aria-modal, aria-live regions, button type="button".
+      TASK-6-4:
+        status: done
+        completed_at: '2026-06-24T15:30:00+08:00'
+        notes: astro check passes with 0 errors/warnings/hints. 286/287 tests pass (1 pre-existing 404 page test failure). No layout shift, bundle size impact minimal. Build generates search index with photo post entries.
+      TASK-1-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-1.test.ts with 16 unit tests covering content schema (postType, images, title, description, pubDate, tags, draft), sample photo post validation, and posts.ts utility functions (isPhotoPost, getPostType, getPhotoImages, getPhotoThumbnail, PostImage type). All 16/16 pass.
+      TASK-2-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-2.test.ts with 29 unit tests covering PhotoGallery component compilation, props (PostImage[]), responsive grid (mobile/tablet/desktop), image rendering (lazy loading, alt, captions, srcset), lightbox (dialog role, aria-modal, close/prev/next/counter), and keyboard accessibility (Escape, ArrowLeft, ArrowRight, aria-labels). All 29/29 pass.
+      TASK-2-TEST-2:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-2.spec.ts with 12 E2E tests covering gallery rendering, image alt text, lazy loading, lightbox open/close, correct image display, counter, close button, Escape key, prev/next navigation, overlay close, title and description display. All 12/12 pass on Chromium.
+      TASK-3-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-3.test.ts with 20 unit tests covering PhotoPostForm component compilation, form structure (title input, description textarea, file input, drop zone, preview list, submit button, status element), client-side validation (file size, file type), drag-and-drop, reorder, caption inputs, and API submission. All 20/20 pass.
+      TASK-3-TEST-2:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-3-api.test.ts with 24 unit tests covering API endpoint structure (POST handler, production guard, form parsing), validation (title, description, images, MIME types, file size), image saving (directory creation, buffer write, caption), markdown generation (frontmatter, slugify, yamlSafe), and error handling. All 24/24 pass.
+      TASK-4-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-4.test.ts with 18 unit tests covering blog [slug].astro page (PhotoGallery import, isPhotoPost detection, conditional rendering, title/description, Photo Post indicator, reading time, navigation, SEO metadata, ImageGallery JSON-LD, BaseLayout usage). All 18/18 pass.
+      TASK-4-TEST-2:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-4.spec.ts with 12 E2E tests covering page load, title, description, Photo Post indicator, reading time, date, gallery, back to blog link, SEO title, meta description, JSON-LD structured data, comments section, and tags. All 12/12 pass on Chromium.
+      TASK-5-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-5.test.ts with 18 unit tests covering blog.astro list integration (isPhotoPost, getPhotoThumbnail, camera icon SVG, Photo label, conditional thumbnail, srcset/sizes, lazy loading, alt text, article attributes, post count, styling consistency). All 18/18 pass.
+      TASK-5-TEST-2:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-5.spec.ts with 12 E2E tests covering blog list page load, post count, thumbnail display, camera icon indicator, title, description, reading time, date, navigation to post, thumbnail lazy loading, thumbnail alt text, and tags. All 12/12 pass on Chromium.
+      TASK-6-TEST-1:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-6.spec.ts with 9 E2E tests covering responsive gallery grid (mobile/desktop), photo post page responsiveness (mobile/tablet/desktop), lightbox on mobile viewport, and blog list responsiveness (mobile/desktop). All 9/9 pass on Chromium.
+      TASK-6-TEST-2:
+        status: done
+        completed_at: '2026-06-24T15:39:31+08:00'
+        notes: Created story-6-a11y.spec.ts with 18 E2E tests covering gallery aria-label, image alt text, trigger aria-labels, lightbox dialog/modal/label, close/prev/next button aria-labels, keyboard focus, Escape/ArrowRight/ArrowLeft navigation, caption visibility, focus indicators, lightbox image alt, and body scroll lock. All 18/18 pass on Chromium.
