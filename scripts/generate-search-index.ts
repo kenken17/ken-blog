@@ -2,12 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
 
+interface PhotoImageFrontmatter {
+  url: string;
+  alt: string;
+  caption?: string;
+}
+
 interface PostFrontmatter {
   title: string;
   description?: string;
   pubDate: string | Date;
   draft?: boolean;
   tags?: string[];
+  postType?: 'article' | 'photo';
+  images?: PhotoImageFrontmatter[];
 }
 
 interface SearchIndexEntry {
@@ -16,6 +24,9 @@ interface SearchIndexEntry {
   description: string;
   tags: string[];
   pubDate: string;
+  postType: 'article' | 'photo';
+  thumbnail?: string;
+  imageCount?: number;
 }
 
 const postsDir = path.resolve('src/content/posts');
@@ -60,12 +71,26 @@ function generateSearchIndex(): SearchIndexEntry[] {
         ? data.pubDate.toISOString().split('T')[0]!
         : String(data.pubDate);
 
+    const images = Array.isArray(data.images) ? data.images : [];
+    const isPhotoPost = data.postType === 'photo' || images.length > 0;
+    const thumbnail = images[0]?.url;
+
+    const fallbackDescription = isPhotoPost
+      ? images
+          .map((image) => image.caption || image.alt)
+          .filter(Boolean)
+          .join(' • ')
+      : '';
+
     entries.push({
       slug,
       title: data.title,
-      description: data.description || '',
+      description: (data.description || fallbackDescription || '').trim(),
       tags: data.tags || [],
       pubDate,
+      postType: isPhotoPost ? 'photo' : 'article',
+      thumbnail,
+      imageCount: images.length,
     });
   }
 

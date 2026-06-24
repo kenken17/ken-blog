@@ -1,0 +1,309 @@
+<section class="max-w-3xl mx-auto px-6 py-10 animate-fade-in" aria-label="Create photo post form">
+  <form id="photo-post-form" class="space-y-6 bg-background-surface border border-background-elevated rounded-lg p-6" novalidate>
+    <div>
+      <label for="photo-post-title" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Title
+      </label>
+      <input
+        id="photo-post-title"
+        name="title"
+        type="text"
+        required
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="Photo post title"
+      />
+    </div>
+
+    <div>
+      <label for="photo-post-description" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Description
+      </label>
+      <textarea
+        id="photo-post-description"
+        name="description"
+        rows="4"
+        required
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground-secondary focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="What is this photo set about?"
+      ></textarea>
+    </div>
+
+    <div>
+      <p class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">Images</p>
+      <div
+        id="photo-drop-zone"
+        class="border-2 border-dashed border-background-hover rounded-lg p-6 text-center bg-background-elevated/40 transition-colors duration-200"
+      >
+        <p class="text-foreground-secondary font-sans mb-2">Drag and drop images here, or choose files</p>
+        <input id="photo-file-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple class="hidden" />
+        <button
+          type="button"
+          id="photo-file-picker"
+          class="inline-flex items-center px-4 py-2 border border-foreground-muted text-foreground-secondary text-xs uppercase tracking-wider font-medium hover:border-foreground hover:text-foreground transition-colors duration-200"
+        >
+          Select images
+        </button>
+        <p class="mt-2 text-xs text-foreground-muted">Allowed: JPG, PNG, WebP, GIF • Max 10MB each</p>
+      </div>
+    </div>
+
+    <div>
+      <p class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">Preview & reorder</p>
+      <ul id="photo-preview-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4" aria-live="polite"></ul>
+    </div>
+
+    <div class="flex items-center justify-between gap-3 pt-2">
+      <p id="photo-post-status" class="text-sm text-foreground-muted font-sans" role="status" aria-live="polite"></p>
+      <button
+        type="submit"
+        id="photo-submit-btn"
+        class="px-5 py-2 bg-foreground text-foreground-inverse text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        Publish photo post
+      </button>
+    </div>
+  </form>
+</section>
+
+<script>
+  interface SelectedImage {
+    file: File;
+    previewUrl: string;
+    caption: string;
+  }
+
+  const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+  const ACCEPTED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+  const form = document.getElementById('photo-post-form') as HTMLFormElement | null;
+  const dropZone = document.getElementById('photo-drop-zone') as HTMLDivElement | null;
+  const fileInput = document.getElementById('photo-file-input') as HTMLInputElement | null;
+  const filePickerButton = document.getElementById('photo-file-picker') as HTMLButtonElement | null;
+  const previewList = document.getElementById('photo-preview-list') as HTMLUListElement | null;
+  const statusEl = document.getElementById('photo-post-status') as HTMLParagraphElement | null;
+  const submitButton = document.getElementById('photo-submit-btn') as HTMLButtonElement | null;
+
+  const images: SelectedImage[] = [];
+
+  function setStatus(message: string, isError = false): void {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.classList.toggle('text-red-500', isError);
+    statusEl.classList.toggle('text-foreground-muted', !isError);
+  }
+
+  function revokePreviews(): void {
+    images.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+  }
+
+  function renderPreviews(): void {
+    if (!previewList) return;
+
+    previewList.innerHTML = '';
+
+    images.forEach((item, index) => {
+      const li = document.createElement('li');
+      li.className = 'border border-background-elevated rounded-lg p-3 bg-background-surface';
+      li.innerHTML = `
+        <img src="${item.previewUrl}" alt="Selected image ${index + 1}" class="w-full aspect-[4/3] object-cover rounded mb-3" loading="lazy" decoding="async" />
+        <label class="block text-xs uppercase tracking-wider text-foreground-muted mb-1">Caption</label>
+        <input
+          type="text"
+          data-caption-index="${index}"
+          value="${item.caption.replace(/"/g, '&quot;')}"
+          class="w-full bg-transparent border border-background-hover rounded px-2 py-1 text-sm text-foreground-secondary focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+          placeholder="Optional caption"
+        />
+        <div class="mt-3 flex items-center gap-2">
+          <button type="button" data-move-up="${index}" class="px-2 py-1 text-xs border border-background-hover rounded hover:border-foreground-muted transition-colors duration-200" aria-label="Move image up">↑</button>
+          <button type="button" data-move-down="${index}" class="px-2 py-1 text-xs border border-background-hover rounded hover:border-foreground-muted transition-colors duration-200" aria-label="Move image down">↓</button>
+          <button type="button" data-remove="${index}" class="ml-auto px-2 py-1 text-xs border border-red-400/50 text-red-500 rounded hover:border-red-500 transition-colors duration-200" aria-label="Remove image">Remove</button>
+        </div>
+      `;
+      previewList.appendChild(li);
+    });
+  }
+
+  function validateFile(file: File): string | null {
+    if (!ACCEPTED_TYPES.has(file.type)) {
+      return `${file.name}: unsupported file type`;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return `${file.name}: file exceeds 10MB limit`;
+    }
+
+    return null;
+  }
+
+  function addFiles(fileList: FileList | File[]): void {
+    const nextFiles = Array.from(fileList);
+    let hasErrors = false;
+
+    nextFiles.forEach((file) => {
+      const error = validateFile(file);
+      if (error) {
+        hasErrors = true;
+        setStatus(error, true);
+        return;
+      }
+
+      images.push({
+        file,
+        previewUrl: URL.createObjectURL(file),
+        caption: '',
+      });
+    });
+
+    if (!hasErrors) {
+      setStatus(`${images.length} image${images.length !== 1 ? 's' : ''} selected`);
+    }
+
+    renderPreviews();
+  }
+
+  function moveImage(from: number, to: number): void {
+    if (from < 0 || from >= images.length || to < 0 || to >= images.length) {
+      return;
+    }
+
+    const [item] = images.splice(from, 1);
+    if (!item) return;
+    images.splice(to, 0, item);
+    renderPreviews();
+  }
+
+  async function submitForm(event: SubmitEvent): Promise<void> {
+    event.preventDefault();
+
+    if (!form) return;
+
+    const titleInput = form.querySelector<HTMLInputElement>('#photo-post-title');
+    const descriptionInput = form.querySelector<HTMLTextAreaElement>('#photo-post-description');
+
+    const title = titleInput?.value.trim() || '';
+    const description = descriptionInput?.value.trim() || '';
+
+    if (!title || !description) {
+      setStatus('Title and description are required', true);
+      return;
+    }
+
+    if (images.length === 0) {
+      setStatus('Please add at least one image', true);
+      return;
+    }
+
+    submitButton?.setAttribute('disabled', 'true');
+    setStatus('Uploading and creating post...');
+
+    try {
+      const payload = new FormData();
+      payload.append('title', title);
+      payload.append('description', description);
+
+      images.forEach((item, index) => {
+        payload.append('images', item.file, item.file.name);
+        payload.append(`caption_${index}`, item.caption);
+      });
+
+      const response = await fetch('/api/photo-post', {
+        method: 'POST',
+        body: payload,
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create photo post');
+      }
+
+      setStatus(`Photo post created: ${result.slug}`);
+      form.reset();
+      revokePreviews();
+      images.length = 0;
+      renderPreviews();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload images';
+      setStatus(message, true);
+    } finally {
+      submitButton?.removeAttribute('disabled');
+    }
+  }
+
+  filePickerButton?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  fileInput?.addEventListener('change', () => {
+    if (!fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+
+    addFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  dropZone?.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropZone.classList.add('border-foreground-muted', 'bg-background-hover/40');
+  });
+
+  dropZone?.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-foreground-muted', 'bg-background-hover/40');
+  });
+
+  dropZone?.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropZone.classList.remove('border-foreground-muted', 'bg-background-hover/40');
+
+    const droppedFiles = event.dataTransfer?.files;
+    if (!droppedFiles || droppedFiles.length === 0) {
+      return;
+    }
+
+    addFiles(droppedFiles);
+  });
+
+  previewList?.addEventListener('input', (event) => {
+    const target = event.target as HTMLInputElement;
+    const indexValue = target.getAttribute('data-caption-index');
+    if (indexValue === null) return;
+
+    const index = Number(indexValue);
+    const selected = images[index];
+    if (!selected) return;
+
+    selected.caption = target.value;
+  });
+
+  previewList?.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+
+    const remove = target.closest<HTMLButtonElement>('[data-remove]');
+    if (remove) {
+      const index = Number(remove.getAttribute('data-remove'));
+      const selected = images[index];
+      if (!selected) return;
+      URL.revokeObjectURL(selected.previewUrl);
+      images.splice(index, 1);
+      renderPreviews();
+      setStatus(`${images.length} image${images.length !== 1 ? 's' : ''} selected`);
+      return;
+    }
+
+    const moveUp = target.closest<HTMLButtonElement>('[data-move-up]');
+    if (moveUp) {
+      const index = Number(moveUp.getAttribute('data-move-up'));
+      moveImage(index, index - 1);
+      return;
+    }
+
+    const moveDown = target.closest<HTMLButtonElement>('[data-move-down]');
+    if (moveDown) {
+      const index = Number(moveDown.getAttribute('data-move-down'));
+      moveImage(index, index + 1);
+    }
+  });
+
+  form?.addEventListener('submit', submitForm);
+</script>

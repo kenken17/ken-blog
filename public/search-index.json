@@ -1,5 +1,19 @@
 [
   {
+    "slug": "photo-post-sample",
+    "title": "Photo Walk: Kuala Lumpur Weekend",
+    "description": "A quick weekend photo set captured around the city center.",
+    "tags": [
+      "photo",
+      "travel",
+      "city"
+    ],
+    "pubDate": "2026-06-24",
+    "postType": "photo",
+    "thumbnail": "/images/2026-05-08_01.jpg",
+    "imageCount": 3
+  },
+  {
     "slug": "a-taste-of-hermes",
     "title": "A taste of Hermes",
     "description": "",
@@ -7,7 +21,9 @@
       "ai",
       "hermes"
     ],
-    "pubDate": "2026-05-22"
+    "pubDate": "2026-05-22",
+    "postType": "article",
+    "imageCount": 0
   },
   {
     "slug": "my-ai-era",
@@ -17,7 +33,9 @@
       "ai",
       "random"
     ],
-    "pubDate": "2026-05-10"
+    "pubDate": "2026-05-10",
+    "postType": "article",
+    "imageCount": 0
   },
   {
     "slug": "trying-gemini-free-tier-on-avante-nvim",
@@ -27,6 +45,8 @@
       "ai",
       "vim"
     ],
-    "pubDate": "2026-02-22"
+    "pubDate": "2026-02-22",
+    "postType": "article",
+    "imageCount": 0
   }
 ]

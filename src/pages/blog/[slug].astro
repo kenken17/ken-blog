@@ -5,15 +5,20 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Comments from '../../components/Comments.astro';
 import LikeButton from '../../components/LikeButton.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
+import PhotoGallery from '../../components/PhotoGallery.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { generateJsonLd } from '../../utils/seo';
+import { SITE_URL } from '../../config/seo';
+import { getPhotoImages, getPhotoThumbnail, isPhotoPost } from '../../utils/posts';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  const posts = await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft);
   const authors = await getCollection('authors');
+
   return posts.map((post: CollectionEntry<'posts'>) => {
     const authorId = post.data.author ?? 'ken';
     const author = authors.find((a: CollectionEntry<'authors'>) => a.id === authorId);
+
     return {
       params: { slug: post.id },
       props: { post, author },
@@ -28,7 +33,18 @@ interface Props {
 
 const { post, author } = Astro.props;
 const { Content } = await render(post);
+
 const readingTime = calculateReadingTime(post.body);
+const photoPost = isPhotoPost(post);
+const photoImages = getPhotoImages(post);
+const photoThumbnail = getPhotoThumbnail(post);
+
+const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft)).sort(
+  (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const currentIndex = allPosts.findIndex((entry: CollectionEntry<'posts'>) => entry.id === post.id);
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const olderPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
 // Parse code block metadata from markdown body for client-side enhancement
 const codeBlockMeta: { language: string; filename: string }[] = [];
@@ -41,7 +57,7 @@ while ((match = codeFenceRegex.exec(post.body)) !== null) {
   });
 }
 
-const jsonLd = generateJsonLd({
+const articleJsonLd = generateJsonLd({
   type: 'Article',
   title: post.data.title,
   description: post.data.description,
@@ -50,20 +66,42 @@ const jsonLd = generateJsonLd({
   updatedDate: post.data.updatedDate?.toISOString(),
   tags: post.data.tags,
 });
+
+const photoImageUrls = photoImages.map((image) =>
+  image.url.startsWith('http') ? image.url : `${SITE_URL}${image.url.startsWith('/') ? '' : '/'}${image.url}`,
+);
+
+const jsonLd = photoPost
+  ? [
+      {
+        ...articleJsonLd,
+        image: photoImageUrls,
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ImageGallery',
+        name: post.data.title,
+        description: post.data.description || '',
+        url: `${SITE_URL}/blog/${post.id}`,
+        image: photoImageUrls,
+      },
+    ]
+  : articleJsonLd;
 ---
 
 <BaseLayout
   title={`${post.data.title} | Ken's Blog`}
   description={post.data.description}
   canonicalUrl={`/blog/${post.id}`}
+  ogImage={photoThumbnail?.url}
   ogType="article"
   jsonLd={jsonLd}
 >
   <main class="max-w-3xl mx-auto px-6 py-24">
     <article class="animate-fade-in">
       <header class="mb-12">
-        <div class="flex items-baseline justify-between mb-4">
-          <div class="flex items-center gap-2">
+        <div class="flex items-baseline justify-between mb-4 flex-wrap gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
             <time class="text-foreground-muted text-sm font-sans uppercase tracking-wider">
               {post.data.pubDate.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -73,6 +111,12 @@ const jsonLd = generateJsonLd({
             </time>
             <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
             <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">{readingTime} min read</span>
+            {photoPost && (
+              <>
+                <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
+                <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">Photo Post</span>
+              </>
+            )}
             {author && (
               <>
                 <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
@@ -89,7 +133,7 @@ const jsonLd = generateJsonLd({
           <div class="flex items-center gap-4">
             <LikeButton slug={post.id} />
             {post.data.tags && post.data.tags.length > 0 && (
-              <div class="flex gap-2">
+              <div class="flex gap-2 flex-wrap justify-end">
                 {post.data.tags.map((tag: string) => (
                   <a
                     href={`/tags/${tag}`}
@@ -103,107 +147,133 @@ const jsonLd = generateJsonLd({
             )}
           </div>
         </div>
-        <h1 class="font-display text-display-sm md:text-display-md text-foreground leading-tight">
-          {post.data.title}
-        </h1>
+
+        <h1 class="font-display text-display-sm md:text-display-md text-foreground leading-tight">{post.data.title}</h1>
+
         {post.data.description && (
-          <p class="text-foreground-secondary mt-4 text-lg leading-relaxed font-sans">
-            {post.data.description}
-          </p>
+          <p class="text-foreground-secondary mt-4 text-lg leading-relaxed font-sans">{post.data.description}</p>
         )}
       </header>
 
-      <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
-        <Content components={{ pre: CodeBlock }} />
-      </div>
+      {photoPost ? (
+        <div class="space-y-10">
+          <PhotoGallery images={photoImages} />
+
+          {post.body.trim().length > 0 && (
+            <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
+              <Content components={{ pre: CodeBlock }} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
+          <Content components={{ pre: CodeBlock }} />
+        </div>
+      )}
 
       <div>
         <Comments slug={post.id} />
       </div>
 
       <footer class="mt-16 pt-8 border-t border-background-elevated">
-        <a
-          href="/blog"
-          class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"
-        >
-          ← Back to all posts
-        </a>
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <a
+            href="/blog"
+            class="text-foreground-muted hover:text-foreground text-sm uppercase tracking-wider font-sans transition-colors duration-200"
+          >
+            ← Back to all posts
+          </a>
+
+          <nav class="flex flex-col md:flex-row md:items-center gap-3 md:gap-6" aria-label="Post navigation">
+            {newerPost && (
+              <a
+                href={`/blog/${newerPost.id}`}
+                class="text-foreground-muted hover:text-foreground text-sm font-sans transition-colors duration-200"
+                aria-label={`Read newer post: ${newerPost.data.title}`}
+              >
+                ← Newer: {newerPost.data.title}
+              </a>
+            )}
+            {olderPost && (
+              <a
+                href={`/blog/${olderPost.id}`}
+                class="text-foreground-muted hover:text-foreground text-sm font-sans transition-colors duration-200"
+                aria-label={`Read older post: ${olderPost.data.title}`}
+              >
+                Older: {olderPost.data.title} →
+              </a>
+            )}
+          </nav>
+        </div>
       </footer>
     </article>
   </main>
 
-  <!-- Lightbox Overlay -->
-  <div
-    id="lightbox"
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-foreground/90 backdrop-blur-sm cursor-zoom-out"
-  >
-    <button
-      id="lightbox-close"
-      class="absolute top-6 right-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200"
-      aria-label="Close"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    <img
-      id="lightbox-img"
-      src=""
-      alt=""
-      class="max-w-[90vw] max-h-[90vh] object-contain"
-    />
-  </div>
+  {!photoPost && (
+    <>
+      <div
+        id="lightbox"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
+      >
+        <button
+          id="lightbox-close"
+          class="absolute top-6 right-6 text-white hover:text-white/60 transition-colors duration-200"
+          aria-label="Close"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain" />
+      </div>
+
+      <script>
+        const lightbox = document.getElementById('lightbox')!;
+        const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+        const lightboxClose = document.getElementById('lightbox-close')!;
+
+        function openLightbox(src: string, alt: string): void {
+          lightboxImg.src = src;
+          lightboxImg.alt = alt;
+          lightbox.classList.remove('hidden');
+          lightbox.classList.add('flex');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(): void {
+          lightbox.classList.add('hidden');
+          lightbox.classList.remove('flex');
+          lightboxImg.src = '';
+          document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.prose-light img').forEach((img) => {
+          const image = img as HTMLImageElement;
+          image.style.cursor = 'zoom-in';
+          image.addEventListener('click', () => {
+            openLightbox(image.src, image.alt);
+          });
+        });
+
+        lightbox.addEventListener('click', (event) => {
+          if (event.target === lightbox || event.target === lightboxImg) {
+            closeLightbox();
+          }
+        });
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+            closeLightbox();
+          }
+        });
+      </script>
+    </>
+  )}
 
   <script>
-    const lightbox = document.getElementById('lightbox')!;
-    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-    const lightboxClose = document.getElementById('lightbox-close')!;
-
-    function openLightbox(src: string, alt: string): void {
-      lightboxImg.src = src;
-      lightboxImg.alt = alt;
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox(): void {
-      lightbox.classList.add('hidden');
-      lightbox.classList.remove('flex');
-      lightboxImg.src = '';
-      document.body.style.overflow = '';
-    }
-
-    // Make all images in prose clickable
-    document.querySelectorAll('.prose-light img').forEach((img) => {
-      const image = img as HTMLImageElement;
-      image.style.cursor = 'zoom-in';
-      image.addEventListener('click', () => {
-        openLightbox(image.src, image.alt);
-      });
-    });
-
-    // Close on backdrop click
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox || e.target === lightboxImg) {
-        closeLightbox();
-      }
-    });
-
-    // Close button
-    lightboxClose.addEventListener('click', closeLightbox);
-
-    // Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
-        closeLightbox();
-      }
-    });
-  </script>
-
-  <script>
-    // Open all post content links in new tabs
     document.querySelectorAll('.prose-light a').forEach((link) => {
       if (!link.hasAttribute('target')) {
         link.setAttribute('target', '_blank');
@@ -213,7 +283,6 @@ const jsonLd = generateJsonLd({
   </script>
 
   <script>
-    // Enhance <pre> elements with CodeBlock wrapper (fallback for markdown content)
     (function() {
       const languageDisplayMap: Record<string, string> = {
         js: 'JavaScript', javascript: 'JavaScript',
@@ -238,24 +307,21 @@ const jsonLd = generateJsonLd({
         let metaIndex = 0;
 
         document.querySelectorAll('.prose-light pre').forEach(pre => {
-          // Skip already enhanced blocks
           if (pre.closest('.code-block-wrapper')) return;
 
           const parent = pre.parentElement;
           if (!parent) return;
 
-          // Extract language
           let language = 'text';
           const dataLang = pre.getAttribute('data-language');
           if (dataLang) {
             language = dataLang.toLowerCase();
           } else {
             const className = pre.className || '';
-            const match = className.match(/language-(\w+)/);
-            if (match) language = match[1].toLowerCase();
+            const matched = className.match(/language-(\w+)/);
+            if (matched) language = matched[1].toLowerCase();
           }
 
-          // Get filename from parsed metadata or data-filename attribute
           let filename = pre.getAttribute('data-filename') || '';
           if (!filename && metaList[metaIndex]) {
             filename = metaList[metaIndex].filename;
@@ -264,7 +330,6 @@ const jsonLd = generateJsonLd({
 
           const displayLanguage = languageDisplayMap[language] || language;
 
-          // Create wrapper
           const wrapper = document.createElement('div');
           wrapper.className = 'code-block-wrapper group my-6 rounded-lg border border-background-hover overflow-hidden bg-background-elevated';
           wrapper.setAttribute('data-language', language);
@@ -298,13 +363,10 @@ const jsonLd = generateJsonLd({
           body.className = 'code-block-body relative overflow-x-auto';
 
           wrapper.appendChild(header);
-
-          // Insert wrapper where pre was, then move pre into body
           parent.insertBefore(wrapper, pre);
           body.appendChild(pre);
           wrapper.appendChild(body);
 
-          // Add copy functionality
           const copyBtn = wrapper.querySelector('.copy-btn') as HTMLElement | null;
           if (copyBtn) {
             copyBtn.addEventListener('click', async () => {
@@ -325,8 +387,8 @@ const jsonLd = generateJsonLd({
                   if (checkIcon) checkIcon.classList.add('hidden');
                   if (copyText) copyText.textContent = 'Copy';
                 }, 2000);
-              } catch (err) {
-                console.error('Failed to copy:', err);
+              } catch (error) {
+                console.error('Failed to copy:', error);
               }
             });
           }

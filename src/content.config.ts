@@ -12,6 +12,17 @@ const posts = defineCollection({
     draft: z.boolean().optional().default(false),
     tags: z.array(z.string()).optional().default([]),
     author: z.string().optional().default('ken'),
+    postType: z.enum(['article', 'photo']).optional().default('article'),
+    images: z
+      .array(
+        z.object({
+          url: z.string(),
+          alt: z.string(),
+          caption: z.string().optional(),
+        }),
+      )
+      .optional()
+      .default([]),
   }),
 });
 
