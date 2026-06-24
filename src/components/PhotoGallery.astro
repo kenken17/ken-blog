@@ -50,7 +50,7 @@ function buildSrcSet(url: string): string {
     </div>
 
     <div
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-foreground/90 backdrop-blur-sm p-4"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       data-photo-lightbox
       role="dialog"
       aria-modal="true"
@@ -58,7 +58,7 @@ function buildSrcSet(url: string): string {
     >
       <button
         type="button"
-        class="absolute top-5 right-5 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        class="absolute top-5 right-5 text-white hover:text-white/60 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
         data-lightbox-close
         aria-label="Close image viewer"
       >
@@ -70,7 +70,7 @@ function buildSrcSet(url: string): string {
 
       <button
         type="button"
-        class="absolute left-3 md:left-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        class="absolute left-3 md:left-6 text-white hover:text-white/60 transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
         data-lightbox-prev
         aria-label="Previous image"
       >
@@ -84,15 +84,15 @@ function buildSrcSet(url: string): string {
           src=""
           alt=""
           data-lightbox-image
-          class="max-w-full max-h-[80vh] object-contain rounded-lg"
+          class="max-w-full max-h-[80vh] object-contain rounded-lg cursor-pointer"
         />
-        <p data-lightbox-caption class="text-foreground-inverse/90 text-sm md:text-base font-sans text-center"></p>
-        <p data-lightbox-counter class="text-foreground-inverse/70 text-xs uppercase tracking-wider font-sans"></p>
+        <p data-lightbox-caption class="text-white/90 text-sm md:text-base font-sans text-center"></p>
+        <p data-lightbox-counter class="text-white/70 text-xs uppercase tracking-wider font-sans"></p>
       </div>
 
       <button
         type="button"
-        class="absolute right-3 md:right-6 text-foreground-inverse hover:text-foreground-muted transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
+        class="absolute right-3 md:right-6 text-white hover:text-white/60 transition-colors duration-200 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-background rounded"
         data-lightbox-next
         aria-label="Next image"
       >
@@ -208,6 +208,11 @@ function buildSrcSet(url: string): string {
   closeButton?.addEventListener('click', closeLightbox);
   prevButton?.addEventListener('click', showPrevious);
   nextButton?.addEventListener('click', showNext);
+
+  lightboxImage?.addEventListener('click', (event: MouseEvent) => {
+    event.stopPropagation();
+    showNext();
+  });
 
   lightbox?.addEventListener('click', (event: MouseEvent) => {
     if (event.target === lightbox) {
