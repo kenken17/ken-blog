@@ -83,4 +83,9 @@ features:
     name: feat_add_author_bio
     file: feat_add_author_bio.yaml
     priority: P1
-    status: queued
+    status: completed
+  - id: F-18
+    name: feat_add_photo_blog_post
+    file: feat_add_photo_blog_post.yaml
+    priority: P1
+    status: quueued
