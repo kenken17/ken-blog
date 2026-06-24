@@ -1,19 +1,5 @@
 [
   {
-    "slug": "photo-post-sample",
-    "title": "Photo Walk: Kuala Lumpur Weekend",
-    "description": "A quick weekend photo set captured around the city center.",
-    "tags": [
-      "photo",
-      "travel",
-      "city"
-    ],
-    "pubDate": "2026-06-24",
-    "postType": "photo",
-    "thumbnail": "/images/2026-05-08_01.jpg",
-    "imageCount": 3
-  },
-  {
     "slug": "photo-sydney-2026",
     "title": "City. Sydney.",
     "description": "Some random glimpse of Sydney city captured during the Melbourne to Sydney trip.",
