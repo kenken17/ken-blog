@@ -1,0 +1,53 @@
+---
+title: "Campervan Road Trip - Melbourne to Sydney."
+description: "On the road - Melbourne to Sydney. Left some memories on the way. First timer in a campervan and it was a new skill unlocked!"
+pubDate: 2026-06-20
+tags: ["photos", "travel"]
+postType: photo
+images:
+  - url: "/images/2026-06-20/R0003344.JPG"
+    alt: "What a bumpy road"
+    caption: "What a bumpy road"
+  - url: "/images/2026-06-20/R0003345.JPG"
+    alt: "This photo did not do the justice of the rainbow. What a pity!"
+    caption: "This photo did not do the justice of the rainbow. What a pity!"
+  - url: "/images/2026-06-20/R0003346.JPG"
+    alt: "Lake Entrance. Look at the frame, we definitely a tourist."
+    caption: "Lake Entrance. Look at the frame, we definitely a tourist."
+  - url: "/images/2026-06-20/R0003347.JPG"
+    alt: "Outside of the window of the campervan. No lacking of great views."
+    caption: "Outside of the window of the campervan. No lacking of great views."
+  - url: "/images/2026-06-20/R0003348.JPG"
+    alt: "Random coastline view on the way to Sydney."
+    caption: "Random coastline view on the way to Sydney."
+  - url: "/images/2026-06-20/R0003349.JPG"
+    alt: "Morning view of the campervan parked at the campsite."
+    caption: "Morning view of the campervan parked at the campsite."
+  - url: "/images/2026-06-20/R0003350.JPG"
+    alt: "Campsite where we parked for the night."
+    caption: "Campsite where we parked for the night."
+  - url: "/images/2026-06-20/R0003352.JPG"
+    alt: "The jetty near the campsite is tranquil and peaceful in the morning."
+    caption: "The jetty near the campsite is tranquil and peaceful in the morning."
+  - url: "/images/2026-06-20/R0003353.JPG"
+    alt: "The evening clouds that looks like a painting itself."
+    caption: "The evening clouds that looks like a painting itself."
+  - url: "/images/2026-06-20/R0003354.JPG"
+    alt: "Cool breeze of morning wind on the jetty."
+    caption: "Cool breeze of morning wind on the jetty."
+  - url: "/images/2026-06-20/R0003356.JPG"
+    alt: "Is that our campervan? OMG! I took the wrong photo of the campervan?"
+    caption: "Is that our campervan? OMG! I took the wrong photo of the campervan?"
+  - url: "/images/2026-06-20/R0003357.JPG"
+    alt: "Kiama where the lighthouse is located."
+    caption: "Kiama where the lighthouse is located."
+  - url: "/images/2026-06-20/R0003358.JPG"
+    alt: "Around Kiama, the coastal view is breathtaking."
+    caption: "Around Kiama, the coastal view is breathtaking."
+  - url: "/images/2026-06-20/R0003359.JPG"
+    alt: "The lighthouse at Kiama."
+    caption: "The lighthouse at Kiama."
+---
+
+Amazing experience on a 7 meter long campervan from Melbourne to Sydney. First
+time driving a campervan and it was a new skill unlocked!
