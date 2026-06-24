@@ -14,6 +14,20 @@
     "imageCount": 3
   },
   {
+    "slug": "photo-sydney-2026",
+    "title": "City. Sydney",
+    "description": "Some random glimpse of Sydney city captured during the Melbourne to Sydney trip.",
+    "tags": [
+      "photos",
+      "travel",
+      "city"
+    ],
+    "pubDate": "2026-06-21",
+    "postType": "photo",
+    "thumbnail": "/images/2026-06-21/R0003423.JPG",
+    "imageCount": 14
+  },
+  {
     "slug": "a-taste-of-hermes",
     "title": "A taste of Hermes",
     "description": "",
