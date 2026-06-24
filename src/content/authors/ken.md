@@ -1,5 +1,5 @@
 ---
 name: "Ken"
 avatar: "/images/avatar.png"
-bio: "Software engineer and designer passionate about building beautiful, performant web experiences."
+bio: "Software engineer who loves automating the development process. Proud Vim user — and yes, I know how to exit it. 😄"
 ---
