@@ -40,6 +40,20 @@
     "imageCount": 8
   },
   {
+    "slug": "photo-melbourne-2026",
+    "title": "City. Melbourne.",
+    "description": "A short walk and a few photos of Melbourne city.",
+    "tags": [
+      "photos",
+      "travel",
+      "city"
+    ],
+    "pubDate": "2026-06-12",
+    "postType": "photo",
+    "thumbnail": "/images/2026-06-12/R0002900.JPG",
+    "imageCount": 8
+  },
+  {
     "slug": "a-taste-of-hermes",
     "title": "A taste of Hermes",
     "description": "",
