@@ -1,5 +1,5 @@
 ---
-title: "Campervan Road Trip - Melbourne to Sydney."
+title: "Campervan road trip - Melbourne to Sydney."
 description: "On the road - Melbourne to Sydney. Left some memories on the way. First timer in a campervan and it was a new skill unlocked!"
 pubDate: 2026-06-20
 tags: ["photos", "travel"]
