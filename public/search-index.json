@@ -1,5 +1,16 @@
 [
   {
+    "slug": "look-ma-voice-command",
+    "title": "Look ma! Voice command!",
+    "description": "",
+    "tags": [
+      "ai"
+    ],
+    "pubDate": "2026-07-06",
+    "postType": "article",
+    "imageCount": 0
+  },
+  {
     "slug": "photo-sydney-2026",
     "title": "City. Sydney.",
     "description": "Some random glimpse of Sydney city captured during the Melbourne to Sydney trip.",
