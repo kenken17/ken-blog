@@ -88,4 +88,4 @@ features:
     name: feat_add_photo_blog_post
     file: feat_add_photo_blog_post.yaml
     priority: P1
-    status: quueued
+    status: completed
