@@ -93,4 +93,4 @@ features:
     name: feat_add_video_blog_post
     file: feat_add_video_blog_post.yaml
     priority: P1
-    status: queued
+    status: completed

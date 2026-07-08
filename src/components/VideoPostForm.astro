@@ -1,0 +1,399 @@
+<section class="max-w-3xl mx-auto px-6 py-10 animate-fade-in" aria-label="Create video post form">
+  <form id="video-post-form" class="space-y-6 bg-background-surface border border-background-elevated rounded-lg p-6" novalidate>
+    <div>
+      <label for="video-post-title" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Title
+      </label>
+      <input
+        id="video-post-title"
+        name="title"
+        type="text"
+        required
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="Video post title"
+      />
+    </div>
+
+    <div>
+      <label for="video-post-description" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Description
+      </label>
+      <textarea
+        id="video-post-description"
+        name="description"
+        rows="4"
+        required
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground-secondary focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="What is this video about?"
+      ></textarea>
+    </div>
+
+    <!-- Video Source Selection -->
+    <div>
+      <p class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-3">Video Source</p>
+      <div class="flex gap-4 mb-4">
+        <label class="flex items-center">
+          <input type="radio" name="video-source" value="upload" checked class="mr-2" />
+          <span class="text-sm text-foreground-secondary">Upload Video</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="video-source" value="embed" class="mr-2" />
+          <span class="text-sm text-foreground-secondary">Embed from URL</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- File Upload Section -->
+    <div id="upload-section">
+      <p class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">Video File</p>
+      <div
+        id="video-drop-zone"
+        class="border-2 border-dashed border-background-hover rounded-lg p-6 text-center bg-background-elevated/40 transition-colors duration-200"
+      >
+        <p class="text-foreground-secondary font-sans mb-2">Drag and drop video here, or choose file</p>
+        <input id="video-file-input" type="file" accept="video/mp4,video/webm" class="hidden" />
+        <button
+          type="button"
+          id="video-file-picker"
+          class="inline-flex items-center px-4 py-2 border border-foreground-muted text-foreground-secondary text-xs uppercase tracking-wider font-medium hover:border-foreground hover:text-foreground transition-colors duration-200"
+        >
+          Select Video
+        </button>
+        <p class="mt-2 text-xs text-foreground-muted">Allowed: MP4, WebM • Max 100MB</p>
+      </div>
+      
+      <!-- Video Preview -->
+      <div id="video-preview" class="hidden mt-4 border border-background-elevated rounded-lg p-3 bg-background-surface">
+        <video id="video-preview-element" class="w-full max-h-64 rounded mb-3" controls>
+          Your browser does not support the video tag.
+        </video>
+        <button
+          type="button"
+          id="video-remove-btn"
+          class="px-2 py-1 text-xs border border-red-400/50 text-red-500 rounded hover:border-red-500 transition-colors duration-200"
+        >
+          Remove Video
+        </button>
+      </div>
+    </div>
+
+    <!-- Embed Section -->
+    <div id="embed-section" class="hidden">
+      <label for="video-embed-url" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Video URL
+      </label>
+      <input
+        id="video-embed-url"
+        name="embedUrl"
+        type="url"
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+      />
+      <p class="mt-1 text-xs text-foreground-muted">Supports YouTube and Vimeo URLs</p>
+      
+      <div id="embed-preview" class="hidden mt-4 border border-background-elevated rounded-lg p-3 bg-background-surface">
+        <div id="embed-preview-container" class="w-full aspect-video bg-background-elevated rounded mb-3"></div>
+      </div>
+    </div>
+
+    <!-- Video Settings -->
+    <div>
+      <p class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-3">Playback Settings</p>
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <input type="checkbox" id="video-autoplay" name="autoplay" class="mr-2" />
+          <span class="text-sm text-foreground-secondary">Autoplay when page loads</span>
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" id="video-loop" name="loop" class="mr-2" />
+          <span class="text-sm text-foreground-secondary">Loop video</span>
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" id="video-controls" name="controls" checked class="mr-2" />
+          <span class="text-sm text-foreground-secondary">Show player controls</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Video Caption -->
+    <div>
+      <label for="video-caption" class="block text-sm uppercase tracking-wider text-foreground-muted font-sans mb-2">
+        Video Caption
+      </label>
+      <input
+        id="video-caption"
+        name="caption"
+        type="text"
+        class="w-full bg-transparent border border-background-hover rounded px-3 py-2 text-foreground-secondary focus:outline-none focus:ring-2 focus:ring-foreground-muted/30"
+        placeholder="Optional caption for accessibility and SEO"
+      />
+    </div>
+
+    <div class="flex items-center justify-between gap-3 pt-2">
+      <p id="video-post-status" class="text-sm text-foreground-muted font-sans" role="status" aria-live="polite"></p>
+      <button
+        type="submit"
+        id="video-submit-btn"
+        class="px-5 py-2 bg-foreground text-foreground-inverse text-xs uppercase tracking-wider font-medium hover:bg-foreground-secondary transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        Publish Video Post
+      </button>
+    </div>
+  </form>
+</section>
+
+<script>
+  const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
+  const ACCEPTED_VIDEO_TYPES = new Set(['video/mp4', 'video/webm']);
+  
+  const form = document.getElementById('video-post-form') as HTMLFormElement | null;
+  const uploadSection = document.getElementById('upload-section') as HTMLDivElement | null;
+  const embedSection = document.getElementById('embed-section') as HTMLDivElement | null;
+  const statusEl = document.getElementById('video-post-status') as HTMLParagraphElement | null;
+  const submitButton = document.getElementById('video-submit-btn') as HTMLButtonElement | null;
+  
+  // File upload elements
+  const dropZone = document.getElementById('video-drop-zone') as HTMLDivElement | null;
+  const fileInput = document.getElementById('video-file-input') as HTMLInputElement | null;
+  const filePickerButton = document.getElementById('video-file-picker') as HTMLButtonElement | null;
+  const videoPreview = document.getElementById('video-preview') as HTMLDivElement | null;
+  const videoElement = document.getElementById('video-preview-element') as HTMLVideoElement | null;
+  const removeButton = document.getElementById('video-remove-btn') as HTMLButtonElement | null;
+  
+  // Embed elements
+  const embedUrlInput = document.getElementById('video-embed-url') as HTMLInputElement | null;
+  const embedPreview = document.getElementById('embed-preview') as HTMLDivElement | null;
+  const embedPreviewContainer = document.getElementById('embed-preview-container') as HTMLDivElement | null;
+
+  let selectedVideo: File | null = null;
+  let embedUrl: string = '';
+
+  function setStatus(message: string, isError = false): void {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.classList.toggle('text-red-500', isError);
+    statusEl.classList.toggle('text-foreground-muted', !isError);
+  }
+
+  function toggleVideoSource(): void {
+    const sourceRadios = document.querySelectorAll<HTMLInputElement>('input[name="video-source"]');
+    const uploadSelected = Array.from(sourceRadios).find(radio => radio.checked)?.value === 'upload';
+    
+    if (uploadSection && embedSection) {
+      uploadSection.classList.toggle('hidden', !uploadSelected);
+      embedSection.classList.toggle('hidden', uploadSelected);
+    }
+  }
+
+  function validateVideoFile(file: File): string | null {
+    if (!ACCEPTED_VIDEO_TYPES.has(file.type)) {
+      return `${file.name}: unsupported video format. Use MP4 or WebM.`;
+    }
+    
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return `${file.name}: file exceeds 100MB limit`;
+    }
+    
+    return null;
+  }
+
+  function showVideoPreview(file: File): void {
+    if (!videoElement || !videoPreview) return;
+    
+    const url = URL.createObjectURL(file);
+    videoElement.src = url;
+    videoPreview.classList.remove('hidden');
+    setStatus(`Video selected: ${file.name}`);
+  }
+
+  function removeVideo(): void {
+    if (!videoElement || !videoPreview || !fileInput) return;
+    
+    if (videoElement.src) {
+      URL.revokeObjectURL(videoElement.src);
+    }
+    videoElement.src = '';
+    videoPreview.classList.add('hidden');
+    fileInput.value = '';
+    selectedVideo = null;
+    setStatus('Video removed');
+  }
+
+  async function handleEmbedUrl(): Promise<void> {
+    const url = embedUrlInput?.value.trim() || '';
+    
+    if (!url) {
+      embedPreview?.classList.add('hidden');
+      embedUrl = '';
+      return;
+    }
+    
+    // Simple YouTube/Vimeo URL validation
+    const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    
+    if (!youtubeMatch && !vimeoMatch) {
+      setStatus('Invalid URL. Please use a YouTube or Vimeo URL.', true);
+      return;
+    }
+    
+    if (embedPreviewContainer && embedPreview) {
+      let embedHtml = '';
+      
+      if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        embedHtml = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        embedUrl = url;
+      } else if (vimeoMatch) {
+        const videoId = vimeoMatch[1];
+        embedHtml = `<iframe class="w-full h-full" src="https://player.vimeo.com/video/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        embedUrl = url;
+      }
+      
+      embedPreviewContainer.innerHTML = embedHtml;
+      embedPreview.classList.remove('hidden');
+      setStatus('Video preview loaded');
+    }
+  }
+
+  // Event listeners
+  document.querySelectorAll('input[name="video-source"]').forEach(radio => {
+    radio.addEventListener('change', toggleVideoSource);
+  });
+
+  filePickerButton?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  fileInput?.addEventListener('change', () => {
+    if (!fileInput.files || fileInput.files.length === 0) return;
+    
+    const file = fileInput.files[0];
+    const error = validateVideoFile(file);
+    
+    if (error) {
+      setStatus(error, true);
+      return;
+    }
+    
+    selectedVideo = file;
+    showVideoPreview(file);
+  });
+
+  removeButton?.addEventListener('click', removeVideo);
+
+  embedUrlInput?.addEventListener('input', () => {
+    clearTimeout((embedUrlInput as any).timeout);
+    (embedUrlInput as any).timeout = setTimeout(handleEmbedUrl, 500);
+  });
+
+  // Drag and drop for video files
+  dropZone?.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropZone.classList.add('border-foreground-muted', 'bg-background-hover/40');
+  });
+
+  dropZone?.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-foreground-muted', 'bg-background-hover/40');
+  });
+
+  dropZone?.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropZone.classList.remove('border-foreground-muted', 'bg-background-hover/40');
+
+    const droppedFiles = event.dataTransfer?.files;
+    if (!droppedFiles || droppedFiles.length === 0) return;
+
+    const file = droppedFiles[0];
+    const error = validateVideoFile(file);
+    
+    if (error) {
+      setStatus(error, true);
+      return;
+    }
+    
+    selectedVideo = file;
+    showVideoPreview(file);
+  });
+
+  // Form submission
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    
+    const titleInput = form.querySelector<HTMLInputElement>('#video-post-title');
+    const descriptionInput = form.querySelector<HTMLTextAreaElement>('#video-post-description');
+    const captionInput = form.querySelector<HTMLInputElement>('#video-caption');
+    const autoplayInput = form.querySelector<HTMLInputElement>('#video-autoplay');
+    const loopInput = form.querySelector<HTMLInputElement>('#video-loop'); 
+    const controlsInput = form.querySelector<HTMLInputElement>('#video-controls');
+    
+    const title = titleInput?.value.trim() || '';
+    const description = descriptionInput?.value.trim() || '';
+    const caption = captionInput?.value.trim() || '';
+    
+    if (!title || !description) {
+      setStatus('Title and description are required', true);
+      return;
+    }
+    
+    const sourceRadios = document.querySelectorAll<HTMLInputElement>('input[name="video-source"]');
+    const isUpload = Array.from(sourceRadios).find(radio => radio.checked)?.value === 'upload';
+    
+    if (isUpload && !selectedVideo) {
+      setStatus('Please select a video file', true);
+      return;
+    }
+    
+    if (!isUpload && !embedUrl) {
+      setStatus('Please enter a valid video URL', true);
+      return;
+    }
+    
+    submitButton?.setAttribute('disabled', 'true');
+    setStatus('Creating video post...');
+    
+    try {
+      const payload = new FormData();
+      payload.append('title', title);
+      payload.append('description', description);
+      payload.append('caption', caption);
+      payload.append('autoplay', autoplayInput?.checked ? 'true' : 'false');
+      payload.append('loop', loopInput?.checked ? 'true' : 'false');
+      payload.append('controls', controlsInput?.checked ? 'true' : 'false');
+      
+      if (isUpload && selectedVideo) {
+        payload.append('video', selectedVideo);
+        payload.append('type', 'upload');
+      } else {
+        payload.append('embedUrl', embedUrl);
+        payload.append('type', 'embed');
+      }
+      
+      const response = await fetch('/api/video-post', {
+        method: 'POST',
+        body: payload,
+      });
+      
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create video post');
+      }
+      
+      setStatus(`Video post created: ${result.slug}`);
+      form.reset();
+      removeVideo();
+      embedUrl = '';
+      embedPreview?.classList.add('hidden');
+      toggleVideoSource();
+      
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to create video post';
+      setStatus(message, true);
+    } finally {
+      submitButton?.removeAttribute('disabled');
+    }
+  });
+  
+  // Initialize
+  toggleVideoSource();
+</script>

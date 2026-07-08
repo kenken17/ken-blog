@@ -6,10 +6,12 @@ import Comments from '../../components/Comments.astro';
 import LikeButton from '../../components/LikeButton.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import PhotoGallery from '../../components/PhotoGallery.astro';
+import VideoPlayer from '../../components/VideoPlayer.astro';
+import VideoEmbed from '../../components/VideoEmbed.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { generateJsonLd } from '../../utils/seo';
 import { SITE_URL } from '../../config/seo';
-import { getPhotoImages, getPhotoThumbnail, isPhotoPost } from '../../utils/posts';
+import { getPhotoImages, getPhotoThumbnail, isPhotoPost, isVideoPost, getPostVideo } from '../../utils/posts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft);
@@ -36,8 +38,10 @@ const { Content } = await render(post);
 
 const readingTime = calculateReadingTime(post.body);
 const photoPost = isPhotoPost(post);
+const videoPost = isVideoPost(post);
 const photoImages = getPhotoImages(post);
 const photoThumbnail = getPhotoThumbnail(post);
+const videoData = getPostVideo(post);
 
 const allPosts = (await getCollection('posts', ({ data }: { data: { draft?: boolean } }) => !data.draft)).sort(
   (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -117,6 +121,12 @@ const jsonLd = photoPost
                 <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">Photo Post</span>
               </>
             )}
+            {videoPost && (
+              <>
+                <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
+                <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">Video Post</span>
+              </>
+            )}
             {author && (
               <>
                 <span class="text-foreground-muted text-sm font-sans uppercase tracking-wider">·</span>
@@ -158,6 +168,29 @@ const jsonLd = photoPost
       {photoPost ? (
         <div class="space-y-10">
           <PhotoGallery images={photoImages} />
+
+          {post.body.trim().length > 0 && (
+            <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
+              <Content components={{ pre: CodeBlock }} />
+            </div>
+          )}
+        </div>
+      ) : videoPost && videoData ? (
+        <div class="space-y-10">
+          {videoData.type === 'upload' ? (
+            <VideoPlayer 
+              url={videoData.url} 
+              autoplay={videoData.autoplay} 
+              loop={videoData.loop} 
+              controls={videoData.controls} 
+              caption={videoData.caption}
+            />
+          ) : (
+            <VideoEmbed 
+              url={videoData.url} 
+              caption={videoData.caption}
+            />
+          )}
 
           {post.body.trim().length > 0 && (
             <div class="prose-light" data-code-blocks={JSON.stringify(codeBlockMeta)}>
@@ -209,7 +242,7 @@ const jsonLd = photoPost
     </article>
   </main>
 
-  {!photoPost && (
+  {!photoPost && !videoPost && (
     <>
       <div
         id="lightbox"

@@ -12,7 +12,7 @@ const posts = defineCollection({
     draft: z.boolean().optional().default(false),
     tags: z.array(z.string()).optional().default([]),
     author: z.string().optional().default('ken'),
-    postType: z.enum(['article', 'photo']).optional().default('article'),
+    postType: z.enum(['article', 'photo', 'video']).optional().default('article'),
     images: z
       .array(
         z.object({
@@ -23,6 +23,16 @@ const posts = defineCollection({
       )
       .optional()
       .default([]),
+    video: z
+      .object({
+        type: z.enum(['upload', 'embed']),
+        url: z.string(),
+        caption: z.string().optional(),
+        autoplay: z.boolean().optional().default(false),
+        loop: z.boolean().optional().default(false),
+        controls: z.boolean().optional().default(true),
+      })
+      .optional(),
   }),
 });
 
