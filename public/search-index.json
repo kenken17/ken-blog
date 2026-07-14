@@ -1,5 +1,17 @@
 [
   {
+    "slug": "hermes-on-the-cloud",
+    "title": "Hermes on the cloud.",
+    "description": "",
+    "tags": [
+      "ai",
+      "hermes"
+    ],
+    "pubDate": "2026-07-14",
+    "postType": "article",
+    "imageCount": 0
+  },
+  {
     "slug": "look-ma-voice-command",
     "title": "Look ma! Voice command!",
     "description": "",
